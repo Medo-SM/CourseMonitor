@@ -5,5 +5,5 @@ This system is made in order to help professors in universities to track and rep
 student's grades easily.
 ---
 ## How It's Made
-Tech used: Python
+Tech used: PHP
 
