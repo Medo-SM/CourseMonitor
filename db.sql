@@ -40,6 +40,7 @@ CREATE TABLE users (
         ON UPDATE CASCADE ON DELETE SET NULL
 ) ENGINE=InnoDB;
 
+
 -- =========================================================
 -- 3. Students
 -- =========================================================
@@ -68,7 +69,6 @@ CREATE TABLE courses (
     code            VARCHAR(50)  NOT NULL,  -- e.g., CS101
     name            VARCHAR(150) NOT NULL,
     department_id   INT UNSIGNED NOT NULL,
-    lecturer_id     INT UNSIGNED NOT NULL,  -- main lecturer
     semester        VARCHAR(20)  NULL,      -- e.g., "Fall", "Spring"
     academic_year   VARCHAR(20)  NULL,      -- e.g., "2024/2025"
     created_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -76,15 +76,11 @@ CREATE TABLE courses (
 
     UNIQUE KEY uq_courses_code (code),
     KEY idx_courses_department (department_id),
-    KEY idx_courses_lecturer (lecturer_id),
 
     CONSTRAINT fk_courses_department
         FOREIGN KEY (department_id) REFERENCES departments(id)
         ON UPDATE CASCADE ON DELETE RESTRICT,
 
-    CONSTRAINT fk_courses_lecturer
-        FOREIGN KEY (lecturer_id) REFERENCES users(id)
-        ON UPDATE CASCADE ON DELETE RESTRICT
 ) ENGINE=InnoDB;
 
 -- =========================================================
@@ -115,6 +111,7 @@ CREATE TABLE course_students (
 CREATE TABLE attendance_sessions (
     id              INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     course_id       INT UNSIGNED NOT NULL,
+    number_of_session INT NOT NULL,
     session_date    DATE NOT NULL,
     session_time    TIME NULL,             -- optional (for time-slot analysis)
     created_by      INT UNSIGNED NOT NULL, -- lecturer user id
@@ -214,7 +211,38 @@ CREATE TABLE coursework_grades (
 ) ENGINE=InnoDB;
 
 -- =========================================================
--- 10. Optional: Simple seed data (example department + admin)
+-- 10. lecturer courses
+-- =========================================================
+CREATE TABLE LECTURER_COURSES (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+
+    course_id INT UNSIGNED NOT NULL,
+    lecturer_id INT UNSIGNED NOT NULL,
+
+
+    CONSTRAINT uq_lecturer_course UNIQUE (course_id, lecturer_id),
+
+
+    CONSTRAINT fk_lecturer_courses_lecturer
+        FOREIGN KEY (lecturer_id) 
+        REFERENCES users(id)
+        ON UPDATE CASCADE 
+        ON DELETE RESTRICT,
+
+
+    CONSTRAINT fk_lecturer_courses_course 
+        FOREIGN KEY (course_id) 
+        REFERENCES courses(id)
+        ON UPDATE CASCADE 
+        ON DELETE CASCADE,
+
+
+    INDEX idx_course_id (course_id),
+    INDEX idx_lecturer_id (lecturer_id)
+);
+
+-- =========================================================
+-- 11. Optional: Simple seed data (example department + admin)
 -- =========================================================
 INSERT INTO departments (name, code)
 VALUES ('Computer Science', 'CS')
