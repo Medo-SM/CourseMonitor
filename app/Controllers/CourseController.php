@@ -20,7 +20,7 @@ class CourseController
             ORDER BY c.id DESC
         ";
 
-        $stmt = $this->res->prepare($sql);m
+        $stmt = $this->res->prepare($sql);
         if (!$stmt) {
             die("Prepare failed: " . $this->res->error);
         }
