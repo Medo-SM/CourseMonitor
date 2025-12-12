@@ -3,7 +3,7 @@
 class CourseController
 {
     private $res;
-    private $teacherId = 1; // temporary until login exists
+    private $lecturerId = 1; // change this to the lecturer user's id
 
     public function __construct($res)
     {
@@ -12,17 +12,26 @@ class CourseController
 
     public function index()
     {
-        $tid = $this->teacherId;
+        $sql = "
+            SELECT c.*
+            FROM courses c
+            INNER JOIN LECTURER_COURSES lc ON lc.course_id = c.id
+            WHERE lc.lecturer_id = ?
+            ORDER BY c.id DESC
+        ";
 
-        $query = "SELECT * FROM courses WHERE teacher_id = $tid";
-        $result = $this->res->query($query);
-
-        $courses = [];
-        if ($result) {
-            while ($row = $result->fetch_assoc()) {
-                $courses[] = $row;
-            }
+        $stmt = $this->res->prepare($sql);m
+        if (!$stmt) {
+            die("Prepare failed: " . $this->res->error);
         }
+
+        $stmt->bind_param("i", $this->lecturerId);
+        $stmt->execute();
+
+        $result = $stmt->get_result();
+        $courses = $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
+
+        $stmt->close();
 
         require __DIR__ . '/../Views/courses_index.php';
     }

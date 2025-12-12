@@ -1,29 +1,16 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>My Courses</title>
-</head>
-<body>
+<?php
+require __DIR__ . '/../config/database.php';
 
-<h1>My Courses</h1>
+$page = $_GET['page'] ?? 'home';
 
-<table border="1" cellpadding="6">
-    <tr>
-        <th>ID</th>
-        <th>Code</th>
-        <th>Name</th>
-    </tr>
+switch ($page) {
+    case 'courses':
+        require __DIR__ . '/../app/Controllers/CourseController.php';
+        (new CourseController($res))->index();
+        exit;
 
-    <?php foreach ($courses as $c): ?>
-        <tr>
-            <td><?= htmlspecialchars($c['id']) ?></td>
-            <td><?= htmlspecialchars($c['code']) ?></td>
-            <td><?= htmlspecialchars($c['name']) ?></td>
-        </tr>
-    <?php endforeach; ?>
-
-</table>
-
-</body>
-</html>
+    default:
+        echo "<h1>Attendance System</h1>";
+        echo "<a href='?page=courses'>My Courses</a>";
+        exit;
+}

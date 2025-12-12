@@ -13,7 +13,7 @@ USE attendance_system;
 -- =========================================================
 -- 1. Departments
 -- =========================================================
-CREATE TABLE departments (
+CREATE OR REPLACE TABLE departments (
     id          INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     name        VARCHAR(100) NOT NULL,
     code        VARCHAR(20)  NOT NULL,
@@ -23,7 +23,7 @@ CREATE TABLE departments (
 -- =========================================================
 -- 2. Users (Admin, Lecturer, Department Head)
 -- =========================================================
-CREATE TABLE users (
+CREATE OR REPLACE TABLE users (
     id              INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     name            VARCHAR(100) NOT NULL,
     email           VARCHAR(150) NOT NULL,
@@ -44,7 +44,7 @@ CREATE TABLE users (
 -- =========================================================
 -- 3. Students
 -- =========================================================
-CREATE TABLE students (
+CREATE OR REPLACE TABLE students (
     id              INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     student_number  VARCHAR(50) NOT NULL,   -- University student ID
     first_name      VARCHAR(100) NOT NULL,
@@ -64,7 +64,7 @@ CREATE TABLE students (
 -- =========================================================
 -- 4. Courses
 -- =========================================================
-CREATE TABLE courses (
+CREATE OR REPLACE TABLE courses (
     id              INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     code            VARCHAR(50)  NOT NULL,  -- e.g., CS101
     name            VARCHAR(150) NOT NULL,
@@ -79,7 +79,7 @@ CREATE TABLE courses (
 
     CONSTRAINT fk_courses_department
         FOREIGN KEY (department_id) REFERENCES departments(id)
-        ON UPDATE CASCADE ON DELETE RESTRICT,
+        ON UPDATE CASCADE ON DELETE RESTRICT
 
 ) ENGINE=InnoDB;
 
@@ -87,7 +87,7 @@ CREATE TABLE courses (
 -- 5. Course - Student Enrollment
 --    (filled from Excel student list per course)
 -- =========================================================
-CREATE TABLE course_students (
+CREATE OR REPLACE TABLE course_students (
     course_id   INT UNSIGNED NOT NULL,
     student_id  INT UNSIGNED NOT NULL,
     enrollment_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -108,7 +108,7 @@ CREATE TABLE course_students (
 -- 6. Attendance Sessions
 --    One row per class meeting (per course, per date/time)
 -- =========================================================
-CREATE TABLE attendance_sessions (
+CREATE OR REPLACE TABLE attendance_sessions (
     id              INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     course_id       INT UNSIGNED NOT NULL,
     number_of_session INT NOT NULL,
@@ -137,7 +137,7 @@ CREATE TABLE attendance_sessions (
 -- 7. Attendance Records
 --    One row per student per session
 -- =========================================================
-CREATE TABLE attendance_records (
+CREATE OR REPLACE TABLE attendance_records (
     id              INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     session_id      INT UNSIGNED NOT NULL,
     student_id      INT UNSIGNED NOT NULL,
@@ -165,7 +165,7 @@ CREATE TABLE attendance_records (
 -- 8. Coursework Items
 --    (Assignments, Quizzes, Midterm, Final, etc.)
 -- =========================================================
-CREATE TABLE coursework_items (
+CREATE OR REPLACE TABLE coursework_items (
     id              INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     course_id       INT UNSIGNED NOT NULL,
     title           VARCHAR(150) NOT NULL,  -- e.g., "Quiz 1", "Midterm"
@@ -188,7 +188,7 @@ CREATE TABLE coursework_items (
 -- 9. Coursework Grades
 --    One row per student per coursework item
 -- =========================================================
-CREATE TABLE coursework_grades (
+CREATE  OR REPLACE TABLE coursework_grades (
     id              INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     coursework_id   INT UNSIGNED NOT NULL,
     student_id      INT UNSIGNED NOT NULL,
@@ -213,7 +213,7 @@ CREATE TABLE coursework_grades (
 -- =========================================================
 -- 10. lecturer courses
 -- =========================================================
-CREATE TABLE LECTURER_COURSES (
+CREATE OR REPLACE TABLE LECTURER_COURSES (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 
     course_id INT UNSIGNED NOT NULL,
