@@ -9,12 +9,13 @@ requireRole('admin');
     <meta charset="UTF-8">
     <title>User Management - CourseMonitor</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="<?php echo base_url('/public/js/utils.js'); ?>"></script>
 </head>
 <body class="bg-light">
     <div class="container py-4">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2>User Management</h2>
-            <a href="/CourseMonitor/modules/admin/dashboard.php" class="btn btn-secondary">Back to Dashboard</a>
+            <a href="<?php echo base_url('/modules/admin/dashboard.php'); ?>" class="btn btn-secondary">Back to Dashboard</a>
         </div>
         
         <div class="card shadow-sm">
@@ -150,7 +151,7 @@ requireRole('admin');
 
         function loadUsers() {
             const search = document.getElementById('searchInput').value;
-            fetch(`/CourseMonitor/api/get_users.php?search=${search}`)
+            fetch(`<?php echo base_url('/api/get_users.php'); ?>?search=${encodeURIComponent(search)}`)
                 .then(r => r.json())
                 .then(users => {
                     const tbody = document.getElementById('userTableBody');
@@ -162,15 +163,15 @@ requireRole('admin');
 
                         tbody.innerHTML += `
                             <tr>
-                                <td>${user.username}</td>
-                                <td>${user.full_name}</td>
-                                <td>${user.email}</td>
-                                <td><span class="badge bg-secondary">${user.role}</span></td>
-                                <td>${aff}</td>
+                                <td>${escapeHtml(user.username)}</td>
+                                <td>${escapeHtml(user.full_name)}</td>
+                                <td>${escapeHtml(user.email)}</td>
+                                <td><span class="badge bg-secondary">${escapeHtml(user.role)}</span></td>
+                                <td>${escapeHtml(aff)}</td>
                                 <td>${user.is_active ? '<span class="text-success">Active</span>' : '<span class="text-danger">Inactive</span>'}</td>
                                 <td>
                                     <button onclick='editUser(${JSON.stringify(user)})' class="btn btn-sm btn-outline-primary">Edit</button>
-                                    <button onclick='deleteUser(${user.id})' class="btn btn-sm btn-outline-danger">Delete</button>
+                                    <button onclick='deleteUser(${Number(user.id)})' class="btn btn-sm btn-outline-danger">Delete</button>
                                 </td>
                             </tr>
                         `;

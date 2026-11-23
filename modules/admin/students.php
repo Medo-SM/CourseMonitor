@@ -9,12 +9,13 @@ requireRole('admin');
     <meta charset="UTF-8">
     <title>Student Management - CourseMonitor</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="<?php echo base_url('/public/js/utils.js'); ?>"></script>
 </head>
 <body class="bg-light">
     <div class="container py-4">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2>Student Management</h2>
-            <a href="/CourseMonitor/modules/admin/dashboard.php" class="btn btn-secondary">Back to Dashboard</a>
+            <a href="<?php echo base_url('/modules/admin/dashboard.php'); ?>" class="btn btn-secondary">Back to Dashboard</a>
         </div>
         
         <div class="card shadow-sm">
@@ -112,7 +113,7 @@ requireRole('admin');
 
         function loadStudents() {
             const search = document.getElementById('searchInput').value;
-            fetch(`/CourseMonitor/api/get_students_manage.php?search=${search}`)
+            fetch(`<?php echo base_url('/api/get_students_manage.php'); ?>?search=${encodeURIComponent(search)}`)
                 .then(r => r.json())
                 .then(students => {
                     const tbody = document.getElementById('studentTableBody');
@@ -120,14 +121,14 @@ requireRole('admin');
                     students.forEach(s => {
                         tbody.innerHTML += `
                             <tr>
-                                <td>${s.student_id_number}</td>
-                                <td>${s.name}</td>
-                                <td>${s.email}</td>
-                                <td>${s.current_semester || '1'}</td>
-                                <td>${s.department_name || 'N/A'}</td>
+                                <td>${escapeHtml(s.student_id_number)}</td>
+                                <td>${escapeHtml(s.name)}</td>
+                                <td>${escapeHtml(s.email)}</td>
+                                <td>${escapeHtml(s.current_semester || '1')}</td>
+                                <td>${escapeHtml(s.department_name || 'N/A')}</td>
                                 <td>
                                     <button onclick='editStudent(${JSON.stringify(s)})' class="btn btn-sm btn-outline-primary">Edit</button>
-                                    <button onclick='deleteStudent(${s.id})' class="btn btn-sm btn-outline-danger">Delete</button>
+                                    <button onclick='deleteStudent(${Number(s.id)})' class="btn btn-sm btn-outline-danger">Delete</button>
                                 </td>
                             </tr>
                         `;

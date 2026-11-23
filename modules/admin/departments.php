@@ -9,12 +9,13 @@ requireRole('admin');
     <meta charset="UTF-8">
     <title>Department Management - CourseMonitor</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="<?php echo base_url('/public/js/utils.js'); ?>"></script>
 </head>
 <body class="bg-light">
     <div class="container py-4">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2>Department Management</h2>
-            <a href="/CourseMonitor/modules/admin/dashboard.php" class="btn btn-secondary">Back to Dashboard</a>
+            <a href="<?php echo base_url('/modules/admin/dashboard.php'); ?>" class="btn btn-secondary">Back to Dashboard</a>
         </div>
         
         <div class="card shadow-sm">
@@ -88,7 +89,7 @@ requireRole('admin');
         });
 
         function loadDepartments() {
-            fetch('/CourseMonitor/api/get_department_details.php')
+            fetch('<?php echo base_url('/api/get_department_details.php'); ?>')
                 .then(r => r.json())
                 .then(depts => {
                     const tbody = document.getElementById('deptTableBody');
@@ -96,12 +97,12 @@ requireRole('admin');
                     depts.forEach(d => {
                         tbody.innerHTML += `
                             <tr>
-                                <td>${d.name}</td>
-                                <td>${d.faculty_name || '<span class="text-muted">-</span>'}</td>
-                                <td>${d.head_name || '<span class="text-muted">Not Assigned</span>'}</td>
+                                <td>${escapeHtml(d.name)}</td>
+                                <td>${d.faculty_name ? escapeHtml(d.faculty_name) : '<span class="text-muted">-</span>'}</td>
+                                <td>${d.head_name ? escapeHtml(d.head_name) : '<span class="text-muted">Not Assigned</span>'}</td>
                                 <td>
                                     <button onclick='editDept(${JSON.stringify(d)})' class="btn btn-sm btn-outline-primary">Edit</button>
-                                    <button onclick='deleteDept(${d.id})' class="btn btn-sm btn-outline-danger">Delete</button>
+                                    <button onclick='deleteDept(${Number(d.id)})' class="btn btn-sm btn-outline-danger">Delete</button>
                                 </td>
                             </tr>
                         `;
@@ -110,7 +111,7 @@ requireRole('admin');
         }
 
         function loadHeads() {
-            fetch('/CourseMonitor/api/get_users.php')
+            fetch('<?php echo base_url('/api/get_users.php'); ?>')
                 .then(r => r.json())
                 .then(users => {
                     const select = document.getElementById('head_id');
