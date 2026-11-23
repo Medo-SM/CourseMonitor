@@ -102,12 +102,27 @@ try {
     }
 
     // 2. Insert Audit Log
-    $action = "UPDATE (Reason: $reason)";
-    $audit = $mysqli->prepare("
-        INSERT INTO audit_logs (table_name, record_id, action, old_value, new_value, modified_by)
-        VALUES (?, ?, ?, ?, ?, ?)
-    ");
-    $audit->bind_param("sissii", $table_name, $id, $action, $old_value, $new_value, $head_id);
+    $hasReasonCol = false;
+    $colCheck = $mysqli->query("SHOW COLUMNS FROM audit_logs LIKE 'reason'");
+    if ($colCheck && $colCheck->num_rows > 0) {
+        $hasReasonCol = true;
+    }
+
+    if ($hasReasonCol) {
+        $action = "UPDATE";
+        $audit = $mysqli->prepare("
+            INSERT INTO audit_logs (table_name, record_id, action, reason, old_value, new_value, modified_by)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+        ");
+        $audit->bind_param("sissssi", $table_name, $id, $action, $reason, $old_value, $new_value, $head_id);
+    } else {
+        $safeAction = mb_substr("UPDATE: " . $reason, 0, 50);
+        $audit = $mysqli->prepare("
+            INSERT INTO audit_logs (table_name, record_id, action, old_value, new_value, modified_by)
+            VALUES (?, ?, ?, ?, ?, ?)
+        ");
+        $audit->bind_param("sissii", $table_name, $id, $safeAction, $old_value, $new_value, $head_id);
+    }
     $audit->execute();
     $audit->close();
 

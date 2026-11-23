@@ -1,6 +1,7 @@
 <?php
 // api/get_students.php
 require_once __DIR__ . '/../includes/auth_functions.php';
+require_once __DIR__ . '/../includes/course_functions.php';
 requireRole(['lecturer', 'head', 'admin']);
 
 header('Content-Type: application/json');
@@ -48,39 +49,6 @@ if ($role === 'lecturer' && $course['lecturer_id'] != $user_id) {
     exit;
 }
 
-$dept_id = intval($course['department_id']);
-$semesters = $course['semesters'] ? explode(',', $course['semesters']) : [];
-
-// 3. Build Student Query
-// Strategy: 
-// A. Explicit Enrollments
-// B. Implicit Matches (Same Dept + Matching Semester)
-
-$sql = "SELECT DISTINCT s.id, s.name, s.student_id_number, s.department_id, s.current_semester 
-        FROM students s
-        LEFT JOIN enrollments e ON s.id = e.student_id AND e.course_id = $course_id
-        WHERE (e.id IS NOT NULL)";
-
-// Add Implicit Logic if we have Dept and Semesters
-if ($dept_id > 0 && !empty($semesters)) {
-    // Sanitize semesters for IN clause
-    $sem_list = implode(',', array_map('intval', $semesters));
-    $sql .= " OR (s.department_id = $dept_id AND s.current_semester IN ($sem_list))";
-}
-
-$sql .= " ORDER BY s.name ASC";
-
-// Execute
-$result = $mysqli->query($sql);
-if (!$result) {
-    echo json_encode(['error' => 'Query Error: ' . $mysqli->error]);
-    exit;
-}
-
-$students = [];
-while ($row = $result->fetch_assoc()) {
-    $students[] = $row;
-}
-
+$students = get_enrolled_students($mysqli, $course_id);
 echo json_encode($students);
 ?>
