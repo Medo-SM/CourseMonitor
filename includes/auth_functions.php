@@ -18,16 +18,21 @@ if (session_status() === PHP_SESSION_NONE) {
 require_once __DIR__ . '/../config/db.php';
 
 /**
- * Dynamically resolves the base URL path for links, redirects, and assets.
+ * Dynamically resolves application-relative paths to absolute web root URLs.
  * Eliminates hardcoded subdirectory assumptions (e.g., /CourseMonitor/).
  */
 function base_url($path = '') {
-    static $baseUrl = null;
-    if ($baseUrl === null) {
-        if (defined('BASE_URL')) {
-            $baseUrl = rtrim(BASE_URL, '/');
-        } elseif (isset($_SERVER['SCRIPT_NAME'])) {
-            $scriptDir = dirname($_SERVER['SCRIPT_NAME']);
+    if (defined('BASE_URL')) {
+        $base = rtrim(BASE_URL, '/');
+    } else {
+        $docRoot = rtrim(str_replace('\\', '/', $_SERVER['DOCUMENT_ROOT'] ?? ''), '/');
+        $appRoot = rtrim(str_replace('\\', '/', dirname(__DIR__)), '/');
+        
+        $base = '';
+        if (!empty($docRoot) && str_starts_with($appRoot, $docRoot)) {
+            $base = substr($appRoot, strlen($docRoot));
+        } else {
+            $scriptDir = dirname($_SERVER['SCRIPT_NAME'] ?? '');
             $parts = array_values(array_filter(explode('/', str_replace('\\', '/', $scriptDir))));
             
             // Pop recognized subdirectories to find project root
@@ -39,17 +44,16 @@ function base_url($path = '') {
                     break;
                 }
             }
-            $baseUrl = empty($parts) ? '' : '/' . implode('/', $parts);
-        } else {
-            $baseUrl = '';
+            $base = empty($parts) ? '' : '/' . implode('/', $parts);
         }
     }
 
-    $trimmedPath = ltrim($path, '/');
-    if ($trimmedPath === '') {
-        return $baseUrl !== '' ? $baseUrl : '/';
+    $base = rtrim($base, '/');
+    $cleanPath = ltrim($path, '/');
+    if ($cleanPath === '') {
+        return $base !== '' ? $base : '/';
     }
-    return ($baseUrl !== '' ? $baseUrl : '') . '/' . $trimmedPath;
+    return ($base !== '' ? $base : '') . '/' . $cleanPath;
 }
 
 /**
@@ -58,7 +62,7 @@ function base_url($path = '') {
 function isApiRequest() {
     $script = $_SERVER['SCRIPT_NAME'] ?? '';
     $accept = $_SERVER['HTTP_ACCEPT'] ?? '';
-    return str_contains($script, '/api/') || str_contains($accept, 'application/json');
+    return str_contains($script, '/api/') || (isset($_SERVER['HTTP_ACCEPT']) && str_contains($accept, 'application/json'));
 }
 
 /**
@@ -66,8 +70,10 @@ function isApiRequest() {
  */
 function json_response($data, $statusCode = 200) {
     http_response_code($statusCode);
-    header('Content-Type: application/json; charset=utf-8');
-    echo json_encode($data);
+    if (!headers_sent()) {
+        header('Content-Type: application/json; charset=utf-8');
+    }
+    echo json_encode($data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
     if (!defined('TEST_MODE') || !TEST_MODE) {
         exit;
     }
@@ -131,14 +137,23 @@ function isLoggedIn() {
 
 function logout() {
     $_SESSION = [];
-    if (ini_get("session.use_cookies")) {
+    if (ini_get("session.use_cookies") && !headers_sent()) {
         $params = session_get_cookie_params();
-        setcookie(session_name(), '', time() - 42000,
-            $params["path"], $params["domain"],
-            $params["secure"], $params["httponly"]
+        setcookie(
+            session_name(),
+            '',
+            time() - 3600,
+            $params["path"] ?: '/',
+            $params["domain"] ?: '',
+            $params["secure"] ?? false,
+            $params["httponly"] ?? true
         );
+        // Explicit root path expiration
+        setcookie(session_name(), '', time() - 3600, '/');
     }
-    session_destroy();
+    if (session_status() === PHP_SESSION_ACTIVE) {
+        session_destroy();
+    }
 }
 
 function requireRole($allowed_roles) {
