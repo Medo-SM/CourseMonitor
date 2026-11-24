@@ -2,270 +2,542 @@
 // modules/admin/users.php
 require_once __DIR__ . '/../../includes/auth_functions.php';
 requireRole('admin');
+
+$pageTitle = 'User Management';
+require_once __DIR__ . '/../../includes/header.php';
 ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>User Management - CourseMonitor</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="<?php echo base_url('/public/js/utils.js'); ?>"></script>
-</head>
-<body class="bg-light">
-    <div class="container py-4">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2>User Management</h2>
-            <a href="<?php echo base_url('/modules/admin/dashboard.php'); ?>" class="btn btn-secondary">Back to Dashboard</a>
-        </div>
-        
-        <div class="card shadow-sm">
-            <div class="card-body">
-                <div class="d-flex gap-2 mb-3">
-                    <input type="text" id="searchInput" class="form-control" placeholder="Search users..." onkeyup="loadUsers()">
-                    <button onclick="openModal()" class="btn btn-success text-nowrap">Add User</button>
-                </div>
 
-                <div class="table-responsive">
-                    <table class="table table-striped table-hover">
-                        <thead>
-                            <tr>
-                                <th>Username</th>
-                                <th>Full Name</th>
-                                <th>Email</th>
-                                <th>Role</th>
-                                <th>Affiliation</th>
-                                <th>Status</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="userTableBody"></tbody>
-                    </table>
-                </div>
-            </div>
+<div class="container-fluid px-3 px-lg-4 py-4">
+    <!-- Breadcrumb & Header -->
+    <nav aria-label="Breadcrumb" class="mb-2">
+        <ol class="breadcrumb mb-0 small">
+            <li class="breadcrumb-item">
+                <a href="<?= htmlspecialchars(base_url('/modules/admin/dashboard.php'), ENT_QUOTES, 'UTF-8') ?>" class="text-secondary text-decoration-none">
+                    <i class="bi bi-house me-1" aria-hidden="true"></i>Admin
+                </a>
+            </li>
+            <li class="breadcrumb-item active text-slate-800 fw-medium" aria-current="page">Users</li>
+        </ol>
+    </nav>
+
+    <div class="cm-page-header">
+        <div>
+            <h1 class="cm-page-title">User Account Management</h1>
+            <p class="cm-page-subtitle">Provision, authenticate, and configure roles and departmental affiliations for system users</p>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+            <button type="button" onclick="openModal()" class="btn btn-primary" id="btnOpenAddUser">
+                <i class="bi bi-person-plus me-1" aria-hidden="true"></i>Add New User
+            </button>
         </div>
     </div>
 
-    <!-- Add/Edit Modal -->
-    <div class="modal fade" id="userModal" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modalTitle">Add User</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+    <!-- Alert Banner Container -->
+    <div id="alertContainer" class="d-none"></div>
+
+    <!-- Data Filter & Matrix Card -->
+    <div class="cm-card">
+        <div class="cm-card-header flex-column flex-md-row align-items-stretch align-items-md-center gap-3">
+            <div class="d-flex flex-wrap align-items-center gap-2 flex-grow-1">
+                <!-- Search Input -->
+                <div class="input-group" style="max-width: 320px;">
+                    <span class="input-group-text bg-light text-muted border-end-0" id="search-addon">
+                        <i class="bi bi-search" aria-hidden="true"></i>
+                    </span>
+                    <input type="text" id="searchInput" class="form-control border-start-0" 
+                           placeholder="Search username, name, email..." 
+                           aria-label="Search users" aria-describedby="search-addon"
+                           oninput="filterUsers()">
                 </div>
-                <div class="modal-body">
-                    <form id="userForm" onsubmit="saveUser(event)">
-                        <input type="hidden" id="userId">
-                        <div class="mb-3">
-                            <label class="form-label">Username</label>
-                            <input type="text" id="username" class="form-control" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Full Name</label>
-                            <input type="text" id="fullName" class="form-control" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Email</label>
-                            <input type="email" id="email" class="form-control" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Role</label>
-                            <select id="role" class="form-select" required onchange="toggleAffiliation()">
-                                <option value="lecturer">Lecturer</option>
-                                <option value="head">Department Head</option>
-                                <option value="admin">Admin</option>
-                            </select>
-                        </div>
-                        <div class="mb-3" id="deptGroup" style="display:none;">
-                            <label class="form-label">Department</label>
-                            <select id="department_id" class="form-select">
-                                <option value="">Select Department</option>
-                            </select>
-                            <div class="form-text">Required for Department Heads.</div>
-                        </div>
-                        <div class="mb-3" id="facultyGroup" style="display:none;">
-                            <label class="form-label">Faculty</label>
-                            <select id="faculty_id" class="form-select">
-                                <option value="">Select Faculty</option>
-                            </select>
-                            <div class="form-text">Required for Lecturers.</div>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Password (Leave blank if unchanged)</label>
-                            <input type="password" id="password" class="form-control">
-                        </div>
-                        <div class="mb-3 form-check">
-                            <input type="checkbox" id="isActive" class="form-check-input" checked>
-                            <label class="form-check-label" for="isActive">Active</label>
-                        </div>
-                        <div class="d-flex justify-content-end gap-2">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                            <button type="submit" class="btn btn-primary">Save</button>
-                        </div>
-                    </form>
+
+                <!-- Role Filter -->
+                <div style="min-width: 170px;">
+                    <select id="roleFilter" class="form-select" onchange="filterUsers()" aria-label="Filter by role">
+                        <option value="">All Roles</option>
+                        <option value="lecturer">Lecturers</option>
+                        <option value="head">Department Heads</option>
+                        <option value="admin">Administrators</option>
+                    </select>
                 </div>
+
+                <!-- Status Filter -->
+                <div style="min-width: 140px;">
+                    <select id="statusFilter" class="form-select" onchange="filterUsers()" aria-label="Filter by status">
+                        <option value="">All Statuses</option>
+                        <option value="1">Active</option>
+                        <option value="0">Inactive</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="d-flex align-items-center gap-2 text-muted small">
+                <span>Total Matches:</span>
+                <span class="badge cm-badge-neutral font-monospace" id="matchCount">0</span>
+            </div>
+        </div>
+
+        <div class="cm-card-body p-0">
+            <div class="table-responsive border-0">
+                <table class="table cm-table table-hover mb-0" id="userTable">
+                    <thead>
+                        <tr>
+                            <th scope="col" style="width: 60px;">#</th>
+                            <th scope="col">User</th>
+                            <th scope="col">Email</th>
+                            <th scope="col">Role</th>
+                            <th scope="col">Affiliation</th>
+                            <th scope="col" style="width: 110px;">Status</th>
+                            <th scope="col" class="text-end" style="width: 180px;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="userTableBody">
+                        <tr>
+                            <td colspan="7" class="text-center py-4 text-muted">
+                                <div class="spinner-border spinner-border-sm text-primary me-2" role="status"></div>
+                                Loading user accounts...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
+</div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        let modal;
-        
-        document.addEventListener('DOMContentLoaded', () => {
-            modal = new bootstrap.Modal(document.getElementById('userModal'));
-            loadDepartments();
-            loadFaculties();
-            loadUsers();
-        });
+<!-- Accessible Add / Edit User Modal -->
+<div class="modal fade" id="userModal" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-modal="true" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content cm-card border-0">
+            <div class="modal-header border-bottom">
+                <h2 class="modal-title h5 mb-0 fw-semibold text-slate-800" id="modalTitle">Add User</h2>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close dialog"></button>
+            </div>
+            <form id="userForm" onsubmit="saveUser(event)" novalidate>
+                <div class="modal-body p-4">
+                    <input type="hidden" id="userId">
 
-        function loadDepartments() {
-            fetch('/CourseMonitor/api/get_departments.php')
-                .then(r => r.json())
-                .then(depts => {
-                    const select = document.getElementById('department_id');
-                    select.innerHTML = '<option value="">Select Department</option>';
+                    <!-- Feedback inside modal -->
+                    <div id="modalAlert" class="alert alert-danger d-none py-2 px-3 small" role="alert"></div>
+
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Username <span class="required" aria-hidden="true">*</span></label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light text-muted" aria-hidden="true"><i class="bi bi-at"></i></span>
+                            <input type="text" id="username" class="form-control" placeholder="e.g. jsmith" required autocomplete="username">
+                        </div>
+                        <div class="invalid-feedback">A unique username is required.</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="fullName" class="form-label">Full Name <span class="required" aria-hidden="true">*</span></label>
+                        <input type="text" id="fullName" class="form-control" placeholder="e.g. Dr. John Smith" required autocomplete="name">
+                        <div class="invalid-feedback">Full name is required.</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email Address <span class="required" aria-hidden="true">*</span></label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light text-muted" aria-hidden="true"><i class="bi bi-envelope"></i></span>
+                            <input type="email" id="email" class="form-control" placeholder="e.g. jsmith@institution.edu" required autocomplete="email">
+                        </div>
+                        <div class="invalid-feedback">Please enter a valid academic email address.</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="role" class="form-label">System Role <span class="required" aria-hidden="true">*</span></label>
+                        <select id="role" class="form-select" required onchange="toggleAffiliation()">
+                            <option value="lecturer">Lecturer</option>
+                            <option value="head">Department Head</option>
+                            <option value="admin">Administrator</option>
+                        </select>
+                        <div class="form-text">Determines system permissions and administrative boundaries.</div>
+                    </div>
+
+                    <!-- Department selection for Department Heads -->
+                    <div class="mb-3" id="deptGroup" style="display: none;">
+                        <label for="department_id" class="form-label">Department <span class="required" aria-hidden="true">*</span></label>
+                        <select id="department_id" class="form-select">
+                            <option value="">Select Department...</option>
+                        </select>
+                        <div class="form-text">Required: Assign the academic department this user presides over.</div>
+                    </div>
+
+                    <!-- Faculty selection for Lecturers -->
+                    <div class="mb-3" id="facultyGroup" style="display: none;">
+                        <label for="faculty_id" class="form-label">Faculty <span class="required" aria-hidden="true">*</span></label>
+                        <select id="faculty_id" class="form-select">
+                            <option value="">Select Faculty...</option>
+                        </select>
+                        <div class="form-text">Required: Associate lecturer with their primary academic faculty.</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="password" class="form-label">
+                            Password <span class="text-muted fw-normal" id="pwdHelpText">(Required for new users)</span>
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light text-muted" aria-hidden="true"><i class="bi bi-key"></i></span>
+                            <input type="password" id="password" class="form-control" placeholder="••••••••" autocomplete="new-password">
+                        </div>
+                        <div class="form-text">For existing users, leave blank to preserve current password.</div>
+                    </div>
+
+                    <div class="form-check form-switch mt-3">
+                        <input type="checkbox" id="isActive" class="form-check-input" checked role="switch">
+                        <label class="form-check-label fw-medium text-slate-800" for="isActive">Account Active</label>
+                        <div class="form-text">Inactive accounts cannot authenticate into CourseMonitor.</div>
+                    </div>
+                </div>
+                <div class="modal-footer border-top bg-light px-4 py-3">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="btnSaveUser">
+                        <i class="bi bi-check2 me-1" aria-hidden="true"></i>Save User
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="<?= htmlspecialchars(base_url('/public/js/utils.js'), ENT_QUOTES, 'UTF-8') ?>"></script>
+<script>
+    let modalInstance = null;
+    let allUsers = [];
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const modalEl = document.getElementById('userModal');
+        if (modalEl) {
+            modalInstance = new bootstrap.Modal(modalEl);
+            modalEl.addEventListener('shown.bs.modal', () => {
+                document.getElementById('username').focus();
+            });
+            modalEl.addEventListener('hidden.bs.modal', () => {
+                const addBtn = document.getElementById('btnOpenAddUser');
+                if (addBtn) addBtn.focus();
+            });
+        }
+
+        loadDepartments();
+        loadFaculties();
+        loadUsers();
+    });
+
+    function showAlert(message, type = 'success') {
+        const c = document.getElementById('alertContainer');
+        c.className = `alert cm-alert-${type} alert-dismissible fade show mb-4`;
+        c.setAttribute('role', 'status');
+        c.innerHTML = `
+            <i class="bi ${type === 'success' ? 'bi-check-circle-fill' : 'bi-exclamation-triangle-fill'} me-2" aria-hidden="true"></i>
+            <div>${escapeHtml(message)}</div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        `;
+    }
+
+    function loadDepartments() {
+        fetch('<?= base_url('/api/get_departments.php') ?>')
+            .then(r => r.json())
+            .then(depts => {
+                const select = document.getElementById('department_id');
+                select.innerHTML = '<option value="">Select Department...</option>';
+                if (Array.isArray(depts)) {
                     depts.forEach(d => {
                         const opt = document.createElement('option');
                         opt.value = d.id;
                         opt.textContent = d.name;
                         select.appendChild(opt);
                     });
-                });
-        }
+                }
+            })
+            .catch(err => console.error('Error loading departments:', err));
+    }
 
-        function loadFaculties() {
-            fetch('/CourseMonitor/api/get_faculties.php')
-                .then(r => r.json())
-                .then(list => {
-                    const select = document.getElementById('faculty_id');
-                    select.innerHTML = '<option value="">Select Faculty</option>';
+    function loadFaculties() {
+        fetch('<?= base_url('/api/get_faculties.php') ?>')
+            .then(r => r.json())
+            .then(list => {
+                const select = document.getElementById('faculty_id');
+                select.innerHTML = '<option value="">Select Faculty...</option>';
+                if (Array.isArray(list)) {
                     list.forEach(f => {
                         const opt = document.createElement('option');
                         opt.value = f.id;
                         opt.textContent = f.name;
                         select.appendChild(opt);
                     });
-                });
-        }
-
-        function loadUsers() {
-            const search = document.getElementById('searchInput').value;
-            fetch(`<?php echo base_url('/api/get_users.php'); ?>?search=${encodeURIComponent(search)}`)
-                .then(r => r.json())
-                .then(users => {
-                    const tbody = document.getElementById('userTableBody');
-                    tbody.innerHTML = '';
-                    users.forEach(user => {
-                        let aff = '-';
-                        if(user.role === 'head') aff = user.department_name || 'N/A';
-                        if(user.role === 'lecturer') aff = user.faculty_name || 'N/A';
-
-                        tbody.innerHTML += `
-                            <tr>
-                                <td>${escapeHtml(user.username)}</td>
-                                <td>${escapeHtml(user.full_name)}</td>
-                                <td>${escapeHtml(user.email)}</td>
-                                <td><span class="badge bg-secondary">${escapeHtml(user.role)}</span></td>
-                                <td>${escapeHtml(aff)}</td>
-                                <td>${user.is_active ? '<span class="text-success">Active</span>' : '<span class="text-danger">Inactive</span>'}</td>
-                                <td>
-                                    <button onclick='editUser(${JSON.stringify(user)})' class="btn btn-sm btn-outline-primary">Edit</button>
-                                    <button onclick='deleteUser(${Number(user.id)})' class="btn btn-sm btn-outline-danger">Delete</button>
-                                </td>
-                            </tr>
-                        `;
-                    });
-                });
-        }
-
-        function toggleAffiliation() {
-            const role = document.getElementById('role').value;
-            document.getElementById('deptGroup').style.display = role === 'head' ? 'block' : 'none';
-            document.getElementById('facultyGroup').style.display = role === 'lecturer' ? 'block' : 'none';
-        }
-
-        function openModal() {
-            document.getElementById('userForm').reset();
-            document.getElementById('userId').value = '';
-            document.getElementById('modalTitle').innerText = 'Add User';
-            toggleAffiliation();
-            modal.show();
-        }
-
-        function editUser(user) {
-            document.getElementById('modalTitle').innerText = 'Edit User';
-            document.getElementById('userId').value = user.id;
-            document.getElementById('username').value = user.username;
-            document.getElementById('fullName').value = user.full_name;
-            document.getElementById('email').value = user.email;
-            document.getElementById('role').value = user.role;
-            document.getElementById('department_id').value = user.department_id || '';
-            document.getElementById('faculty_id').value = user.faculty_id || '';
-            document.getElementById('isActive').checked = user.is_active == 1;
-            
-            toggleAffiliation();
-            modal.show();
-        }
-
-        function deleteUser(id) {
-            if (!confirm('Are you sure you want to delete this user? This action cannot be undone.')) return;
-
-            fetch('/CourseMonitor/api/delete_user.php', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    id: id,
-                    csrf_token: '<?php echo generateCsrfToken(); ?>'
-                })
-            })
-            .then(r => r.json())
-            .then(resp => {
-                if (resp.success) {
-                    alert('User deleted successfully.');
-                    loadUsers();
-                } else {
-                    alert('Error: ' + resp.error);
                 }
+            })
+            .catch(err => console.error('Error loading faculties:', err));
+    }
+
+    function loadUsers() {
+        fetch('<?= base_url('/api/get_users.php') ?>')
+            .then(r => r.json())
+            .then(users => {
+                allUsers = Array.isArray(users) ? users : [];
+                filterUsers();
             })
             .catch(err => {
-                console.error(err);
-                alert('Network error during deletion.');
+                console.error('Error loading users:', err);
+                const tbody = document.getElementById('userTableBody');
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7">
+                            <div class="cm-empty-state py-4">
+                                <div class="cm-empty-icon text-danger" aria-hidden="true"><i class="bi bi-exclamation-octagon"></i></div>
+                                <h3 class="cm-empty-title">Failed to load user accounts</h3>
+                                <p class="cm-empty-desc">An error occurred while connecting to the user directory service.</p>
+                                <button type="button" onclick="loadUsers()" class="btn btn-sm btn-outline-primary">Try Again</button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
             });
+    }
+
+    function filterUsers() {
+        const search = (document.getElementById('searchInput').value || '').trim().toLowerCase();
+        const role = document.getElementById('roleFilter').value;
+        const status = document.getElementById('statusFilter').value;
+
+        const filtered = allUsers.filter(u => {
+            const matchesSearch = !search ||
+                (u.username && u.username.toLowerCase().includes(search)) ||
+                (u.full_name && u.full_name.toLowerCase().includes(search)) ||
+                (u.email && u.email.toLowerCase().includes(search));
+
+            const matchesRole = !role || u.role === role;
+            const matchesStatus = status === '' || String(u.is_active) === status;
+
+            return matchesSearch && matchesRole && matchesStatus;
+        });
+
+        document.getElementById('matchCount').textContent = filtered.length;
+        renderUsers(filtered);
+    }
+
+    function renderUsers(users) {
+        const tbody = document.getElementById('userTableBody');
+        tbody.innerHTML = '';
+
+        if (users.length === 0) {
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="7">
+                        <div class="cm-empty-state py-4">
+                            <div class="cm-empty-icon" aria-hidden="true"><i class="bi bi-people"></i></div>
+                            <h3 class="cm-empty-title">No User Accounts Found</h3>
+                            <p class="cm-empty-desc">No accounts matched the active search filters. Try clearing filters or create a new user.</p>
+                        </div>
+                    </td>
+                </tr>
+            `;
+            return;
         }
 
-        function saveUser(event) {
-            event.preventDefault();
-            const id = document.getElementById('userId').value;
-            
-            const data = {
+        users.forEach((user, idx) => {
+            let aff = '<span class="text-muted">—</span>';
+            if (user.role === 'head') {
+                aff = user.department_name ? `<span class="fw-medium text-slate-800"><i class="bi bi-building me-1 text-muted"></i>${escapeHtml(user.department_name)}</span>` : '<span class="text-muted">Unassigned</span>';
+            } else if (user.role === 'lecturer') {
+                aff = user.faculty_name ? `<span class="fw-medium text-slate-800"><i class="bi bi-diagram-3 me-1 text-muted"></i>${escapeHtml(user.faculty_name)}</span>` : '<span class="text-muted">Unassigned</span>';
+            }
+
+            let roleBadge = '<span class="badge cm-badge-neutral">User</span>';
+            if (user.role === 'admin') {
+                roleBadge = '<span class="badge cm-badge-primary"><i class="bi bi-shield-lock me-1" aria-hidden="true"></i>Admin</span>';
+            } else if (user.role === 'head') {
+                roleBadge = '<span class="badge cm-badge-info"><i class="bi bi-building me-1" aria-hidden="true"></i>Head</span>';
+            } else if (user.role === 'lecturer') {
+                roleBadge = '<span class="badge cm-badge-neutral"><i class="bi bi-person me-1" aria-hidden="true"></i>Lecturer</span>';
+            }
+
+            const statusBadge = user.is_active == 1 
+                ? '<span class="badge cm-badge-success"><i class="bi bi-check-circle me-1" aria-hidden="true"></i>Active</span>'
+                : '<span class="badge cm-badge-danger"><i class="bi bi-dash-circle me-1" aria-hidden="true"></i>Inactive</span>';
+
+            const userJson = JSON.stringify(user).replace(/"/g, '&quot;');
+
+            tbody.innerHTML += `
+                <tr>
+                    <td class="font-monospace text-muted small">${idx + 1}</td>
+                    <td>
+                        <div class="d-flex align-items-center gap-2">
+                            <div class="cm-user-avatar" style="width: 28px; height: 28px; font-size: 0.8rem;" aria-hidden="true">
+                                ${escapeHtml((user.full_name || user.username || 'U').charAt(0).toUpperCase())}
+                            </div>
+                            <div>
+                                <div class="fw-semibold text-slate-900">${escapeHtml(user.full_name)}</div>
+                                <div class="font-monospace small text-muted">@${escapeHtml(user.username)}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="font-monospace small text-secondary">${escapeHtml(user.email)}</span>
+                    </td>
+                    <td>${roleBadge}</td>
+                    <td>${aff}</td>
+                    <td>${statusBadge}</td>
+                    <td class="text-end">
+                        <div class="btn-group btn-group-sm" role="group" aria-label="User actions">
+                            <button type="button" onclick="editUser(${userJson})" class="btn btn-outline-primary" aria-label="Edit ${escapeHtml(user.full_name)}">
+                                <i class="bi bi-pencil" aria-hidden="true"></i>
+                                <span class="d-none d-md-inline ms-1">Edit</span>
+                            </button>
+                            <button type="button" onclick="deleteUser(${Number(user.id)}, '${escapeHtml(user.full_name)}')" class="btn btn-outline-danger" aria-label="Delete ${escapeHtml(user.full_name)}">
+                                <i class="bi bi-trash" aria-hidden="true"></i>
+                                <span class="d-none d-md-inline ms-1">Delete</span>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `;
+        });
+    }
+
+    function toggleAffiliation() {
+        const role = document.getElementById('role').value;
+        const deptGroup = document.getElementById('deptGroup');
+        const facultyGroup = document.getElementById('facultyGroup');
+
+        deptGroup.style.display = role === 'head' ? 'block' : 'none';
+        facultyGroup.style.display = role === 'lecturer' ? 'block' : 'none';
+
+        document.getElementById('department_id').required = role === 'head';
+        document.getElementById('faculty_id').required = role === 'lecturer';
+    }
+
+    function openModal() {
+        document.getElementById('userForm').reset();
+        document.getElementById('userId').value = '';
+        document.getElementById('modalTitle').textContent = 'Add New User';
+        document.getElementById('pwdHelpText').textContent = '(Required for new accounts)';
+        document.getElementById('password').required = true;
+        document.getElementById('modalAlert').className = 'alert alert-danger d-none py-2 px-3 small';
+        toggleAffiliation();
+        modalInstance.show();
+    }
+
+    function editUser(user) {
+        document.getElementById('modalTitle').textContent = `Edit User: ${user.full_name}`;
+        document.getElementById('userId').value = user.id;
+        document.getElementById('username').value = user.username;
+        document.getElementById('fullName').value = user.full_name;
+        document.getElementById('email').value = user.email;
+        document.getElementById('role').value = user.role;
+        document.getElementById('department_id').value = user.department_id || '';
+        document.getElementById('faculty_id').value = user.faculty_id || '';
+        document.getElementById('isActive').checked = user.is_active == 1;
+        document.getElementById('password').value = '';
+        document.getElementById('password').required = false;
+        document.getElementById('pwdHelpText').textContent = '(Leave blank to retain current password)';
+        document.getElementById('modalAlert').className = 'alert alert-danger d-none py-2 px-3 small';
+
+        toggleAffiliation();
+        modalInstance.show();
+    }
+
+    function deleteUser(id, name) {
+        if (!confirm(`Are you sure you want to permanently delete user account "${name}"? This action cannot be undone.`)) {
+            return;
+        }
+
+        fetch('<?= base_url('/api/delete_user.php') ?>', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
                 id: id,
-                username: document.getElementById('username').value,
-                full_name: document.getElementById('fullName').value,
-                email: document.getElementById('email').value,
-                role: document.getElementById('role').value,
-                department_id: document.getElementById('department_id').value,
-                faculty_id: document.getElementById('faculty_id').value,
-                password: document.getElementById('password').value,
-                is_active: document.getElementById('isActive').checked ? 1 : 0,
-                csrf_token: '<?php echo generateCsrfToken(); ?>'
-            };
-
-            fetch('/CourseMonitor/api/save_user.php', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data)
+                csrf_token: '<?= generateCsrfToken() ?>'
             })
-            .then(r => r.json())
-            .then(resp => {
-                if (resp.success) {
-                    modal.hide();
-                    loadUsers();
-                } else {
-                    alert(resp.error);
-                }
-            });
+        })
+        .then(r => r.json())
+        .then(resp => {
+            if (resp.success) {
+                showAlert(`User "${name}" was deleted successfully.`, 'success');
+                loadUsers();
+            } else {
+                showAlert(resp.error || 'Failed to delete user.', 'danger');
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            showAlert('Network communication error during deletion.', 'danger');
+        });
+    }
+
+    function saveUser(event) {
+        event.preventDefault();
+        const modalAlert = document.getElementById('modalAlert');
+        modalAlert.className = 'alert alert-danger d-none py-2 px-3 small';
+
+        const id = document.getElementById('userId').value;
+        const role = document.getElementById('role').value;
+        const deptId = document.getElementById('department_id').value;
+        const facultyId = document.getElementById('faculty_id').value;
+        const password = document.getElementById('password').value;
+
+        if (role === 'head' && !deptId) {
+            modalAlert.textContent = 'Please select a department for this Department Head.';
+            modalAlert.classList.remove('d-none');
+            return;
         }
-    </script>
-</body>
-</html>
+        if (role === 'lecturer' && !facultyId) {
+            modalAlert.textContent = 'Please select a faculty affiliation for this Lecturer.';
+            modalAlert.classList.remove('d-none');
+            return;
+        }
+        if (!id && !password) {
+            modalAlert.textContent = 'A password is required when creating a new user account.';
+            modalAlert.classList.remove('d-none');
+            return;
+        }
+
+        const data = {
+            id: id,
+            username: document.getElementById('username').value.trim(),
+            full_name: document.getElementById('fullName').value.trim(),
+            email: document.getElementById('email').value.trim(),
+            role: role,
+            department_id: deptId,
+            faculty_id: facultyId,
+            password: password,
+            is_active: document.getElementById('isActive').checked ? 1 : 0,
+            csrf_token: '<?= generateCsrfToken() ?>'
+        };
+
+        const saveBtn = document.getElementById('btnSaveUser');
+        const originalBtnText = saveBtn.innerHTML;
+        saveBtn.disabled = true;
+        saveBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1" role="status"></span>Saving...';
+
+        fetch('<?= base_url('/api/save_user.php') ?>', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        })
+        .then(r => r.json())
+        .then(resp => {
+            saveBtn.disabled = false;
+            saveBtn.innerHTML = originalBtnText;
+
+            if (resp.success) {
+                modalInstance.hide();
+                showAlert(`User account "${data.full_name}" was saved successfully.`, 'success');
+                loadUsers();
+            } else {
+                modalAlert.textContent = resp.error || 'Failed to save user account.';
+                modalAlert.classList.remove('d-none');
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            saveBtn.disabled = false;
+            saveBtn.innerHTML = originalBtnText;
+            modalAlert.textContent = 'Network communication error while saving user.';
+            modalAlert.classList.remove('d-none');
+        });
+    }
+</script>
+
+<?php
+require_once __DIR__ . '/../../includes/footer.php';
+?>
