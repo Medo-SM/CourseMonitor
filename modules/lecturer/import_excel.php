@@ -1,7 +1,7 @@
 <?php
 /**
- * CourseMonitor - Import Grades (CSV)
- * Polished batch grade upload interface with dropzone, template generator, and validation table.
+ * CourseMonitor - Import Grades from File (CSV)
+ * Student Attendance & Grades Made Simple
  */
 
 require_once __DIR__ . '/../../includes/auth_functions.php';
@@ -21,7 +21,7 @@ while ($row = $res->fetch_assoc()) {
 $stmt->close();
 
 $selectedCourseId = isset($_GET['course_id']) ? intval($_GET['course_id']) : 0;
-$pageTitle = 'Import Grades via CSV';
+$pageTitle = 'Import Grades from File';
 require_once __DIR__ . '/../../includes/header.php';
 ?>
 
@@ -30,18 +30,18 @@ require_once __DIR__ . '/../../includes/header.php';
     <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
         <a href="<?= htmlspecialchars(base_url('/modules/lecturer/dashboard.php'), ENT_QUOTES, 'UTF-8') ?>" 
            class="btn btn-outline-secondary btn-sm">
-            <i class="bi bi-arrow-left me-1" aria-hidden="true"></i>Back to Dashboard
+            <i class="bi bi-arrow-left me-1" aria-hidden="true"></i>Back to My Classes
         </a>
         <div class="d-flex align-items-center gap-2">
             <a href="<?= htmlspecialchars(base_url('/modules/lecturer/coursework.php' . ($selectedCourseId ? '?course_id=' . $selectedCourseId : '')), ENT_QUOTES, 'UTF-8') ?>" 
                id="enterGradesLink"
                class="btn btn-outline-primary btn-sm">
-                <i class="bi bi-pencil-square me-1" aria-hidden="true"></i>Enter Grades Online
+                <i class="bi bi-pencil-square me-1" aria-hidden="true"></i>Enter Marks Online
             </a>
             <a href="<?= htmlspecialchars(base_url('/modules/lecturer/view_grades.php' . ($selectedCourseId ? '?course_id=' . $selectedCourseId : '')), ENT_QUOTES, 'UTF-8') ?>" 
                id="viewGradesLink"
                class="btn btn-outline-secondary btn-sm">
-                <i class="bi bi-table me-1" aria-hidden="true"></i>Full Gradebook
+                <i class="bi bi-table me-1" aria-hidden="true"></i>Class Gradebook
             </a>
         </div>
     </div>
@@ -49,36 +49,50 @@ require_once __DIR__ . '/../../includes/header.php';
     <!-- Page Header -->
     <div class="cm-page-header">
         <div>
-            <h1 class="cm-page-title">Import Assessment Grades</h1>
-            <p class="cm-page-subtitle">Batch upload student scores via standardized CSV spreadsheets with automated ID verification and error auditing.</p>
+            <div class="cm-page-tag">
+                <i class="bi bi-file-earmark-arrow-up me-1" aria-hidden="true"></i>Batch Upload
+            </div>
+            <h1 class="cm-page-title">Import Grades from File</h1>
+            <p class="cm-page-subtitle">Upload student marks using a simple spreadsheet file. Follow the 3 steps below.</p>
         </div>
     </div>
 
     <div class="row g-4">
-        <!-- Left Column: Instructions & Format Guidelines -->
+        <!-- Left Column: Clear 3-Step Instructions & Format Guidelines -->
         <div class="col-lg-5">
-            <!-- Instructions Card -->
+            <!-- 3-Step Instructions Card -->
             <div class="cm-card mb-4">
                 <div class="cm-card-header py-3">
                     <h2 class="cm-card-title h6 mb-0">
-                        <i class="bi bi-info-circle me-2 text-primary" aria-hidden="true"></i>Import Instructions
+                        <i class="bi bi-list-ol me-2 text-primary" aria-hidden="true"></i>3 Easy Steps to Import
                     </h2>
                 </div>
                 <div class="cm-card-body">
-                    <ol class="ps-3 mb-0 text-secondary small d-flex flex-column gap-2">
-                        <li>
-                            <strong class="text-dark">Select Course &amp; Assessment:</strong> Choose which assigned course and assessment component (e.g. Midterm, Quiz 1) you are importing.
-                        </li>
-                        <li>
-                            <strong class="text-dark">Download Pre-filled Template:</strong> Click the <em>Download Template</em> button to obtain a customized CSV file with all currently enrolled students pre-populated.
-                        </li>
-                        <li>
-                            <strong class="text-dark">Enter Student Marks:</strong> Fill in the scores (0.00 to 100.00) in the third column (<code>Grade</code>) of the spreadsheet.
-                        </li>
-                        <li>
-                            <strong class="text-dark">Upload &amp; Verify:</strong> Drag and drop the completed <code>.csv</code> file into the upload zone and submit. Review any validation notices immediately.
-                        </li>
-                    </ol>
+                    <div class="d-flex flex-column gap-3">
+                        <div class="d-flex gap-3 align-items-start">
+                            <span class="badge cm-badge-primary rounded-circle p-2 fs-6" style="width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center;">1</span>
+                            <div>
+                                <h3 class="h6 mb-1 text-dark fw-semibold">Download template</h3>
+                                <p class="text-secondary small mb-0">Choose your class and download a pre-filled CSV template containing your enrolled students.</p>
+                            </div>
+                        </div>
+
+                        <div class="d-flex gap-3 align-items-start">
+                            <span class="badge cm-badge-primary rounded-circle p-2 fs-6" style="width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center;">2</span>
+                            <div>
+                                <h3 class="h6 mb-1 text-dark fw-semibold">Enter marks</h3>
+                                <p class="text-secondary small mb-0">Open the file in Excel or any spreadsheet tool and fill in student marks (0 to 100) in the <code>Grade</code> column.</p>
+                            </div>
+                        </div>
+
+                        <div class="d-flex gap-3 align-items-start">
+                            <span class="badge cm-badge-primary rounded-circle p-2 fs-6" style="width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center;">3</span>
+                            <div>
+                                <h3 class="h6 mb-1 text-dark fw-semibold">Upload file</h3>
+                                <p class="text-secondary small mb-0">Drag and drop your completed CSV file into the upload box on the right and click <strong>Import Grades</strong>.</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -86,11 +100,11 @@ require_once __DIR__ . '/../../includes/header.php';
             <div class="cm-card">
                 <div class="cm-card-header py-3">
                     <h2 class="cm-card-title h6 mb-0">
-                        <i class="bi bi-file-spreadsheet me-2 text-primary" aria-hidden="true"></i>CSV Format Guidelines
+                        <i class="bi bi-file-spreadsheet me-2 text-primary" aria-hidden="true"></i>File Format Preview
                     </h2>
                 </div>
                 <div class="cm-card-body">
-                    <p class="text-muted small mb-2">The CSV file must match the following three-column header structure:</p>
+                    <p class="text-muted small mb-2">Your CSV file should have these 3 columns:</p>
                     <div class="table-responsive mb-3">
                         <table class="table cm-table table-bordered mb-0 small">
                             <thead class="table-light">
@@ -115,8 +129,8 @@ require_once __DIR__ . '/../../includes/header.php';
                         </table>
                     </div>
                     <div class="alert cm-alert-info py-2 px-3 mb-0 small">
-                        <i class="bi bi-shield-check me-2" aria-hidden="true"></i>
-                        <span>Student IDs must match enrolled course records. Empty grade cells will be skipped.</span>
+                        <i class="bi bi-info-circle me-1" aria-hidden="true"></i>
+                        <span>Student IDs match enrolled class records. Empty grade cells are safely skipped.</span>
                     </div>
                 </div>
             </div>
@@ -134,13 +148,13 @@ require_once __DIR__ . '/../../includes/header.php';
                     <form id="importForm" onsubmit="uploadFile(event)">
                         <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(generateCsrfToken(), ENT_QUOTES, 'UTF-8'); ?>">
 
-                        <!-- Course Select -->
+                        <!-- Target Class Select -->
                         <div class="mb-3">
                             <label for="course_id" class="form-label fw-medium">
-                                Target Course <span class="text-danger" aria-hidden="true">*</span>
+                                Target Class <span class="text-danger" aria-hidden="true">*</span>
                             </label>
                             <select id="course_id" name="course_id" class="form-select" onchange="onCourseSelected()" required aria-required="true">
-                                <option value="">-- Select Assigned Course --</option>
+                                <option value="">-- Choose Class --</option>
                                 <?php foreach($courses as $c): ?>
                                     <option value="<?= intval($c['id']) ?>" <?= ($selectedCourseId === intval($c['id'])) ? 'selected' : ''; ?>>
                                         <?= htmlspecialchars($c['code'] . ' - ' . $c['name']); ?>
@@ -155,7 +169,7 @@ require_once __DIR__ . '/../../includes/header.php';
                                 Assessment Type <span class="text-danger" aria-hidden="true">*</span>
                             </label>
                             <select id="assessment_type" name="assessment_type" class="form-select" required aria-required="true">
-                                <option value="">-- Select Assessment Type --</option>
+                                <option value="">-- Choose Assessment Type --</option>
                                 <option value="Assignment 1">Assignment 1</option>
                                 <option value="Assignment 2">Assignment 2</option>
                                 <option value="Quiz 1">Quiz 1</option>
@@ -163,16 +177,16 @@ require_once __DIR__ . '/../../includes/header.php';
                                 <option value="Midterm">Midterm Exam</option>
                                 <option value="Final">Final Exam</option>
                             </select>
-                            <div class="form-text">All grades extracted from this file will be registered under this assessment type.</div>
+                            <div class="form-text">All marks in this file will be saved under the chosen assessment.</div>
                         </div>
 
                         <!-- Modern Dropzone -->
                         <div class="mb-4">
                             <label class="form-label fw-medium">
-                                CSV Spreadsheet File <span class="text-danger" aria-hidden="true">*</span>
+                                CSV File <span class="text-danger" aria-hidden="true">*</span>
                             </label>
                             <div id="dropzoneContainer" 
-                                 class="p-4 border border-2 border-dashed rounded-3 text-center bg-slate-50 transition-colors"
+                                 class="p-4 border border-2 border-dashed rounded-3 text-center bg-light transition-colors"
                                  style="border-color: var(--cm-border-default); cursor: pointer;"
                                  onclick="triggerFileInput()"
                                  ondragover="handleDragOver(event)"
@@ -193,7 +207,7 @@ require_once __DIR__ . '/../../includes/header.php';
                                     </div>
                                     <p class="fw-semibold text-dark mb-1">Drag and drop your completed CSV file here</p>
                                     <p class="text-muted small mb-3">or click to browse your computer files</p>
-                                    <span class="badge cm-badge-neutral font-monospace">Accepts .CSV format only</span>
+                                    <span class="badge cm-badge-neutral font-monospace">CSV format only</span>
                                 </div>
 
                                 <div id="fileSelectedDisplay" class="d-none align-items-center justify-content-center gap-2 py-2">
@@ -215,13 +229,13 @@ require_once __DIR__ . '/../../includes/header.php';
                         <!-- Form Action Buttons -->
                         <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 pt-2 border-top">
                             <button type="button" 
-                                    class="btn btn-outline-secondary btn-sm" 
+                                    class="btn btn-outline-primary btn-sm py-2" 
                                     onclick="downloadTemplate(event)"
-                                    title="Download pre-filled CSV template for selected course">
-                                <i class="bi bi-download me-1" aria-hidden="true"></i>Download Class Template
+                                    title="Download pre-filled CSV template for chosen class">
+                                <i class="bi bi-download me-1" aria-hidden="true"></i>1. Download Template
                             </button>
-                            <button type="submit" id="submitImportBtn" class="btn btn-primary px-4">
-                                <i class="bi bi-upload me-1" aria-hidden="true"></i>Import Grades
+                            <button type="submit" id="submitImportBtn" class="btn btn-primary px-4 py-2">
+                                <i class="bi bi-upload me-1" aria-hidden="true"></i>3. Import Grades
                             </button>
                         </div>
                     </form>
@@ -285,7 +299,7 @@ require_once __DIR__ . '/../../includes/header.php';
         e.stopPropagation();
         const dropzone = document.getElementById('dropzoneContainer');
         dropzone.style.borderColor = 'var(--cm-primary)';
-        dropzone.style.backgroundColor = 'var(--color-primary-50)';
+        dropzone.style.backgroundColor = 'var(--cm-primary-subtle)';
     }
 
     function handleDragLeave(e) {
@@ -293,7 +307,7 @@ require_once __DIR__ . '/../../includes/header.php';
         e.stopPropagation();
         const dropzone = document.getElementById('dropzoneContainer');
         dropzone.style.borderColor = 'var(--cm-border-default)';
-        dropzone.style.backgroundColor = 'var(--cm-bg-subtle)';
+        dropzone.style.backgroundColor = 'var(--color-neutral-100)';
     }
 
     function handleFileDrop(e) {
@@ -346,7 +360,7 @@ require_once __DIR__ . '/../../includes/header.php';
         const courseId = document.getElementById('course_id').value;
         
         if (!courseId) {
-            alert("Please select a target course before downloading the student template.");
+            alert("Please choose a class before downloading the student template.");
             document.getElementById('course_id').focus();
             return;
         }
@@ -377,7 +391,7 @@ require_once __DIR__ . '/../../includes/header.php';
 
         submitBtn.disabled = true;
         const originalBtnHtml = submitBtn.innerHTML;
-        submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span> Processing...';
+        submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span> Processing...';
 
         fetch('<?= htmlspecialchars(base_url('/api/import_grades.php'), ENT_QUOTES, 'UTF-8') ?>', {
             method: 'POST',

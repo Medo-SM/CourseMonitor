@@ -1,14 +1,14 @@
 <?php
 /**
- * CourseMonitor - Lecturer Dashboard
- * Displays assigned courses, quick academic metrics, and direct action shortcuts.
+ * CourseMonitor - Teacher Dashboard (My Classes)
+ * Student Attendance & Grades Made Simple
  */
 
 require_once __DIR__ . '/../../includes/auth_functions.php';
 requireRole('lecturer');
 
 $user = getCurrentUser();
-$pageTitle = 'Lecturer Dashboard';
+$pageTitle = 'My Classes';
 require_once __DIR__ . '/../../includes/header.php';
 ?>
 
@@ -16,8 +16,11 @@ require_once __DIR__ . '/../../includes/header.php';
     <!-- Page Header -->
     <div class="cm-page-header">
         <div>
-            <h1 class="cm-page-title">Lecturer Dashboard</h1>
-            <p class="cm-page-subtitle">Welcome back, <?= htmlspecialchars($user['full_name']) ?> &mdash; Manage course enrollments, attendance, and coursework gradebooks</p>
+            <div class="cm-page-tag">
+                <i class="bi bi-person-workspace me-1" aria-hidden="true"></i>Teacher Portal
+            </div>
+            <h1 class="cm-page-title">My Classes</h1>
+            <p class="cm-page-subtitle">Welcome back, <?= htmlspecialchars($user['full_name']) ?> &mdash; Manage your classes, record attendance, and enter coursework marks.</p>
         </div>
         <div class="d-flex align-items-center gap-2">
             <span class="badge cm-badge-neutral font-monospace py-2 px-3">
@@ -26,20 +29,20 @@ require_once __DIR__ . '/../../includes/header.php';
         </div>
     </div>
 
-    <!-- Academic Stat Metric Cards -->
+    <!-- Quick Academic Metric Cards -->
     <div class="row g-3 mb-4">
         <div class="col-sm-6 col-xl-4">
             <div class="cm-stat-card">
                 <div class="cm-stat-header">
-                    <span class="cm-stat-label">Assigned Courses</span>
+                    <span class="cm-stat-label">Assigned Classes</span>
                     <span class="cm-stat-icon primary" aria-hidden="true">
                         <i class="bi bi-journal-bookmark"></i>
                     </span>
                 </div>
                 <div>
-                    <div id="statCoursesCount" class="cm-stat-val tabular-nums" aria-label="Assigned Courses Count">-</div>
+                    <div id="statCoursesCount" class="cm-stat-val tabular-nums" aria-label="Assigned Classes Count">-</div>
                     <p class="cm-stat-meta mb-0">
-                        <i class="bi bi-check2-circle text-success" aria-hidden="true"></i> Active teaching assignments
+                        <i class="bi bi-check2-circle text-success" aria-hidden="true"></i> Active teaching schedule
                     </p>
                 </div>
             </div>
@@ -48,17 +51,17 @@ require_once __DIR__ . '/../../includes/header.php';
         <div class="col-sm-6 col-xl-4">
             <div class="cm-stat-card">
                 <div class="cm-stat-header">
-                    <span class="cm-stat-label">Session Attendance</span>
+                    <span class="cm-stat-label">Daily Attendance</span>
                     <span class="cm-stat-icon success" aria-hidden="true">
                         <i class="bi bi-calendar-check"></i>
                     </span>
                 </div>
                 <div>
                     <div class="cm-stat-val text-success">
-                        <i class="bi bi-check-circle-fill fs-3 me-2" aria-hidden="true"></i>Active
+                        <i class="bi bi-check-circle-fill fs-4 me-2" aria-hidden="true"></i>Ready
                     </div>
                     <p class="cm-stat-meta mb-0">
-                        <i class="bi bi-clock me-1" aria-hidden="true"></i>Session attendance tracking ready
+                        <i class="bi bi-clock me-1" aria-hidden="true"></i>Take attendance in seconds
                     </p>
                 </div>
             </div>
@@ -67,29 +70,29 @@ require_once __DIR__ . '/../../includes/header.php';
         <div class="col-sm-12 col-xl-4">
             <div class="cm-stat-card">
                 <div class="cm-stat-header">
-                    <span class="cm-stat-label">Coursework Gradebook</span>
+                    <span class="cm-stat-label">Class Gradebook</span>
                     <span class="cm-stat-icon info" aria-hidden="true">
                         <i class="bi bi-mortarboard"></i>
                     </span>
                 </div>
                 <div>
                     <div class="cm-stat-val text-primary">
-                        <i class="bi bi-table fs-3 me-2" aria-hidden="true"></i>Continuous
+                        <i class="bi bi-table fs-4 me-2" aria-hidden="true"></i>Gradebook
                     </div>
                     <p class="cm-stat-meta mb-0">
-                        <i class="bi bi-pencil-square me-1" aria-hidden="true"></i>Assignments, quizzes, and exams
+                        <i class="bi bi-pencil-square me-1" aria-hidden="true"></i>Quizzes, midterms &amp; final exams
                     </p>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Courses Section Header with Search -->
+    <!-- My Classes Section -->
     <div class="cm-card mb-4">
         <div class="cm-card-header flex-wrap gap-3 py-3">
             <div class="d-flex align-items-center gap-2">
                 <h2 class="cm-card-title h5 mb-0">
-                    <i class="bi bi-collection me-2 text-primary" aria-hidden="true"></i>My Assigned Courses
+                    <i class="bi bi-collection me-2 text-primary" aria-hidden="true"></i>My Classes
                 </h2>
                 <span id="courseCounterBadge" class="badge cm-badge-neutral tabular-nums">Loading...</span>
             </div>
@@ -101,8 +104,8 @@ require_once __DIR__ . '/../../includes/header.php';
                     <input type="search" 
                            id="courseSearchInput" 
                            class="form-control border-start-0" 
-                           placeholder="Filter courses by code or title..." 
-                           aria-label="Filter courses by code or title"
+                           placeholder="Search classes by code or title..." 
+                           aria-label="Search classes by code or title"
                            aria-describedby="search-addon"
                            oninput="filterCourses()">
                 </div>
@@ -110,13 +113,13 @@ require_once __DIR__ . '/../../includes/header.php';
         </div>
 
         <div class="cm-card-body p-4">
-            <!-- Dynamic Courses Container -->
+            <!-- Dynamic Classes Grid -->
             <div id="courseContainer" class="row g-4" aria-live="polite">
                 <div class="col-12 text-center py-5">
                     <div class="spinner-border text-primary" role="status">
-                        <span class="visually-hidden">Loading courses...</span>
+                        <span class="visually-hidden">Loading classes...</span>
                     </div>
-                    <p class="text-muted small mt-2 mb-0">Retrieving assigned courses...</p>
+                    <p class="text-muted small mt-2 mb-0">Retrieving your assigned classes...</p>
                 </div>
             </div>
         </div>
@@ -146,7 +149,7 @@ require_once __DIR__ . '/../../includes/header.php';
                     statCount.textContent = allCourses.length;
                 }
                 if (countBadge) {
-                    countBadge.textContent = `${allCourses.length} ${allCourses.length === 1 ? 'Course' : 'Courses'}`;
+                    countBadge.textContent = `${allCourses.length} ${allCourses.length === 1 ? 'Class' : 'Classes'}`;
                 }
 
                 renderCourses(allCourses);
@@ -158,8 +161,8 @@ require_once __DIR__ . '/../../includes/header.php';
                         <div class="alert cm-alert-danger" role="alert">
                             <i class="bi bi-exclamation-triangle-fill fs-5" aria-hidden="true"></i>
                             <div>
-                                <h3 class="h6 mb-1 text-danger">Unable to load courses</h3>
-                                <p class="mb-0 small">An error occurred while fetching your course list. Please refresh the page or check your connection.</p>
+                                <h3 class="h6 mb-1 text-danger">Unable to load classes</h3>
+                                <p class="mb-0 small">An error occurred while fetching your class list. Please refresh the page or check your connection.</p>
                             </div>
                         </div>
                     </div>
@@ -181,10 +184,10 @@ require_once __DIR__ . '/../../includes/header.php';
                             <div class="cm-empty-icon" aria-hidden="true">
                                 <i class="bi bi-search"></i>
                             </div>
-                            <h3 class="cm-empty-title">No matching courses</h3>
-                            <p class="cm-empty-desc">No assigned courses match your search criteria. Try clearing the filter.</p>
+                            <h3 class="cm-empty-title">No matching classes</h3>
+                            <p class="cm-empty-desc">No assigned classes match your search criteria. Try clearing the search filter.</p>
                             <button type="button" class="btn btn-outline-secondary btn-sm" onclick="clearCourseSearch()">
-                                <i class="bi bi-x-circle me-1" aria-hidden="true"></i>Clear Filter
+                                <i class="bi bi-x-circle me-1" aria-hidden="true"></i>Clear Search
                             </button>
                         </div>
                     </div>
@@ -196,8 +199,8 @@ require_once __DIR__ . '/../../includes/header.php';
                             <div class="cm-empty-icon" aria-hidden="true">
                                 <i class="bi bi-journal-x"></i>
                             </div>
-                            <h3 class="cm-empty-title">No Courses Assigned Yet</h3>
-                            <p class="cm-empty-desc">You currently have no teaching assignments. Please contact your Head of Department or academic administrator to assign courses to your lecturer profile.</p>
+                            <h3 class="cm-empty-title">No Classes Assigned Yet</h3>
+                            <p class="cm-empty-desc">You do not have any classes assigned to your schedule yet. Please contact your Department Head to assign classes to your profile.</p>
                         </div>
                     </div>
                 `;
@@ -215,71 +218,69 @@ require_once __DIR__ . '/../../includes/header.php';
             const card = document.createElement('div');
             card.className = 'col-md-6 col-xl-4';
             card.innerHTML = `
-                <div class="card cm-card h-100">
+                <div class="card cm-card h-100 d-flex flex-column">
                     <div class="cm-card-header bg-white border-bottom py-3">
                         <span class="badge cm-badge-primary font-monospace fs-6 px-2 py-1" title="Course Code">
                             ${escapeHtml(c.code)}
                         </span>
                         <span class="badge cm-badge-neutral tabular-nums" title="Credit Hours">
-                            <i class="bi bi-award me-1" aria-hidden="true"></i>${escapeHtml(c.credit_hours)} Credits
+                            <i class="bi bi-clock me-1" aria-hidden="true"></i>${escapeHtml(c.credit_hours)} Credits
                         </span>
                     </div>
-                    <div class="cm-card-body d-flex flex-column">
+                    <div class="cm-card-body d-flex flex-column flex-grow-1">
                         <h3 class="h5 card-title text-dark fw-semibold mb-2" title="${escapeHtml(c.name)}">
                             ${escapeHtml(c.name)}
                         </h3>
                         <div class="d-flex align-items-center text-muted small mb-2">
                             <i class="bi bi-building me-2 text-secondary" aria-hidden="true"></i>
-                            <span class="text-truncate">${escapeHtml(c.department_name || 'Department')}</span>
+                            <span class="text-truncate">${escapeHtml(c.department_name || 'Academic Department')}</span>
                         </div>
                         <div class="d-flex align-items-center text-muted small mb-3">
                             <i class="bi bi-layers me-2 text-secondary" aria-hidden="true"></i>
                             <span>${escapeHtml(semestersText)}</span>
                         </div>
                         <p class="card-text text-secondary small mb-4 flex-grow-1">
-                            Record attendance, manage coursework assessments, and track individual student academic performance.
+                            Record daily attendance, enter student marks, and view full class standing.
                         </p>
 
-                        <!-- Primary Direct Actions -->
-                        <div class="d-grid gap-2 mb-2">
+                        <!-- Quick Action Buttons -->
+                        <div class="d-grid gap-2 mb-3">
+                            <a href="<?= htmlspecialchars(base_url('/modules/lecturer/attendance.php'), ENT_QUOTES, 'UTF-8') ?>?course_id=${cid}" 
+                               class="btn btn-primary btn-sm w-100 justify-content-center"
+                               title="Take attendance for this class">
+                                <i class="bi bi-calendar-check me-2" aria-hidden="true"></i>Take Attendance
+                            </a>
                             <div class="row g-2">
                                 <div class="col-6">
-                                    <a href="<?= htmlspecialchars(base_url('/modules/lecturer/attendance.php'), ENT_QUOTES, 'UTF-8') ?>?course_id=${cid}" 
-                                       class="btn btn-primary btn-sm w-100 text-truncate"
-                                       title="Take attendance for this course">
-                                        <i class="bi bi-calendar-check me-1" aria-hidden="true"></i>Take Attendance
+                                    <a href="<?= htmlspecialchars(base_url('/modules/lecturer/coursework.php'), ENT_QUOTES, 'UTF-8') ?>?course_id=${cid}" 
+                                       class="btn btn-outline-primary btn-sm w-100 text-truncate justify-content-center"
+                                       title="Enter student marks">
+                                        <i class="bi bi-pencil-square me-1" aria-hidden="true"></i>Enter Grades
                                     </a>
                                 </div>
                                 <div class="col-6">
-                                    <a href="<?= htmlspecialchars(base_url('/modules/lecturer/coursework.php'), ENT_QUOTES, 'UTF-8') ?>?course_id=${cid}" 
-                                       class="btn btn-outline-primary btn-sm w-100 text-truncate"
-                                       title="Enter coursework grades">
-                                        <i class="bi bi-pencil-square me-1" aria-hidden="true"></i>Enter Grades
+                                    <a href="<?= htmlspecialchars(base_url('/modules/lecturer/view_grades.php'), ENT_QUOTES, 'UTF-8') ?>?course_id=${cid}" 
+                                       class="btn btn-outline-secondary btn-sm w-100 text-truncate justify-content-center"
+                                       title="View class gradebook">
+                                        <i class="bi bi-table me-1" aria-hidden="true"></i>View Gradebook
                                     </a>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Secondary Logs & Overview -->
-                        <div class="btn-group w-100 mb-2" role="group" aria-label="Course view options">
+                        <!-- Secondary Shortcuts Row -->
+                        <div class="d-flex justify-content-between align-items-center pt-2 border-top small text-muted">
                             <a href="<?= htmlspecialchars(base_url('/modules/lecturer/view_attendance.php'), ENT_QUOTES, 'UTF-8') ?>?course_id=${cid}" 
-                               class="btn btn-outline-secondary btn-sm flex-fill"
-                               title="View multi-session attendance matrix">
-                                <i class="bi bi-clock-history me-1" aria-hidden="true"></i>Attendance Log
+                               class="text-decoration-none text-secondary d-inline-flex align-items-center"
+                               title="View past attendance sessions">
+                                <i class="bi bi-clock-history me-1 text-primary" aria-hidden="true"></i>Attendance History
                             </a>
-                            <a href="<?= htmlspecialchars(base_url('/modules/lecturer/view_grades.php'), ENT_QUOTES, 'UTF-8') ?>?course_id=${cid}" 
-                               class="btn btn-outline-secondary btn-sm flex-fill"
-                               title="View gradebook and class totals">
-                                <i class="bi bi-table me-1" aria-hidden="true"></i>Gradebook
+                            <a href="<?= htmlspecialchars(base_url('/modules/lecturer/import_excel.php'), ENT_QUOTES, 'UTF-8') ?>?course_id=${cid}" 
+                               class="text-decoration-none text-secondary d-inline-flex align-items-center"
+                               title="Import marks from file">
+                                <i class="bi bi-file-earmark-arrow-up me-1 text-primary" aria-hidden="true"></i>Import CSV
                             </a>
                         </div>
-
-                        <!-- Import Action -->
-                        <a href="<?= htmlspecialchars(base_url('/modules/lecturer/import_excel.php'), ENT_QUOTES, 'UTF-8') ?>?course_id=${cid}" 
-                           class="btn btn-secondary btn-sm w-100 text-secondary"
-                           title="Import marks from CSV template">
-                            <i class="bi bi-file-earmark-arrow-up me-1 text-primary" aria-hidden="true"></i>Import Marks (CSV)
-                        </a>
                     </div>
                 </div>
             `;

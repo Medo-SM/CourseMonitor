@@ -1,7 +1,7 @@
 <?php
 /**
- * CourseMonitor - View Grades (Gradebook)
- * Complete multi-assessment gradebook with student scores, assessment breakdown, cumulative totals, and print styles.
+ * CourseMonitor - Class Gradebook
+ * Student Attendance & Grades Made Simple
  */
 
 require_once __DIR__ . '/../../includes/auth_functions.php';
@@ -21,7 +21,7 @@ while ($row = $res->fetch_assoc()) {
 $stmt->close();
 
 $selectedCourseId = isset($_GET['course_id']) ? intval($_GET['course_id']) : 0;
-$pageTitle = 'Course Gradebook';
+$pageTitle = 'Class Gradebook';
 
 $extraHead = '
 <style>
@@ -63,7 +63,7 @@ require_once __DIR__ . '/../../includes/header.php';
     <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3 no-print">
         <a href="<?= htmlspecialchars(base_url('/modules/lecturer/dashboard.php'), ENT_QUOTES, 'UTF-8') ?>" 
            class="btn btn-outline-secondary btn-sm">
-            <i class="bi bi-arrow-left me-1" aria-hidden="true"></i>Back to Dashboard
+            <i class="bi bi-arrow-left me-1" aria-hidden="true"></i>Back to My Classes
         </a>
         <div class="d-flex align-items-center gap-2">
             <a href="<?= htmlspecialchars(base_url('/modules/lecturer/coursework.php' . ($selectedCourseId ? '?course_id=' . $selectedCourseId : '')), ENT_QUOTES, 'UTF-8') ?>" 
@@ -73,14 +73,14 @@ require_once __DIR__ . '/../../includes/header.php';
             </a>
             <a href="<?= htmlspecialchars(base_url('/modules/lecturer/import_excel.php' . ($selectedCourseId ? '?course_id=' . $selectedCourseId : '')), ENT_QUOTES, 'UTF-8') ?>" 
                id="importCsvBtn"
-               class="btn btn-secondary btn-sm">
-                <i class="bi bi-file-earmark-arrow-up me-1" aria-hidden="true"></i>Import CSV
+               class="btn btn-outline-secondary btn-sm">
+                <i class="bi bi-file-earmark-arrow-up me-1" aria-hidden="true"></i>Import from File
             </a>
             <button type="button" 
                     onclick="window.print()" 
                     class="btn btn-outline-secondary btn-sm" 
-                    title="Print gradebook">
-                <i class="bi bi-printer me-1" aria-hidden="true"></i>Print
+                    title="Print gradebook report">
+                <i class="bi bi-printer me-1" aria-hidden="true"></i>Print Report
             </button>
         </div>
     </div>
@@ -88,8 +88,11 @@ require_once __DIR__ . '/../../includes/header.php';
     <!-- Page Header -->
     <div class="cm-page-header">
         <div>
-            <h1 class="cm-page-title">Course Gradebook</h1>
-            <p class="cm-page-subtitle">Assessment breakdown (quizzes, assignments, exams), cumulative student totals, and grade distribution overview.</p>
+            <div class="cm-page-tag">
+                <i class="bi bi-mortarboard me-1" aria-hidden="true"></i>Academic Records
+            </div>
+            <h1 class="cm-page-title">Class Gradebook</h1>
+            <p class="cm-page-subtitle">Student list with test scores, cumulative total, and academic standing.</p>
         </div>
     </div>
 
@@ -104,10 +107,10 @@ require_once __DIR__ . '/../../includes/header.php';
             <div class="row g-3 align-items-end">
                 <div class="col-md-7">
                     <label for="course" class="form-label fw-medium">
-                        Assigned Course <span class="text-danger" aria-hidden="true">*</span>
+                        Select Class <span class="text-danger" aria-hidden="true">*</span>
                     </label>
                     <select id="course" class="form-select" onchange="onCourseChanged()" required aria-required="true">
-                        <option value="">-- Select Course --</option>
+                        <option value="">-- Choose Class --</option>
                         <?php foreach ($courses as $c): ?>
                             <option value="<?= intval($c['id']) ?>" <?= ($selectedCourseId === intval($c['id'])) ? 'selected' : '' ?>>
                                 <?= htmlspecialchars($c['code'] . ' - ' . $c['name']) ?>
@@ -117,12 +120,14 @@ require_once __DIR__ . '/../../includes/header.php';
                 </div>
                 <div class="col-md-5">
                     <label for="studentSearchInput" class="form-label fw-medium">Quick Search Student</label>
-                    <div class="input-group input-group-sm">
-                        <span class="input-group-text bg-white text-muted"><i class="bi bi-search" aria-hidden="true"></i></span>
+                    <div class="input-group">
+                        <span class="input-group-text bg-white text-muted border-end-0">
+                            <i class="bi bi-search" aria-hidden="true"></i>
+                        </span>
                         <input type="search" 
                                id="studentSearchInput" 
-                               class="form-control" 
-                               placeholder="Filter by name or ID..." 
+                               class="form-control border-start-0" 
+                               placeholder="Search student by name or ID..." 
                                oninput="filterGradebookTable()">
                     </div>
                 </div>
@@ -163,12 +168,12 @@ require_once __DIR__ . '/../../includes/header.php';
         <div class="cm-card-header py-3 flex-wrap gap-2">
             <div class="d-flex align-items-center gap-2">
                 <h2 class="cm-card-title h6 mb-0">
-                    <i class="bi bi-table me-2 text-primary" aria-hidden="true"></i>Assessment Grade Breakdown
+                    <i class="bi bi-table me-2 text-primary" aria-hidden="true"></i>Assessment Marks Breakdown
                 </h2>
-                <span id="gradebookTableBadge" class="badge cm-badge-neutral tabular-nums">Select a course</span>
+                <span id="gradebookTableBadge" class="badge cm-badge-neutral tabular-nums">Select a class</span>
             </div>
             <div class="text-muted small">
-                All assessment scores and totals displayed with tabular numeric alignment.
+                All assessment scores and totals displayed with clear numeric alignment.
             </div>
         </div>
         <div class="cm-card-body p-0">
@@ -190,8 +195,8 @@ require_once __DIR__ . '/../../includes/header.php';
                                     <div class="cm-empty-icon" aria-hidden="true">
                                         <i class="bi bi-arrow-up-circle"></i>
                                     </div>
-                                    <h3 class="cm-empty-title h6">Please Select a Course</h3>
-                                    <p class="cm-empty-desc mb-0">Select an assigned course above to view student coursework grades and totals.</p>
+                                    <h3 class="cm-empty-title h6">Please Select a Class</h3>
+                                    <p class="cm-empty-desc mb-0">Choose your assigned class above to view student marks, cumulative totals, and academic standing.</p>
                                 </div>
                             </td>
                         </tr>
@@ -257,15 +262,15 @@ require_once __DIR__ . '/../../includes/header.php';
                             <div class="cm-empty-icon" aria-hidden="true">
                                 <i class="bi bi-arrow-up-circle"></i>
                             </div>
-                            <h3 class="cm-empty-title h6">Please Select a Course</h3>
-                            <p class="cm-empty-desc mb-0">Select an assigned course above to view student coursework grades and totals.</p>
+                            <h3 class="cm-empty-title h6">Please Select a Class</h3>
+                            <p class="cm-empty-desc mb-0">Choose your assigned class above to view student marks, cumulative totals, and academic standing.</p>
                         </div>
                     </td>
                 </tr>
             `;
             tfoot.classList.add('d-none');
             statsRow.classList.add('d-none');
-            badge.textContent = 'Select a course';
+            badge.textContent = 'Select a class';
             rawGradebookData = null;
             return;
         }
@@ -276,7 +281,7 @@ require_once __DIR__ . '/../../includes/header.php';
                     <div class="spinner-border text-primary" role="status">
                         <span class="visually-hidden">Loading gradebook...</span>
                     </div>
-                    <p class="text-muted small mt-2 mb-0">Compiling assessment grades and student totals...</p>
+                    <p class="text-muted small mt-2 mb-0">Compiling assessment marks and student totals...</p>
                 </td>
             </tr>
         `;
@@ -352,7 +357,7 @@ require_once __DIR__ . '/../../includes/header.php';
                                 <i class="bi bi-people"></i>
                             </div>
                             <h3 class="cm-empty-title h6">No Enrolled Students</h3>
-                            <p class="cm-empty-desc mb-0">No students are currently enrolled in this course.</p>
+                            <p class="cm-empty-desc mb-0">No students are currently enrolled in this class.</p>
                         </div>
                     </td>
                 </tr>
@@ -380,8 +385,8 @@ require_once __DIR__ . '/../../includes/header.php';
         }
 
         headerHtml += `
-            <th scope="col" class="text-center bg-slate-100 tabular-nums fw-bold" style="min-width: 100px;">Cumulative Total</th>
-            <th scope="col" class="text-center bg-slate-100" style="min-width: 110px;">Standing</th>
+            <th scope="col" class="text-center bg-light tabular-nums fw-bold" style="min-width: 110px;">Cumulative Total</th>
+            <th scope="col" class="text-center bg-light" style="min-width: 120px;">Academic Standing</th>
         </tr>
         `;
         thead.innerHTML = headerHtml;
@@ -401,7 +406,7 @@ require_once __DIR__ . '/../../includes/header.php';
                         <div class="cm-empty-state py-3">
                             <div class="cm-empty-icon" aria-hidden="true"><i class="bi bi-search"></i></div>
                             <h3 class="cm-empty-title h6">No Matching Students</h3>
-                            <p class="cm-empty-desc mb-0">No student in this course matched "${escapeHtml(filterQuery)}".</p>
+                            <p class="cm-empty-desc mb-0">No student in this class matched "${escapeHtml(filterQuery)}".</p>
                         </div>
                     </td>
                 </tr>
@@ -454,7 +459,7 @@ require_once __DIR__ . '/../../includes/header.php';
                 if (studentTotal > highestTotal) highestTotal = studentTotal;
             }
 
-            // Standing badge
+            // Standing badge (soft pastel badges)
             let standingBadge = '<span class="text-muted tabular-nums small">&ndash;</span>';
             if (recordedAny) {
                 if (studentTotal >= 80) {

@@ -1,7 +1,7 @@
 <?php
 /**
- * CourseMonitor - Enter Coursework Grades
- * Gradebook interface with student assessment breakdown, live total auto-preview, and instant validation.
+ * CourseMonitor - Enter Student Marks
+ * Student Attendance & Grades Made Simple
  */
 
 require_once __DIR__ . '/../../includes/auth_functions.php';
@@ -23,7 +23,7 @@ while ($row = $result->fetch_assoc()) {
 $courses_stmt->close();
 
 $selectedCourseId = isset($_GET['course_id']) ? intval($_GET['course_id']) : 0;
-$pageTitle = 'Enter Coursework Grades';
+$pageTitle = 'Enter Student Marks';
 require_once __DIR__ . '/../../includes/header.php';
 ?>
 
@@ -32,18 +32,18 @@ require_once __DIR__ . '/../../includes/header.php';
     <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
         <a href="<?= htmlspecialchars(base_url('/modules/lecturer/dashboard.php'), ENT_QUOTES, 'UTF-8') ?>" 
            class="btn btn-outline-secondary btn-sm">
-            <i class="bi bi-arrow-left me-1" aria-hidden="true"></i>Back to Dashboard
+            <i class="bi bi-arrow-left me-1" aria-hidden="true"></i>Back to My Classes
         </a>
         <div class="d-flex align-items-center gap-2">
             <a href="<?= htmlspecialchars(base_url('/modules/lecturer/view_grades.php' . ($selectedCourseId ? '?course_id=' . $selectedCourseId : '')), ENT_QUOTES, 'UTF-8') ?>" 
                id="viewGradebookLink"
                class="btn btn-outline-primary btn-sm">
-                <i class="bi bi-table me-1" aria-hidden="true"></i>Full Gradebook
+                <i class="bi bi-table me-1" aria-hidden="true"></i>Class Gradebook
             </a>
             <a href="<?= htmlspecialchars(base_url('/modules/lecturer/import_excel.php' . ($selectedCourseId ? '?course_id=' . $selectedCourseId : '')), ENT_QUOTES, 'UTF-8') ?>" 
                id="importCsvLink"
-               class="btn btn-secondary btn-sm">
-                <i class="bi bi-file-earmark-arrow-up me-1" aria-hidden="true"></i>Import CSV
+               class="btn btn-outline-secondary btn-sm">
+                <i class="bi bi-file-earmark-arrow-up me-1" aria-hidden="true"></i>Import from File
             </a>
         </div>
     </div>
@@ -51,12 +51,15 @@ require_once __DIR__ . '/../../includes/header.php';
     <!-- Page Header -->
     <div class="cm-page-header">
         <div>
-            <h1 class="cm-page-title">Enter Coursework Grades</h1>
-            <p class="cm-page-subtitle">Record and update student assessment marks with assessment breakdown preview, live class average, and auto-computed totals.</p>
+            <div class="cm-page-tag">
+                <i class="bi bi-pencil-square me-1" aria-hidden="true"></i>Coursework Grading
+            </div>
+            <h1 class="cm-page-title">Enter Student Marks</h1>
+            <p class="cm-page-subtitle">Select your course and assessment type, then enter scores out of 100.</p>
         </div>
     </div>
 
-    <!-- Feedback Notification Banner -->
+    <!-- Feedback Banner -->
     <div id="feedbackAlert" class="alert d-none mb-4" role="alert" aria-live="polite">
         <div class="d-flex align-items-center gap-2 w-100">
             <i id="feedbackIcon" class="bi fs-5" aria-hidden="true"></i>
@@ -69,17 +72,17 @@ require_once __DIR__ . '/../../includes/header.php';
     <div class="cm-card mb-4">
         <div class="cm-card-header py-3">
             <h2 class="cm-card-title h6 mb-0">
-                <i class="bi bi-sliders me-2 text-primary" aria-hidden="true"></i>Assessment Details
+                <i class="bi bi-sliders me-2 text-primary" aria-hidden="true"></i>Class &amp; Assessment
             </h2>
         </div>
         <div class="cm-card-body">
             <div class="row g-3 align-items-end">
                 <div class="col-md-6">
                     <label for="course" class="form-label fw-medium">
-                        Course <span class="text-danger" aria-hidden="true">*</span>
+                        Select Class <span class="text-danger" aria-hidden="true">*</span>
                     </label>
                     <select id="course" class="form-select" onchange="onCourseChanged()" required aria-required="true">
-                        <option value="">-- Select Assigned Course --</option>
+                        <option value="">-- Choose Class --</option>
                         <?php foreach ($courses as $course): ?>
                             <option value="<?= intval($course['id']) ?>" <?= ($selectedCourseId === intval($course['id'])) ? 'selected' : '' ?>>
                                 <?= htmlspecialchars($course['code'] . ' - ' . $course['name']) ?>
@@ -92,7 +95,7 @@ require_once __DIR__ . '/../../includes/header.php';
                         Assessment Type <span class="text-danger" aria-hidden="true">*</span>
                     </label>
                     <select id="assessment_type" class="form-select" onchange="loadData()" required aria-required="true">
-                        <option value="">-- Select Assessment Type --</option>
+                        <option value="">-- Choose Assessment Type --</option>
                         <option value="Assignment 1">Assignment 1</option>
                         <option value="Assignment 2">Assignment 2</option>
                         <option value="Quiz 1">Quiz 1</option>
@@ -110,14 +113,14 @@ require_once __DIR__ . '/../../includes/header.php';
         <div class="cm-card-body py-2 px-3">
             <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 small text-secondary">
                 <div class="d-flex align-items-center gap-3 flex-wrap">
-                    <span class="fw-semibold text-dark">Grading Summary:</span>
-                    <span>Graded: <span id="statGradedCount" class="badge cm-badge-primary tabular-nums">0 / 0</span></span>
+                    <span class="fw-semibold text-dark">Grading Progress:</span>
+                    <span>Marks Entered: <span id="statGradedCount" class="badge cm-badge-primary tabular-nums">0 / 0</span></span>
                     <span>Class Average: <span id="statClassAvg" class="badge cm-badge-success tabular-nums">-</span></span>
                     <span>Highest: <span id="statHighest" class="badge cm-badge-info tabular-nums">-</span></span>
                     <span>Lowest: <span id="statLowest" class="badge cm-badge-neutral tabular-nums">-</span></span>
                 </div>
                 <div class="text-muted small">
-                    <i class="bi bi-info-circle me-1" aria-hidden="true"></i>Allowed range: 0.00 to 100.00
+                    <i class="bi bi-info-circle me-1" aria-hidden="true"></i>Scores must be between 0.00 and 100.00
                 </div>
             </div>
         </div>
@@ -128,12 +131,12 @@ require_once __DIR__ . '/../../includes/header.php';
         <div class="cm-card-header py-3 flex-wrap gap-2">
             <div class="d-flex align-items-center gap-2">
                 <h2 class="cm-card-title h6 mb-0">
-                    <i class="bi bi-person-lines-fill me-2 text-primary" aria-hidden="true"></i>Grade Entry Roster
+                    <i class="bi bi-person-lines-fill me-2 text-primary" aria-hidden="true"></i>Student Mark Entry
                 </h2>
-                <span id="rosterCountBadge" class="badge cm-badge-neutral tabular-nums">Select course &amp; assessment</span>
+                <span id="rosterCountBadge" class="badge cm-badge-neutral tabular-nums">Select class &amp; assessment</span>
             </div>
             <div id="quickFillActions" class="d-none d-flex gap-2">
-                <button type="button" class="btn btn-outline-secondary btn-sm" onclick="clearAllGradeInputs()" title="Clear unsubmitted grade fields">
+                <button type="button" class="btn btn-outline-secondary btn-sm" onclick="clearAllGradeInputs()" title="Clear all entered marks">
                     <i class="bi bi-eraser me-1" aria-hidden="true"></i>Clear Inputs
                 </button>
             </div>
@@ -147,9 +150,9 @@ require_once __DIR__ . '/../../includes/header.php';
                                 <th scope="col" style="width: 50px;" class="text-center">#</th>
                                 <th scope="col" style="width: 170px;" class="tabular-nums">Student ID</th>
                                 <th scope="col" style="min-width: 180px;">Student Name</th>
-                                <th scope="col" style="width: 180px;" class="text-center">Assessment Grade (0-100)</th>
-                                <th scope="col" style="width: 130px;" class="text-center">Total Auto-Preview</th>
-                                <th scope="col" style="width: 130px;" class="text-center">Performance</th>
+                                <th scope="col" style="width: 190px;" class="text-center">Score (0–100)</th>
+                                <th scope="col" style="width: 140px;" class="text-center">Total (Preview)</th>
+                                <th scope="col" style="width: 140px;" class="text-center">Standing</th>
                             </tr>
                         </thead>
                         <tbody id="gradeTableBody">
@@ -159,8 +162,8 @@ require_once __DIR__ . '/../../includes/header.php';
                                         <div class="cm-empty-icon" aria-hidden="true">
                                             <i class="bi bi-arrow-up-circle"></i>
                                         </div>
-                                        <h3 class="cm-empty-title h6">Select Course &amp; Assessment Type</h3>
-                                        <p class="cm-empty-desc mb-0">Choose both an assigned course and an assessment type above to load the student grade entry table.</p>
+                                        <h3 class="cm-empty-title h6">Select Class &amp; Assessment Type</h3>
+                                        <p class="cm-empty-desc mb-0">Choose both your class and assessment type above to load the student grade entry table.</p>
                                     </div>
                                 </td>
                             </tr>
@@ -172,8 +175,8 @@ require_once __DIR__ . '/../../includes/header.php';
                     <div class="text-muted small" id="gradeStatusPrompt">
                         Press <kbd>Tab</kbd> or <kbd>Enter</kbd> to move rapidly between student score inputs.
                     </div>
-                    <button type="submit" id="saveGradesBtn" class="btn btn-primary px-4">
-                        <i class="bi bi-cloud-arrow-up me-1" aria-hidden="true"></i>Save Grades
+                    <button type="submit" id="saveGradesBtn" class="btn btn-primary px-4 py-2">
+                        <i class="bi bi-cloud-arrow-up me-2" aria-hidden="true"></i>Save Marks
                     </button>
                 </div>
             </form>
@@ -245,13 +248,13 @@ require_once __DIR__ . '/../../includes/header.php';
                             <div class="cm-empty-icon" aria-hidden="true">
                                 <i class="bi bi-arrow-up-circle"></i>
                             </div>
-                            <h3 class="cm-empty-title h6">Select Course &amp; Assessment Type</h3>
-                            <p class="cm-empty-desc mb-0">Choose both an assigned course and an assessment type above to load the student grade entry table.</p>
+                            <h3 class="cm-empty-title h6">Select Class &amp; Assessment Type</h3>
+                            <p class="cm-empty-desc mb-0">Choose both your class and assessment type above to load the student grade entry table.</p>
                         </div>
                     </td>
                 </tr>
             `;
-            countBadge.textContent = 'Select course & assessment';
+            countBadge.textContent = 'Select class & assessment';
             statsBar.classList.add('d-none');
             formFooter.classList.add('d-none');
             quickFill.classList.add('d-none');
@@ -265,7 +268,7 @@ require_once __DIR__ . '/../../includes/header.php';
                     <div class="spinner-border text-primary" role="status">
                         <span class="visually-hidden">Loading student records...</span>
                     </div>
-                    <p class="text-muted small mt-2 mb-0">Retrieving student enrollment roster and existing grades...</p>
+                    <p class="text-muted small mt-2 mb-0">Retrieving student enrollment roster and existing marks...</p>
                 </td>
             </tr>
         `;
@@ -305,7 +308,7 @@ require_once __DIR__ . '/../../includes/header.php';
                                         <i class="bi bi-people"></i>
                                     </div>
                                     <h3 class="cm-empty-title h6">No Enrolled Students</h3>
-                                    <p class="cm-empty-desc mb-0">No students are currently enrolled in this course.</p>
+                                    <p class="cm-empty-desc mb-0">No students are currently enrolled in this class.</p>
                                 </div>
                             </td>
                         </tr>
@@ -379,7 +382,7 @@ require_once __DIR__ . '/../../includes/header.php';
                     ${escapeHtml(student.name)}
                 </td>
                 <td class="text-center">
-                    <div class="d-inline-flex align-items-center gap-1">
+                    <div class="d-inline-flex align-items-center justify-content-center gap-1">
                         <input type="number" 
                                name="grade[${sid}]" 
                                id="grade_input_${sid}"
@@ -388,13 +391,13 @@ require_once __DIR__ . '/../../includes/header.php';
                                step="0.01" 
                                value="${escapeHtml(gradeVal)}" 
                                class="form-control form-control-sm grade-input tabular-nums font-monospace text-center fw-medium" 
-                               style="width: 110px;"
+                               style="width: 100px; padding: 0.35rem 0.5rem;"
                                data-student-id="${sid}"
                                data-other-total="${otherAssessmentsTotal}"
-                               aria-label="Grade for ${escapeHtml(student.name)}"
+                               aria-label="Mark for ${escapeHtml(student.name)}"
                                placeholder="&ndash;"
                                oninput="onGradeInputChange(this)">
-                        <span class="small text-muted">/ 100</span>
+                        <span class="small text-muted font-monospace">/ 100</span>
                     </div>
                 </td>
                 <td class="text-center">
@@ -430,7 +433,7 @@ require_once __DIR__ . '/../../includes/header.php';
         const val = parseFloat(valStr);
         if (isNaN(val) || val < 0 || val > 100) {
             input.classList.add('is-invalid');
-            if (perfCell) perfCell.innerHTML = '<span class="badge cm-badge-danger">Invalid (0-100)</span>';
+            if (perfCell) perfCell.innerHTML = '<span class="badge cm-badge-danger">Invalid (0–100)</span>';
         } else {
             input.classList.remove('is-invalid');
             if (totalSpan) totalSpan.textContent = (otherTotal + val).toFixed(1);
@@ -449,9 +452,9 @@ require_once __DIR__ . '/../../includes/header.php';
         } else if (score >= 65) {
             return '<span class="badge cm-badge-info tabular-nums">Good</span>';
         } else if (score >= 50) {
-            return '<span class="badge cm-badge-warning tabular-nums">Pass</span>';
+            return '<span class="badge cm-badge-warning tabular-nums">Passing</span>';
         } else {
-            return '<span class="badge cm-badge-danger tabular-nums">At Risk</span>';
+            return '<span class="badge cm-badge-danger tabular-nums">Needs Support</span>';
         }
     }
 
@@ -488,7 +491,7 @@ require_once __DIR__ . '/../../includes/header.php';
             if (gradedCount === totalStudents) {
                 prompt.innerHTML = `<span class="text-success fw-medium"><i class="bi bi-check-circle-fill me-1"></i>All ${totalStudents} students scored. Ready to save.</span>`;
             } else {
-                prompt.innerHTML = `<span><span class="text-dark fw-medium">${gradedCount}</span> of ${totalStudents} students graded (${totalStudents - gradedCount} pending).</span>`;
+                prompt.innerHTML = `<span><span class="text-dark fw-medium">${gradedCount}</span> of ${totalStudents} students graded (${totalStudents - gradedCount} remaining).</span>`;
             }
         }
     }
@@ -510,7 +513,7 @@ require_once __DIR__ . '/../../includes/header.php';
         const submitBtn = document.getElementById('saveGradesBtn');
 
         if (!courseId || !assessmentType) {
-            showAlert('danger', 'Please ensure both course and assessment type are selected.');
+            showAlert('danger', 'Please make sure both class and assessment type are chosen.');
             return;
         }
 
@@ -536,24 +539,24 @@ require_once __DIR__ . '/../../includes/header.php';
         });
 
         if (hasInvalid) {
-            showAlert('danger', 'Please correct invalid grades highlighted in red (must be numbers between 0 and 100).');
+            showAlert('danger', 'Please correct the invalid marks highlighted in red (must be between 0 and 100).');
             return;
         }
 
         if (gradeData.length === 0) {
-            showAlert('warning', 'Please enter at least one valid grade before saving.');
+            showAlert('warning', 'Please enter at least one valid mark before saving.');
             return;
         }
 
         if (missingCount > 0) {
-            if (!confirm(`${missingCount} student(s) do not have a grade entered for ${assessmentType}. Proceed to save only the entered grades?`)) {
+            if (!confirm(`${missingCount} student(s) do not have a mark entered for ${assessmentType}. Proceed to save only the entered marks?`)) {
                 return;
             }
         }
 
         submitBtn.disabled = true;
         const originalBtnHtml = submitBtn.innerHTML;
-        submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span> Saving Grades...';
+        submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span> Saving Marks...';
 
         fetch('<?= htmlspecialchars(base_url('/api/save_coursework.php'), ENT_QUOTES, 'UTF-8') ?>', {
             method: 'POST',
@@ -574,21 +577,21 @@ require_once __DIR__ . '/../../includes/header.php';
             submitBtn.innerHTML = originalBtnHtml;
 
             if (data.success) {
-                showAlert('success', `Grades saved successfully for ${gradeData.length} students! Assessment Class Average: ${data.average}`);
+                showAlert('success', `Marks successfully saved for ${gradeData.length} students! Assessment Class Average: ${data.average}`);
                 window.scrollTo({ top: 0, behavior: 'smooth' });
                 // Refresh gradebook cache in background
                 fetch(`<?= htmlspecialchars(base_url('/api/get_gradebook.php'), ENT_QUOTES, 'UTF-8') ?>?course_id=${encodeURIComponent(courseId)}`)
                     .then(res => res.json())
                     .then(resData => { gradebookOtherGrades = resData.grades || {}; });
             } else {
-                showAlert('danger', data.error || 'Failed to save coursework grades.');
+                showAlert('danger', data.error || 'Failed to save coursework marks.');
             }
         })
         .catch(err => {
             console.error('Error saving coursework:', err);
             submitBtn.disabled = false;
             submitBtn.innerHTML = originalBtnHtml;
-            showAlert('danger', 'Network error encountered while saving grades.');
+            showAlert('danger', 'Network error encountered while saving marks.');
         });
     }
 
