@@ -1,72 +1,202 @@
 <?php
 require_once __DIR__ . '/../includes/auth_functions.php';
 
+// If already logged in, redirect based on role
+if (isLoggedIn()) {
+    $role = $_SESSION['role'] ?? '';
+    switch ($role) {
+        case 'admin':
+            header("Location: " . base_url('/modules/admin/dashboard.php'));
+            break;
+        case 'head':
+            header("Location: " . base_url('/modules/head/dashboard.php'));
+            break;
+        case 'lecturer':
+            header("Location: " . base_url('/modules/lecturer/dashboard.php'));
+            break;
+        default:
+            header("Location: " . base_url('/'));
+            break;
+    }
+    exit;
+}
+
 $error = '';
+$usernameVal = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!verifyCsrfToken($_POST['csrf_token'] ?? '')) {
-        $error = "Invalid CSRF token.";
+        $error = "Your security validation token has expired. Please refresh the page and try again.";
     } else {
-        $username = trim($_POST['username']);
-        $password = $_POST['password'];
+        $usernameVal = trim($_POST['username'] ?? '');
+        $password = $_POST['password'] ?? '';
         
-        if (login($username, $password)) {
+        if (empty($usernameVal) || empty($password)) {
+            $error = "Please enter both your username and password.";
+        } elseif (login($usernameVal, $password)) {
             // Redirect based on role
             switch ($_SESSION['role']) {
                 case 'admin':
-                    header("Location: /CourseMonitor/modules/admin/dashboard.php");
-                    break;
-                case 'lecturer':
-                    header("Location: /CourseMonitor/modules/lecturer/dashboard.php");
+                    header("Location: " . base_url('/modules/admin/dashboard.php'));
                     break;
                 case 'head':
-                    header("Location: /CourseMonitor/modules/head/dashboard.php");
+                    header("Location: " . base_url('/modules/head/dashboard.php'));
+                    break;
+                case 'lecturer':
+                    header("Location: " . base_url('/modules/lecturer/dashboard.php'));
                     break;
                 default:
-                    header("Location: /CourseMonitor/index.php"); // Fallback
+                    header("Location: " . base_url('/'));
+                    break;
             }
             exit;
         } else {
-            $error = "Invalid username or password.";
+            $error = "Invalid username or password. Please verify your credentials and try again.";
         }
     }
 }
+
+$pageTitle = 'Sign In';
+$showNavbar = true;
+require_once __DIR__ . '/../includes/header.php';
 ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - CourseMonitor</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body { height: 100vh; background-color: #f8f9fa; display: flex; align-items: center; justify-content: center; }
-        .login-card { max-width: 400px; width: 100%; }
-    </style>
-</head>
-<body>
-    <div class="card login-card shadow-sm">
-        <div class="card-body p-4">
-            <h2 class="text-center mb-4">CourseMonitor</h2>
-            <?php if ($error): ?>
-                <div class="alert alert-danger"><?php echo htmlspecialchars($error); ?></div>
-            <?php endif; ?>
-            <form method="POST" action="">
-                <input type="hidden" name="csrf_token" value="<?php echo generateCsrfToken(); ?>">
-                <div class="mb-3">
-                    <label for="username" class="form-label">Username</label>
-                    <input type="text" id="username" name="username" class="form-control" required>
+
+<div class="container py-5 my-auto">
+    <div class="row justify-content-center">
+        <div class="col-12 col-sm-10 col-md-8 col-lg-5 col-xl-4" style="max-width: 440px;">
+            <div class="cm-card shadow-sm border bg-white">
+                <div class="cm-card-body p-4 p-sm-5">
+                    <!-- Academic Crest & Header -->
+                    <div class="text-center mb-4">
+                        <div class="d-inline-flex align-items-center justify-content-center rounded-circle bg-slate-100 text-primary mb-3" style="width: 52px; height: 52px; font-size: 1.5rem;" aria-hidden="true">
+                            <i class="bi bi-mortarboard-fill"></i>
+                        </div>
+                        <h1 class="h4 fw-bold text-slate-900 mb-1">CourseMonitor</h1>
+                        <p class="text-xs text-secondary mb-0">Institutional Performance &amp; Attendance Portal</p>
+                    </div>
+
+                    <?php if (!empty($error)): ?>
+                        <div class="alert alert-danger d-flex align-items-start gap-2 mb-4" role="alert" aria-live="assertive" id="login-error">
+                            <i class="bi bi-exclamation-triangle-fill flex-shrink-0 mt-1" aria-hidden="true"></i>
+                            <div class="text-xs">
+                                <span class="fw-semibold">Sign in failed:</span> <?= htmlspecialchars($error, ENT_QUOTES, 'UTF-8') ?>
+                            </div>
+                        </div>
+                    <?php endif; ?>
+
+                    <form method="POST" action="" class="needs-validation">
+                        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(generateCsrfToken(), ENT_QUOTES, 'UTF-8') ?>">
+                        
+                        <!-- Username Field -->
+                        <div class="mb-3">
+                            <label for="username" class="form-label">
+                                Username <span class="text-danger" aria-hidden="true">*</span>
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-slate-50 text-secondary border-end-0" id="username-addon">
+                                    <i class="bi bi-person" aria-hidden="true"></i>
+                                </span>
+                                <input 
+                                    type="text" 
+                                    id="username" 
+                                    name="username" 
+                                    class="form-control border-start-0" 
+                                    required 
+                                    aria-required="true" 
+                                    autocomplete="username" 
+                                    aria-describedby="username-addon <?= !empty($error) ? 'login-error' : '' ?>"
+                                    placeholder="Enter your username"
+                                    value="<?= htmlspecialchars($usernameVal, ENT_QUOTES, 'UTF-8') ?>"
+                                    autofocus
+                                >
+                            </div>
+                        </div>
+
+                        <!-- Password Field -->
+                        <div class="mb-4">
+                            <label for="password" class="form-label">
+                                Password <span class="text-danger" aria-hidden="true">*</span>
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-slate-50 text-secondary border-end-0" id="password-addon">
+                                    <i class="bi bi-key" aria-hidden="true"></i>
+                                </span>
+                                <input 
+                                    type="password" 
+                                    id="password" 
+                                    name="password" 
+                                    class="form-control border-start-0 border-end-0" 
+                                    required 
+                                    aria-required="true" 
+                                    autocomplete="current-password" 
+                                    aria-describedby="password-addon password-help"
+                                    placeholder="Enter your password"
+                                >
+                                <button 
+                                    type="button" 
+                                    class="btn btn-outline-secondary border-start-0 text-secondary px-3" 
+                                    id="togglePasswordBtn" 
+                                    aria-label="Show password" 
+                                    title="Show password"
+                                    onclick="togglePasswordVisibility()"
+                                >
+                                    <i class="bi bi-eye" id="togglePasswordIcon" aria-hidden="true"></i>
+                                </button>
+                            </div>
+                            <div class="form-text text-xs mt-1" id="password-help">
+                                <i class="bi bi-shield-check me-1" aria-hidden="true"></i>Passwords are strictly case-sensitive.
+                            </div>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <button type="submit" class="btn btn-primary w-100 py-2">
+                            <i class="bi bi-box-arrow-in-right me-1" aria-hidden="true"></i>
+                            <span>Sign In to Dashboard</span>
+                        </button>
+                    </form>
+
+                    <!-- Account Registration Link -->
+                    <div class="text-center pt-3 mt-4 border-top">
+                        <span class="text-xs text-secondary">Need staff access?</span>
+                        <a href="<?= htmlspecialchars(base_url('/public/signup.php'), ENT_QUOTES, 'UTF-8') ?>" class="text-xs fw-semibold text-primary ms-1">
+                            Request account registration
+                        </a>
+                    </div>
                 </div>
-                <div class="mb-3">
-                    <label for="password" class="form-label">Password</label>
-                    <input type="password" id="password" name="password" class="form-control" required>
+
+                <div class="cm-card-footer bg-slate-50 border-top text-center py-3">
+                    <p class="text-xs text-muted mb-0">
+                        <i class="bi bi-lock-fill me-1" aria-hidden="true"></i>
+                        Protected institutional system. All access attempts are monitored and recorded.
+                    </p>
                 </div>
-                <button type="submit" class="btn btn-primary w-100">Login</button>
-            </form>
-            <div class="text-center mt-3">
-                <a href="/CourseMonitor/public/signup.php">Don't have an account? Sign Up</a>
             </div>
         </div>
     </div>
-</body>
-</html>
+</div>
+
+<script>
+function togglePasswordVisibility() {
+    const passwordInput = document.getElementById('password');
+    const toggleIcon = document.getElementById('togglePasswordIcon');
+    const toggleBtn = document.getElementById('togglePasswordBtn');
+
+    if (!passwordInput || !toggleIcon || !toggleBtn) return;
+
+    if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        toggleIcon.className = 'bi bi-eye-slash';
+        toggleBtn.setAttribute('aria-label', 'Hide password');
+        toggleBtn.setAttribute('title', 'Hide password');
+    } else {
+        passwordInput.type = 'password';
+        toggleIcon.className = 'bi bi-eye';
+        toggleBtn.setAttribute('aria-label', 'Show password');
+        toggleBtn.setAttribute('title', 'Show password');
+    }
+}
+</script>
+
+<?php
+require_once __DIR__ . '/../includes/footer.php';
+?>
