@@ -3,7 +3,7 @@
 require_once __DIR__ . '/../../includes/auth_functions.php';
 requireRole('admin');
 
-$pageTitle = 'Course Management';
+$pageTitle = 'Courses';
 require_once __DIR__ . '/../../includes/header.php';
 ?>
 
@@ -22,12 +22,12 @@ require_once __DIR__ . '/../../includes/header.php';
 
     <div class="cm-page-header">
         <div>
-            <h1 class="cm-page-title">Curriculum Course Catalog</h1>
-            <p class="cm-page-subtitle">Manage institutional courses, credit hour allocations, lecturer assignments, and semester eligibility</p>
+            <h1 class="cm-page-title">Courses</h1>
+            <p class="cm-page-subtitle">Create and organize courses, assign teachers, and allocate credit hours</p>
         </div>
         <div class="d-flex align-items-center gap-2">
             <button type="button" onclick="openModal()" class="btn btn-primary" id="btnOpenAddCourse">
-                <i class="bi bi-plus-circle me-1" aria-hidden="true"></i>Add New Course
+                <i class="bi bi-plus-circle me-1" aria-hidden="true"></i>Add Course
             </button>
         </div>
     </div>
@@ -37,6 +37,7 @@ require_once __DIR__ . '/../../includes/header.php';
 
     <!-- Data Matrix Card -->
     <div class="cm-card">
+        <!-- Filter Toolbar -->
         <div class="cm-card-header flex-column flex-md-row align-items-stretch align-items-md-center gap-3">
             <div class="d-flex flex-wrap align-items-center gap-2 flex-grow-1">
                 <!-- Search Input -->
@@ -45,7 +46,7 @@ require_once __DIR__ . '/../../includes/header.php';
                         <i class="bi bi-search" aria-hidden="true"></i>
                     </span>
                     <input type="text" id="searchInput" class="form-control border-start-0" 
-                           placeholder="Search course code or title..." 
+                           placeholder="Search by course code or title..." 
                            aria-label="Search courses" aria-describedby="search-addon"
                            oninput="filterCourses()">
                 </div>
@@ -53,7 +54,7 @@ require_once __DIR__ . '/../../includes/header.php';
                 <!-- Department Filter -->
                 <div style="min-width: 220px;">
                     <select id="filter_dept_id" class="form-select" onchange="filterCourses()" aria-label="Filter by department">
-                        <option value="">All Academic Departments</option>
+                        <option value="">All Departments</option>
                     </select>
                 </div>
 
@@ -69,7 +70,7 @@ require_once __DIR__ . '/../../includes/header.php';
             </div>
 
             <div class="d-flex align-items-center gap-2 text-muted small">
-                <span>Active Catalog:</span>
+                <span>Total Courses:</span>
                 <span class="badge cm-badge-neutral font-monospace" id="matchCount">0</span>
             </div>
         </div>
@@ -79,20 +80,20 @@ require_once __DIR__ . '/../../includes/header.php';
                 <table class="table cm-table table-hover mb-0" id="courseTable">
                     <thead>
                         <tr>
-                            <th scope="col" style="width: 130px;">Course Code</th>
+                            <th scope="col" style="width: 140px;">Course Code</th>
                             <th scope="col">Course Title</th>
-                            <th scope="col" style="width: 110px;" class="text-center">Credits</th>
+                            <th scope="col" style="width: 100px;" class="text-center">Credits</th>
                             <th scope="col">Department</th>
-                            <th scope="col">Assigned Lecturer</th>
-                            <th scope="col">Eligible Semesters</th>
-                            <th scope="col" class="text-end" style="width: 130px;">Actions</th>
+                            <th scope="col">Assigned Teacher</th>
+                            <th scope="col">Semesters</th>
+                            <th scope="col" class="text-end" style="width: 110px;">Actions</th>
                         </tr>
                     </thead>
                     <tbody id="courseTableBody">
                         <tr>
                             <td colspan="7" class="text-center py-4 text-muted">
                                 <div class="spinner-border spinner-border-sm text-primary me-2" role="status"></div>
-                                Loading course catalog...
+                                Loading courses...
                             </td>
                         </tr>
                     </tbody>
@@ -101,13 +102,13 @@ require_once __DIR__ . '/../../includes/header.php';
         </div>
 
         <div class="cm-card-footer d-flex justify-content-between align-items-center">
-            <span class="text-muted small" id="recordSummary">Displaying active curriculum courses</span>
-            <span class="badge cm-badge-neutral small">Curriculum Registry</span>
+            <span class="text-muted small" id="recordSummary">Showing course offerings</span>
+            <span class="badge cm-badge-neutral small">Course Catalog</span>
         </div>
     </div>
 </div>
 
-<!-- Accessible Add / Edit Course Modal -->
+<!-- Add / Edit Course Modal -->
 <div class="modal fade" id="courseModal" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-modal="true" data-bs-backdrop="static">
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content cm-card border-0">
@@ -128,13 +129,13 @@ require_once __DIR__ . '/../../includes/header.php';
                                 Course Code <span class="required" aria-hidden="true">*</span>
                             </label>
                             <input type="text" id="code" class="form-control font-monospace" placeholder="e.g. CS101" required autocomplete="off">
-                            <div class="form-text">Unique alphanumeric course identifier.</div>
+                            <div class="form-text">Unique course identifier code.</div>
                         </div>
                         <div class="col-md-7 mb-3">
                             <label for="name" class="form-label">
                                 Course Title <span class="required" aria-hidden="true">*</span>
                             </label>
-                            <input type="text" id="name" class="form-control" placeholder="e.g. Introduction to Computer Science" required>
+                            <input type="text" id="name" class="form-control" placeholder="e.g. Introduction to Programming" required>
                         </div>
                     </div>
 
@@ -144,7 +145,7 @@ require_once __DIR__ . '/../../includes/header.php';
                                 Credit Hours <span class="required" aria-hidden="true">*</span>
                             </label>
                             <input type="number" id="credit_hours" class="form-control" required min="1" max="10" value="3">
-                            <div class="form-text">Academic credit units.</div>
+                            <div class="form-text">Number of academic credits.</div>
                         </div>
                         <div class="col-md-8 mb-3">
                             <label for="department_id" class="form-label">
@@ -158,17 +159,17 @@ require_once __DIR__ . '/../../includes/header.php';
 
                     <div class="mb-3">
                         <label for="lecturer_id" class="form-label">
-                            Assign Lecturer <span class="text-muted fw-normal">(Optional)</span>
+                            Assign Teacher <span class="text-muted fw-normal">(Optional)</span>
                         </label>
                         <select id="lecturer_id" class="form-select">
-                            <option value="">Select Lecturer...</option>
+                            <option value="">Select Teacher...</option>
                         </select>
-                        <div class="form-text">Academic instructor designated to record attendance and coursework grades.</div>
+                        <div class="form-text">The instructor who takes attendance and enters student grades for this course.</div>
                     </div>
 
                     <div class="mb-3">
                         <label class="form-label d-block">
-                            Recommended Semesters <span class="text-muted fw-normal">(Select all applicable)</span>
+                            Available Semesters <span class="text-muted fw-normal">(Select all that apply)</span>
                         </label>
                         <div class="row g-2 p-3 border rounded bg-light">
                             <?php for ($i = 1; $i <= 8; $i++): ?>
@@ -235,7 +236,7 @@ require_once __DIR__ . '/../../includes/header.php';
             .then(depts => {
                 const filterSelect = document.getElementById('filter_dept_id');
                 const formSelect = document.getElementById('department_id');
-                filterSelect.innerHTML = '<option value="">All Academic Departments</option>';
+                filterSelect.innerHTML = '<option value="">All Departments</option>';
                 formSelect.innerHTML = '<option value="">Select Department...</option>';
 
                 if (Array.isArray(depts)) {
@@ -260,7 +261,7 @@ require_once __DIR__ . '/../../includes/header.php';
             .then(r => r.json())
             .then(lecturers => {
                 const select = document.getElementById('lecturer_id');
-                select.innerHTML = '<option value="">Select Lecturer...</option>';
+                select.innerHTML = '<option value="">Select Teacher...</option>';
                 if (Array.isArray(lecturers)) {
                     lecturers.forEach(l => {
                         const opt = document.createElement('option');
@@ -288,8 +289,8 @@ require_once __DIR__ . '/../../includes/header.php';
                         <td colspan="7">
                             <div class="cm-empty-state py-4">
                                 <div class="cm-empty-icon text-danger" aria-hidden="true"><i class="bi bi-exclamation-octagon"></i></div>
-                                <h3 class="cm-empty-title">Failed to Load Courses</h3>
-                                <p class="cm-empty-desc">An error occurred while loading courses from the academic registry.</p>
+                                <h3 class="cm-empty-title">Failed to load courses</h3>
+                                <p class="cm-empty-desc">An error occurred while loading courses. Please check your connection.</p>
                                 <button type="button" onclick="loadCourses()" class="btn btn-sm btn-outline-primary">Try Again</button>
                             </div>
                         </td>
@@ -335,7 +336,7 @@ require_once __DIR__ . '/../../includes/header.php';
                         <div class="cm-empty-state py-4">
                             <div class="cm-empty-icon" aria-hidden="true"><i class="bi bi-book"></i></div>
                             <h3 class="cm-empty-title">No Courses Found</h3>
-                            <p class="cm-empty-desc">No course offerings matched the active filter parameters. Adjust filters or register a new course.</p>
+                            <p class="cm-empty-desc">No courses match the active search or filters. Adjust filters or add a new course.</p>
                         </div>
                     </td>
                 </tr>
@@ -353,7 +354,7 @@ require_once __DIR__ . '/../../includes/header.php';
 
             let semBadges = '<span class="text-muted small">—</span>';
             if (Array.isArray(c.semesters) && c.semesters.length > 0) {
-                semBadges = c.semesters.map(s => `<span class="badge cm-badge-neutral font-monospace me-1">S${s}</span>`).join('');
+                semBadges = c.semesters.map(s => `<span class="badge cm-badge-neutral font-monospace me-1">Sem ${s}</span>`).join('');
             }
 
             tbody.innerHTML += `
@@ -378,8 +379,7 @@ require_once __DIR__ . '/../../includes/header.php';
                     <td>${semBadges}</td>
                     <td class="text-end">
                         <button type="button" onclick="editCourse(${courseJson})" class="btn btn-sm btn-outline-primary" aria-label="Edit course ${escapeHtml(c.code)}">
-                            <i class="bi bi-pencil" aria-hidden="true"></i>
-                            <span class="d-none d-md-inline ms-1">Edit</span>
+                            <i class="bi bi-pencil me-1" aria-hidden="true"></i>Edit
                         </button>
                     </td>
                 </tr>
@@ -436,7 +436,7 @@ require_once __DIR__ . '/../../includes/header.php';
         const semesters = Array.from(document.querySelectorAll('.sem-check:checked')).map(c => parseInt(c.value, 10));
 
         if (!code || !name || isNaN(creditHours) || creditHours <= 0 || !deptId) {
-            modalAlert.textContent = 'Please complete all required fields (Code, Name, valid Credit Hours > 0, and Department).';
+            modalAlert.textContent = 'Please fill in all required fields (Code, Title, valid Credits, and Department).';
             modalAlert.classList.remove('d-none');
             return;
         }
@@ -480,7 +480,7 @@ require_once __DIR__ . '/../../includes/header.php';
             console.error(err);
             saveBtn.disabled = false;
             saveBtn.innerHTML = originalBtnText;
-            modalAlert.textContent = 'Network communication error while saving course.';
+            modalAlert.textContent = 'Network error while saving course.';
             modalAlert.classList.remove('d-none');
         });
     }

@@ -3,7 +3,7 @@
 require_once __DIR__ . '/../../includes/auth_functions.php';
 requireRole('admin');
 
-$pageTitle = 'Department Management';
+$pageTitle = 'Departments';
 require_once __DIR__ . '/../../includes/header.php';
 ?>
 
@@ -22,8 +22,8 @@ require_once __DIR__ . '/../../includes/header.php';
 
     <div class="cm-page-header">
         <div>
-            <h1 class="cm-page-title">Department Organizational Structure</h1>
-            <p class="cm-page-subtitle">Configure academic departments, establish parent faculty hierarchies, and appoint Department Heads</p>
+            <h1 class="cm-page-title">Departments</h1>
+            <p class="cm-page-subtitle">Manage academic departments, parent faculties, and appointed Department Heads</p>
         </div>
         <div class="d-flex align-items-center gap-2">
             <button type="button" onclick="openModal()" class="btn btn-primary" id="btnOpenAddDept">
@@ -37,6 +37,7 @@ require_once __DIR__ . '/../../includes/header.php';
 
     <!-- Data Matrix Card -->
     <div class="cm-card">
+        <!-- Filter Toolbar -->
         <div class="cm-card-header flex-column flex-md-row align-items-stretch align-items-md-center gap-3">
             <div class="d-flex flex-wrap align-items-center gap-2 flex-grow-1">
                 <!-- Search Input -->
@@ -45,7 +46,7 @@ require_once __DIR__ . '/../../includes/header.php';
                         <i class="bi bi-search" aria-hidden="true"></i>
                     </span>
                     <input type="text" id="searchInput" class="form-control border-start-0" 
-                           placeholder="Search department, faculty, or head..." 
+                           placeholder="Search by department, faculty, or head..." 
                            aria-label="Search departments" aria-describedby="search-addon"
                            oninput="filterDepartments()">
                 </div>
@@ -53,13 +54,13 @@ require_once __DIR__ . '/../../includes/header.php';
                 <!-- Faculty Filter -->
                 <div style="min-width: 220px;">
                     <select id="filter_faculty" class="form-select" onchange="filterDepartments()" aria-label="Filter by faculty">
-                        <option value="">All Parent Faculties</option>
+                        <option value="">All Faculties</option>
                     </select>
                 </div>
             </div>
 
             <div class="d-flex align-items-center gap-2 text-muted small">
-                <span>Active Departments:</span>
+                <span>Total Departments:</span>
                 <span class="badge cm-badge-neutral font-monospace" id="matchCount">0</span>
             </div>
         </div>
@@ -71,16 +72,16 @@ require_once __DIR__ . '/../../includes/header.php';
                         <tr>
                             <th scope="col" style="width: 50px;">#</th>
                             <th scope="col">Department Name</th>
-                            <th scope="col">Parent Faculty</th>
-                            <th scope="col">Head of Department</th>
-                            <th scope="col" class="text-end" style="width: 180px;">Actions</th>
+                            <th scope="col">Faculty</th>
+                            <th scope="col">Department Head</th>
+                            <th scope="col" class="text-end" style="width: 170px;">Actions</th>
                         </tr>
                     </thead>
                     <tbody id="deptTableBody">
                         <tr>
                             <td colspan="5" class="text-center py-4 text-muted">
                                 <div class="spinner-border spinner-border-sm text-primary me-2" role="status"></div>
-                                Loading department records...
+                                Loading departments...
                             </td>
                         </tr>
                     </tbody>
@@ -89,13 +90,13 @@ require_once __DIR__ . '/../../includes/header.php';
         </div>
 
         <div class="cm-card-footer d-flex justify-content-between align-items-center">
-            <span class="text-muted small" id="recordSummary">Displaying academic departments</span>
-            <span class="badge cm-badge-neutral small">Organizational Registry</span>
+            <span class="text-muted small" id="recordSummary">Showing academic departments</span>
+            <span class="badge cm-badge-neutral small">Department Directory</span>
         </div>
     </div>
 </div>
 
-<!-- Accessible Add / Edit Department Modal -->
+<!-- Add / Edit Department Modal -->
 <div class="modal fade" id="deptModal" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-modal="true" data-bs-backdrop="static">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content cm-card border-0">
@@ -118,7 +119,6 @@ require_once __DIR__ . '/../../includes/header.php';
                             <span class="input-group-text bg-light text-muted" aria-hidden="true"><i class="bi bi-building"></i></span>
                             <input type="text" id="name" class="form-control" placeholder="e.g. Department of Computer Science" required>
                         </div>
-                        <div class="form-text">Official academic department title.</div>
                     </div>
 
                     <div class="mb-3">
@@ -128,17 +128,17 @@ require_once __DIR__ . '/../../includes/header.php';
                         <select id="faculty_id" class="form-select">
                             <option value="">Select Faculty...</option>
                         </select>
-                        <div class="form-text">Higher-level division or college housing this department.</div>
+                        <div class="form-text">Choose the collegiate faculty or school this department belongs to.</div>
                     </div>
 
                     <div class="mb-3">
                         <label for="head_id" class="form-label">
-                            Assign Head of Department <span class="text-muted fw-normal">(Optional)</span>
+                            Assign Department Head <span class="text-muted fw-normal">(Optional)</span>
                         </label>
                         <select id="head_id" class="form-select">
                             <option value="">Select Department Head...</option>
                         </select>
-                        <div class="form-text">Only users registered with the 'Department Head' role are listed.</div>
+                        <div class="form-text">Only users registered with the Department Head role are listed.</div>
                     </div>
                 </div>
                 <div class="modal-footer border-top bg-light px-4 py-3">
@@ -193,7 +193,7 @@ require_once __DIR__ . '/../../includes/header.php';
                 const formSelect = document.getElementById('faculty_id');
                 const filterSelect = document.getElementById('filter_faculty');
                 formSelect.innerHTML = '<option value="">Select Faculty...</option>';
-                filterSelect.innerHTML = '<option value="">All Parent Faculties</option>';
+                filterSelect.innerHTML = '<option value="">All Faculties</option>';
 
                 if (Array.isArray(list)) {
                     list.forEach(f => {
@@ -245,8 +245,8 @@ require_once __DIR__ . '/../../includes/header.php';
                         <td colspan="5">
                             <div class="cm-empty-state py-4">
                                 <div class="cm-empty-icon text-danger" aria-hidden="true"><i class="bi bi-exclamation-octagon"></i></div>
-                                <h3 class="cm-empty-title">Failed to Load Departments</h3>
-                                <p class="cm-empty-desc">An error occurred while retrieving departmental organizational records.</p>
+                                <h3 class="cm-empty-title">Failed to load departments</h3>
+                                <p class="cm-empty-desc">An error occurred while loading departments. Please check your connection.</p>
                                 <button type="button" onclick="loadDepartments()" class="btn btn-sm btn-outline-primary">Try Again</button>
                             </div>
                         </td>
@@ -286,7 +286,7 @@ require_once __DIR__ . '/../../includes/header.php';
                         <div class="cm-empty-state py-4">
                             <div class="cm-empty-icon" aria-hidden="true"><i class="bi bi-building"></i></div>
                             <h3 class="cm-empty-title">No Departments Found</h3>
-                            <p class="cm-empty-desc">No academic departments match the current filter query. Clear filters or add a new department.</p>
+                            <p class="cm-empty-desc">No departments match the current search or filters. Adjust filters or add a new department.</p>
                         </div>
                     </td>
                 </tr>
@@ -320,12 +320,10 @@ require_once __DIR__ . '/../../includes/header.php';
                     <td class="text-end">
                         <div class="btn-group btn-group-sm" role="group" aria-label="Department actions">
                             <button type="button" onclick="editDept(${deptJson})" class="btn btn-outline-primary" aria-label="Edit department ${escapeHtml(d.name)}">
-                                <i class="bi bi-pencil" aria-hidden="true"></i>
-                                <span class="d-none d-md-inline ms-1">Edit</span>
+                                <i class="bi bi-pencil me-1" aria-hidden="true"></i>Edit
                             </button>
                             <button type="button" onclick="deleteDept(${Number(d.id)}, '${escapeHtml(d.name)}')" class="btn btn-outline-danger" aria-label="Delete department ${escapeHtml(d.name)}">
-                                <i class="bi bi-trash" aria-hidden="true"></i>
-                                <span class="d-none d-md-inline ms-1">Delete</span>
+                                <i class="bi bi-trash me-1" aria-hidden="true"></i>Delete
                             </button>
                         </div>
                     </td>
@@ -353,7 +351,7 @@ require_once __DIR__ . '/../../includes/header.php';
     }
 
     function deleteDept(id, name) {
-        if (!confirm(`Warning: Are you sure you want to delete department "${name}"? This action may unassign associated students and courses.`)) {
+        if (!confirm(`Are you sure you want to delete department "${name}"? This action cannot be undone.`)) {
             return;
         }
 
@@ -391,7 +389,7 @@ require_once __DIR__ . '/../../includes/header.php';
         const headId = document.getElementById('head_id').value;
 
         if (!name) {
-            modalAlert.textContent = 'Please enter a valid Department Name.';
+            modalAlert.textContent = 'Please enter a Department Name.';
             modalAlert.classList.remove('d-none');
             return;
         }
@@ -432,7 +430,7 @@ require_once __DIR__ . '/../../includes/header.php';
             console.error(err);
             saveBtn.disabled = false;
             saveBtn.innerHTML = originalBtnText;
-            modalAlert.textContent = 'Network communication error while saving department.';
+            modalAlert.textContent = 'Network error while saving department.';
             modalAlert.classList.remove('d-none');
         });
     }

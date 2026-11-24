@@ -4,7 +4,7 @@ require_once __DIR__ . '/../../includes/auth_functions.php';
 requireRole('admin');
 
 $user = getCurrentUser();
-$pageTitle = 'Administrator Dashboard';
+$pageTitle = 'Admin Dashboard';
 
 // Fetch system metric counts safely
 $totalUsers = 0;
@@ -52,8 +52,8 @@ require_once __DIR__ . '/../../includes/header.php';
     <!-- Page Header Banner -->
     <div class="cm-page-header">
         <div>
-            <h1 class="cm-page-title">IT Administrator Dashboard</h1>
-            <p class="cm-page-subtitle">Centralized user governance, academic entity catalog, and institutional audit trail</p>
+            <h1 class="cm-page-title">Admin Dashboard</h1>
+            <p class="cm-page-subtitle">Overview of system accounts, academic records, and recent activity</p>
         </div>
         <div class="d-flex align-items-center gap-2">
             <span class="badge cm-badge-neutral font-monospace">
@@ -71,7 +71,7 @@ require_once __DIR__ . '/../../includes/header.php';
         <div class="col-12 col-sm-6 col-xl">
             <div class="cm-stat-card">
                 <div class="cm-stat-header">
-                    <span class="cm-stat-label">System Users</span>
+                    <span class="cm-stat-label">Total Users</span>
                     <span class="cm-stat-icon primary" aria-hidden="true">
                         <i class="bi bi-people"></i>
                     </span>
@@ -79,16 +79,16 @@ require_once __DIR__ . '/../../includes/header.php';
                 <div class="cm-stat-val"><?= number_format($totalUsers) ?></div>
                 <p class="cm-stat-meta">
                     <i class="bi bi-person-badge text-primary" aria-hidden="true"></i>
-                    <span>Admins, Heads &amp; Lecturers</span>
+                    <span>Teachers, Heads &amp; Admins</span>
                 </p>
             </div>
         </div>
 
-        <!-- Enrolled Students -->
+        <!-- Students -->
         <div class="col-12 col-sm-6 col-xl">
             <div class="cm-stat-card">
                 <div class="cm-stat-header">
-                    <span class="cm-stat-label">Enrolled Students</span>
+                    <span class="cm-stat-label">Students</span>
                     <span class="cm-stat-icon success" aria-hidden="true">
                         <i class="bi bi-mortarboard"></i>
                     </span>
@@ -96,16 +96,16 @@ require_once __DIR__ . '/../../includes/header.php';
                 <div class="cm-stat-val"><?= number_format($totalStudents) ?></div>
                 <p class="cm-stat-meta">
                     <i class="bi bi-check2-circle text-success" aria-hidden="true"></i>
-                    <span>Active student roster</span>
+                    <span>Enrolled students</span>
                 </p>
             </div>
         </div>
 
-        <!-- Active Courses -->
+        <!-- Courses -->
         <div class="col-12 col-sm-6 col-xl">
             <div class="cm-stat-card">
                 <div class="cm-stat-header">
-                    <span class="cm-stat-label">Active Courses</span>
+                    <span class="cm-stat-label">Courses</span>
                     <span class="cm-stat-icon info" aria-hidden="true">
                         <i class="bi bi-book"></i>
                     </span>
@@ -113,7 +113,7 @@ require_once __DIR__ . '/../../includes/header.php';
                 <div class="cm-stat-val"><?= number_format($activeCourses) ?></div>
                 <p class="cm-stat-meta">
                     <i class="bi bi-journal-bookmark text-info" aria-hidden="true"></i>
-                    <span>Semester curriculum catalog</span>
+                    <span>Current course catalog</span>
                 </p>
             </div>
         </div>
@@ -147,7 +147,7 @@ require_once __DIR__ . '/../../includes/header.php';
                 <div class="cm-stat-val"><?= number_format($totalFaculties) ?></div>
                 <p class="cm-stat-meta">
                     <i class="bi bi-grid text-secondary" aria-hidden="true"></i>
-                    <span>Parent divisions</span>
+                    <span>Faculties &amp; divisions</span>
                 </p>
             </div>
         </div>
@@ -156,7 +156,7 @@ require_once __DIR__ . '/../../includes/header.php';
     <!-- Quick Navigation Grid -->
     <div class="mb-4">
         <h2 class="h5 mb-3 fw-semibold text-slate-800">
-            <i class="bi bi-grid-fill me-2 text-primary" aria-hidden="true"></i>Administrative Management Modules
+            <i class="bi bi-grid-fill me-2 text-primary" aria-hidden="true"></i>Manage Modules
         </h2>
         <div class="row g-3">
             <!-- User Management -->
@@ -168,10 +168,10 @@ require_once __DIR__ . '/../../includes/header.php';
                                 <span class="cm-stat-icon primary" aria-hidden="true">
                                     <i class="bi bi-person-gear"></i>
                                 </span>
-                                <h3 class="cm-card-title mb-0">User Accounts</h3>
+                                <h3 class="cm-card-title mb-0">Users</h3>
                             </div>
                             <p class="text-secondary small mb-3">
-                                Provision and maintain Lecturer, Head of Department, and Administrator credentials, assignments, and activation status.
+                                Create and manage user accounts, assign roles (Lecturer, Department Head, Admin), and set affiliations.
                             </p>
                         </div>
                         <a href="<?= htmlspecialchars(base_url('/modules/admin/users.php'), ENT_QUOTES, 'UTF-8') ?>" class="btn btn-outline-primary btn-sm w-100">
@@ -190,10 +190,10 @@ require_once __DIR__ . '/../../includes/header.php';
                                 <span class="cm-stat-icon success" aria-hidden="true">
                                     <i class="bi bi-mortarboard"></i>
                                 </span>
-                                <h3 class="cm-card-title mb-0">Student Records</h3>
+                                <h3 class="cm-card-title mb-0">Students</h3>
                             </div>
                             <p class="text-secondary small mb-3">
-                                Register student profiles, manage institutional IDs, track current academic semester progression, and department enrollments.
+                                Register new students, update matriculation IDs, manage current semesters, and track department enrollments.
                             </p>
                         </div>
                         <a href="<?= htmlspecialchars(base_url('/modules/admin/students.php'), ENT_QUOTES, 'UTF-8') ?>" class="btn btn-outline-primary btn-sm w-100">
@@ -212,10 +212,10 @@ require_once __DIR__ . '/../../includes/header.php';
                                 <span class="cm-stat-icon info" aria-hidden="true">
                                     <i class="bi bi-book"></i>
                                 </span>
-                                <h3 class="cm-card-title mb-0">Course Catalog</h3>
+                                <h3 class="cm-card-title mb-0">Courses</h3>
                             </div>
                             <p class="text-secondary small mb-3">
-                                Configure academic courses, assign responsible lecturers, specify credit hours, and configure semester eligibility mappings.
+                                Set up courses, assign lecturers, define credit hours, and configure semester offerings.
                             </p>
                         </div>
                         <a href="<?= htmlspecialchars(base_url('/modules/admin/courses.php'), ENT_QUOTES, 'UTF-8') ?>" class="btn btn-outline-primary btn-sm w-100">
@@ -237,7 +237,7 @@ require_once __DIR__ . '/../../includes/header.php';
                                 <h3 class="cm-card-title mb-0">Departments</h3>
                             </div>
                             <p class="text-secondary small mb-3">
-                                Establish academic departments, affiliate them with faculties, and appoint qualified Department Heads.
+                                Organize academic departments, connect them to faculties, and appoint Department Heads.
                             </p>
                         </div>
                         <a href="<?= htmlspecialchars(base_url('/modules/admin/departments.php'), ENT_QUOTES, 'UTF-8') ?>" class="btn btn-outline-primary btn-sm w-100">
@@ -259,7 +259,7 @@ require_once __DIR__ . '/../../includes/header.php';
                                 <h3 class="cm-card-title mb-0">Faculties</h3>
                             </div>
                             <p class="text-secondary small mb-3">
-                                Maintain institutional faculties representing colleges and organizational divisions for lecturer and department groupings.
+                                Manage higher-level faculties, colleges, and academic divisions across the institution.
                             </p>
                         </div>
                         <a href="<?= htmlspecialchars(base_url('/modules/admin/faculties.php'), ENT_QUOTES, 'UTF-8') ?>" class="btn btn-outline-primary btn-sm w-100">
@@ -269,7 +269,7 @@ require_once __DIR__ . '/../../includes/header.php';
                 </div>
             </div>
 
-            <!-- Institutional System Overview -->
+            <!-- System Overview -->
             <div class="col-12 col-md-6 col-lg-4">
                 <div class="cm-card h-100">
                     <div class="cm-card-body d-flex flex-column justify-content-between">
@@ -278,7 +278,7 @@ require_once __DIR__ . '/../../includes/header.php';
                                 <span class="cm-stat-icon primary" aria-hidden="true">
                                     <i class="bi bi-hdd-network"></i>
                                 </span>
-                                <h3 class="cm-card-title mb-0">System Environment</h3>
+                                <h3 class="cm-card-title mb-0">System Status</h3>
                             </div>
                             <ul class="list-unstyled small text-secondary mb-3 space-y-1">
                                 <li class="d-flex justify-content-between py-1 border-bottom">
@@ -290,26 +290,26 @@ require_once __DIR__ . '/../../includes/header.php';
                                     <span class="font-monospace text-slate-700"><?= PHP_VERSION ?></span>
                                 </li>
                                 <li class="d-flex justify-content-between py-1">
-                                    <span>System Release:</span>
+                                    <span>App Release:</span>
                                     <span class="badge cm-badge-neutral font-monospace">v2.4.0</span>
                                 </li>
                             </ul>
                         </div>
-                        <span class="text-muted small text-center">Institutional Core v2.4.0</span>
+                        <span class="text-muted small text-center">CourseMonitor v2.4.0</span>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Recent Audit Activity Overview -->
+    <!-- Recent Activity -->
     <div class="cm-card">
         <div class="cm-card-header">
             <div class="d-flex align-items-center gap-2">
                 <i class="bi bi-clock-history text-primary" aria-hidden="true"></i>
-                <h2 class="cm-card-title h6 mb-0">Recent Institutional Modifications &amp; Audit Trail</h2>
+                <h2 class="cm-card-title h6 mb-0">Recent Activity</h2>
             </div>
-            <span class="text-muted small">Latest system events</span>
+            <span class="text-muted small">Latest system actions and updates</span>
         </div>
         <div class="cm-card-body p-0">
             <?php if (empty($recentActivities)): ?>
@@ -317,9 +317,9 @@ require_once __DIR__ . '/../../includes/header.php';
                     <div class="cm-empty-icon" aria-hidden="true">
                         <i class="bi bi-inbox"></i>
                     </div>
-                    <h3 class="cm-empty-title">No Audit Events Logged</h3>
+                    <h3 class="cm-empty-title">No Recent Activity</h3>
                     <p class="cm-empty-desc">
-                        No recent record modifications or administrative actions have been captured in the audit logs yet.
+                        No actions or record changes have been recorded in the activity log yet.
                     </p>
                 </div>
             <?php else: ?>
@@ -327,18 +327,18 @@ require_once __DIR__ . '/../../includes/header.php';
                     <table class="table cm-table table-hover mb-0">
                         <thead>
                             <tr>
-                                <th scope="col" style="width: 180px;">Timestamp</th>
+                                <th scope="col" style="width: 180px;">Time</th>
                                 <th scope="col" style="width: 110px;">Action</th>
-                                <th scope="col">Target Entity</th>
+                                <th scope="col">Item</th>
                                 <th scope="col" style="width: 140px;">Record ID</th>
-                                <th scope="col">Initiated By</th>
+                                <th scope="col">Changed By</th>
                             </tr>
                         </thead>
                         <tbody>
                             <?php foreach ($recentActivities as $act): ?>
                                 <tr>
                                     <td class="font-monospace text-secondary small">
-                                        <?= htmlspecialchars(date('Y-m-d H:i:s', strtotime($act['modified_at'] ?? 'now')), ENT_QUOTES, 'UTF-8') ?>
+                                        <?= htmlspecialchars(date('M j, Y H:i', strtotime($act['modified_at'] ?? 'now')), ENT_QUOTES, 'UTF-8') ?>
                                     </td>
                                     <td>
                                         <?php 

@@ -3,7 +3,7 @@
 require_once __DIR__ . '/../../includes/auth_functions.php';
 requireRole('admin');
 
-$pageTitle = 'Faculty Management';
+$pageTitle = 'Faculties';
 require_once __DIR__ . '/../../includes/header.php';
 ?>
 
@@ -22,8 +22,8 @@ require_once __DIR__ . '/../../includes/header.php';
 
     <div class="cm-page-header">
         <div>
-            <h1 class="cm-page-title">Faculty Division Directory</h1>
-            <p class="cm-page-subtitle">Configure higher-level institutional faculties, colleges, and academic divisions</p>
+            <h1 class="cm-page-title">Faculties</h1>
+            <p class="cm-page-subtitle">Manage university faculties, colleges, and academic divisions</p>
         </div>
         <div class="d-flex align-items-center gap-2">
             <button type="button" onclick="openModal()" class="btn btn-primary" id="btnOpenAddFaculty">
@@ -37,6 +37,7 @@ require_once __DIR__ . '/../../includes/header.php';
 
     <!-- Data Matrix Card -->
     <div class="cm-card">
+        <!-- Filter Toolbar -->
         <div class="cm-card-header flex-column flex-md-row align-items-stretch align-items-md-center gap-3">
             <div class="d-flex flex-wrap align-items-center gap-2 flex-grow-1">
                 <!-- Search Input -->
@@ -45,14 +46,14 @@ require_once __DIR__ . '/../../includes/header.php';
                         <i class="bi bi-search" aria-hidden="true"></i>
                     </span>
                     <input type="text" id="searchInput" class="form-control border-start-0" 
-                           placeholder="Search faculty name..." 
+                           placeholder="Search by faculty name..." 
                            aria-label="Search faculties" aria-describedby="search-addon"
                            oninput="filterFaculties()">
                 </div>
             </div>
 
             <div class="d-flex align-items-center gap-2 text-muted small">
-                <span>Total Divisions:</span>
+                <span>Total Faculties:</span>
                 <span class="badge cm-badge-neutral font-monospace" id="matchCount">0</span>
             </div>
         </div>
@@ -63,15 +64,15 @@ require_once __DIR__ . '/../../includes/header.php';
                     <thead>
                         <tr>
                             <th scope="col" style="width: 50px;">#</th>
-                            <th scope="col">Faculty Division Name</th>
-                            <th scope="col" class="text-end" style="width: 180px;">Actions</th>
+                            <th scope="col">Faculty Name</th>
+                            <th scope="col" class="text-end" style="width: 170px;">Actions</th>
                         </tr>
                     </thead>
                     <tbody id="facultyTableBody">
                         <tr>
                             <td colspan="3" class="text-center py-4 text-muted">
                                 <div class="spinner-border spinner-border-sm text-primary me-2" role="status"></div>
-                                Loading faculty divisions...
+                                Loading faculties...
                             </td>
                         </tr>
                     </tbody>
@@ -80,13 +81,13 @@ require_once __DIR__ . '/../../includes/header.php';
         </div>
 
         <div class="cm-card-footer d-flex justify-content-between align-items-center">
-            <span class="text-muted small" id="recordSummary">Displaying academic faculties</span>
-            <span class="badge cm-badge-neutral small">Divisional Registry</span>
+            <span class="text-muted small" id="recordSummary">Showing academic faculties</span>
+            <span class="badge cm-badge-neutral small">Faculty Directory</span>
         </div>
     </div>
 </div>
 
-<!-- Accessible Add / Edit Faculty Modal -->
+<!-- Add / Edit Faculty Modal -->
 <div class="modal fade" id="facultyModal" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-modal="true" data-bs-backdrop="static">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content cm-card border-0">
@@ -103,13 +104,12 @@ require_once __DIR__ . '/../../includes/header.php';
 
                     <div class="mb-3">
                         <label for="name" class="form-label">
-                            Faculty Division Name <span class="required" aria-hidden="true">*</span>
+                            Faculty Name <span class="required" aria-hidden="true">*</span>
                         </label>
                         <div class="input-group">
                             <span class="input-group-text bg-light text-muted" aria-hidden="true"><i class="bi bi-diagram-3"></i></span>
-                            <input type="text" id="name" class="form-control" placeholder="e.g. Faculty of Engineering &amp; Technology" required>
+                            <input type="text" id="name" class="form-control" placeholder="e.g. Faculty of Engineering" required>
                         </div>
-                        <div class="form-text">Official name of the academic faculty or collegiate division.</div>
                     </div>
                 </div>
                 <div class="modal-footer border-top bg-light px-4 py-3">
@@ -170,8 +170,8 @@ require_once __DIR__ . '/../../includes/header.php';
                         <td colspan="3">
                             <div class="cm-empty-state py-4">
                                 <div class="cm-empty-icon text-danger" aria-hidden="true"><i class="bi bi-exclamation-octagon"></i></div>
-                                <h3 class="cm-empty-title">Failed to Load Faculties</h3>
-                                <p class="cm-empty-desc">An error occurred while connecting to the faculty division service.</p>
+                                <h3 class="cm-empty-title">Failed to load faculties</h3>
+                                <p class="cm-empty-desc">An error occurred while loading faculties. Please check your connection.</p>
                                 <button type="button" onclick="loadFaculties()" class="btn btn-sm btn-outline-primary">Try Again</button>
                             </div>
                         </td>
@@ -203,7 +203,7 @@ require_once __DIR__ . '/../../includes/header.php';
                         <div class="cm-empty-state py-4">
                             <div class="cm-empty-icon" aria-hidden="true"><i class="bi bi-diagram-3"></i></div>
                             <h3 class="cm-empty-title">No Faculties Found</h3>
-                            <p class="cm-empty-desc">No academic faculties matched your search query. Add a new faculty or clear search.</p>
+                            <p class="cm-empty-desc">No faculties match your search. Try a different query or add a new faculty.</p>
                         </div>
                     </td>
                 </tr>
@@ -225,12 +225,10 @@ require_once __DIR__ . '/../../includes/header.php';
                     <td class="text-end">
                         <div class="btn-group btn-group-sm" role="group" aria-label="Faculty actions">
                             <button type="button" onclick="editFaculty(${facultyJson})" class="btn btn-outline-primary" aria-label="Edit faculty ${escapeHtml(item.name)}">
-                                <i class="bi bi-pencil" aria-hidden="true"></i>
-                                <span class="d-none d-md-inline ms-1">Edit</span>
+                                <i class="bi bi-pencil me-1" aria-hidden="true"></i>Edit
                             </button>
                             <button type="button" onclick="deleteFaculty(${Number(item.id)}, '${escapeHtml(item.name)}')" class="btn btn-outline-danger" aria-label="Delete faculty ${escapeHtml(item.name)}">
-                                <i class="bi bi-trash" aria-hidden="true"></i>
-                                <span class="d-none d-md-inline ms-1">Delete</span>
+                                <i class="bi bi-trash me-1" aria-hidden="true"></i>Delete
                             </button>
                         </div>
                     </td>
@@ -256,7 +254,7 @@ require_once __DIR__ . '/../../includes/header.php';
     }
 
     function deleteFaculty(id, name) {
-        if (!confirm(`Warning: Are you sure you want to delete faculty "${name}"? This may affect linked departments and users.`)) {
+        if (!confirm(`Are you sure you want to delete faculty "${name}"? This action cannot be undone.`)) {
             return;
         }
 
@@ -292,7 +290,7 @@ require_once __DIR__ . '/../../includes/header.php';
         const name = document.getElementById('name').value.trim();
 
         if (!name) {
-            modalAlert.textContent = 'Please enter a valid Faculty Division Name.';
+            modalAlert.textContent = 'Please enter a Faculty Name.';
             modalAlert.classList.remove('d-none');
             return;
         }
@@ -331,7 +329,7 @@ require_once __DIR__ . '/../../includes/header.php';
             console.error(err);
             saveBtn.disabled = false;
             saveBtn.innerHTML = originalBtnText;
-            modalAlert.textContent = 'Network communication error while saving faculty.';
+            modalAlert.textContent = 'Network error while saving faculty.';
             modalAlert.classList.remove('d-none');
         });
     }

@@ -3,7 +3,7 @@
 require_once __DIR__ . '/../../includes/auth_functions.php';
 requireRole('admin');
 
-$pageTitle = 'User Management';
+$pageTitle = 'Users';
 require_once __DIR__ . '/../../includes/header.php';
 ?>
 
@@ -22,21 +22,22 @@ require_once __DIR__ . '/../../includes/header.php';
 
     <div class="cm-page-header">
         <div>
-            <h1 class="cm-page-title">User Account Management</h1>
-            <p class="cm-page-subtitle">Provision, authenticate, and configure roles and departmental affiliations for system users</p>
+            <h1 class="cm-page-title">Users</h1>
+            <p class="cm-page-subtitle">Manage user accounts, assign roles, and set department or faculty affiliations</p>
         </div>
         <div class="d-flex align-items-center gap-2">
             <button type="button" onclick="openModal()" class="btn btn-primary" id="btnOpenAddUser">
-                <i class="bi bi-person-plus me-1" aria-hidden="true"></i>Add New User
+                <i class="bi bi-person-plus me-1" aria-hidden="true"></i>Add User
             </button>
         </div>
     </div>
 
-    <!-- Alert Banner Container -->
+    <!-- Alert Container -->
     <div id="alertContainer" class="d-none"></div>
 
-    <!-- Data Filter & Matrix Card -->
+    <!-- Data Matrix Card -->
     <div class="cm-card">
+        <!-- Filter Toolbar -->
         <div class="cm-card-header flex-column flex-md-row align-items-stretch align-items-md-center gap-3">
             <div class="d-flex flex-wrap align-items-center gap-2 flex-grow-1">
                 <!-- Search Input -->
@@ -45,7 +46,7 @@ require_once __DIR__ . '/../../includes/header.php';
                         <i class="bi bi-search" aria-hidden="true"></i>
                     </span>
                     <input type="text" id="searchInput" class="form-control border-start-0" 
-                           placeholder="Search username, name, email..." 
+                           placeholder="Search by name, email, or username..." 
                            aria-label="Search users" aria-describedby="search-addon"
                            oninput="filterUsers()">
                 </div>
@@ -54,7 +55,7 @@ require_once __DIR__ . '/../../includes/header.php';
                 <div style="min-width: 170px;">
                     <select id="roleFilter" class="form-select" onchange="filterUsers()" aria-label="Filter by role">
                         <option value="">All Roles</option>
-                        <option value="lecturer">Lecturers</option>
+                        <option value="lecturer">Teachers</option>
                         <option value="head">Department Heads</option>
                         <option value="admin">Administrators</option>
                     </select>
@@ -71,7 +72,7 @@ require_once __DIR__ . '/../../includes/header.php';
             </div>
 
             <div class="d-flex align-items-center gap-2 text-muted small">
-                <span>Total Matches:</span>
+                <span>Total Users:</span>
                 <span class="badge cm-badge-neutral font-monospace" id="matchCount">0</span>
             </div>
         </div>
@@ -81,30 +82,34 @@ require_once __DIR__ . '/../../includes/header.php';
                 <table class="table cm-table table-hover mb-0" id="userTable">
                     <thead>
                         <tr>
-                            <th scope="col" style="width: 60px;">#</th>
-                            <th scope="col">User</th>
+                            <th scope="col" style="width: 50px;">#</th>
+                            <th scope="col">Name</th>
                             <th scope="col">Email</th>
                             <th scope="col">Role</th>
                             <th scope="col">Affiliation</th>
                             <th scope="col" style="width: 110px;">Status</th>
-                            <th scope="col" class="text-end" style="width: 180px;">Actions</th>
+                            <th scope="col" class="text-end" style="width: 170px;">Actions</th>
                         </tr>
                     </thead>
                     <tbody id="userTableBody">
                         <tr>
                             <td colspan="7" class="text-center py-4 text-muted">
                                 <div class="spinner-border spinner-border-sm text-primary me-2" role="status"></div>
-                                Loading user accounts...
+                                Loading users...
                             </td>
                         </tr>
                     </tbody>
                 </table>
             </div>
         </div>
+        <div class="cm-card-footer d-flex justify-content-between align-items-center">
+            <span class="text-muted small" id="recordSummary">Showing user accounts</span>
+            <span class="badge cm-badge-neutral small">User Directory</span>
+        </div>
     </div>
 </div>
 
-<!-- Accessible Add / Edit User Modal -->
+<!-- Add / Edit User Modal -->
 <div class="modal fade" id="userModal" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-modal="true" data-bs-backdrop="static">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content cm-card border-0">
@@ -116,7 +121,7 @@ require_once __DIR__ . '/../../includes/header.php';
                 <div class="modal-body p-4">
                     <input type="hidden" id="userId">
 
-                    <!-- Feedback inside modal -->
+                    <!-- Modal Alert -->
                     <div id="modalAlert" class="alert alert-danger d-none py-2 px-3 small" role="alert"></div>
 
                     <div class="mb-3">
@@ -125,32 +130,30 @@ require_once __DIR__ . '/../../includes/header.php';
                             <span class="input-group-text bg-light text-muted" aria-hidden="true"><i class="bi bi-at"></i></span>
                             <input type="text" id="username" class="form-control" placeholder="e.g. jsmith" required autocomplete="username">
                         </div>
-                        <div class="invalid-feedback">A unique username is required.</div>
+                        <div class="form-text">Used to sign in to the system.</div>
                     </div>
 
                     <div class="mb-3">
                         <label for="fullName" class="form-label">Full Name <span class="required" aria-hidden="true">*</span></label>
                         <input type="text" id="fullName" class="form-control" placeholder="e.g. Dr. John Smith" required autocomplete="name">
-                        <div class="invalid-feedback">Full name is required.</div>
                     </div>
 
                     <div class="mb-3">
                         <label for="email" class="form-label">Email Address <span class="required" aria-hidden="true">*</span></label>
                         <div class="input-group">
                             <span class="input-group-text bg-light text-muted" aria-hidden="true"><i class="bi bi-envelope"></i></span>
-                            <input type="email" id="email" class="form-control" placeholder="e.g. jsmith@institution.edu" required autocomplete="email">
+                            <input type="email" id="email" class="form-control" placeholder="e.g. jsmith@example.edu" required autocomplete="email">
                         </div>
-                        <div class="invalid-feedback">Please enter a valid academic email address.</div>
                     </div>
 
                     <div class="mb-3">
-                        <label for="role" class="form-label">System Role <span class="required" aria-hidden="true">*</span></label>
+                        <label for="role" class="form-label">Role <span class="required" aria-hidden="true">*</span></label>
                         <select id="role" class="form-select" required onchange="toggleAffiliation()">
-                            <option value="lecturer">Lecturer</option>
+                            <option value="lecturer">Teacher (Lecturer)</option>
                             <option value="head">Department Head</option>
                             <option value="admin">Administrator</option>
                         </select>
-                        <div class="form-text">Determines system permissions and administrative boundaries.</div>
+                        <div class="form-text">Controls what features and sections this user can access.</div>
                     </div>
 
                     <!-- Department selection for Department Heads -->
@@ -159,7 +162,7 @@ require_once __DIR__ . '/../../includes/header.php';
                         <select id="department_id" class="form-select">
                             <option value="">Select Department...</option>
                         </select>
-                        <div class="form-text">Required: Assign the academic department this user presides over.</div>
+                        <div class="form-text">Choose the department this head oversees.</div>
                     </div>
 
                     <!-- Faculty selection for Lecturers -->
@@ -168,7 +171,7 @@ require_once __DIR__ . '/../../includes/header.php';
                         <select id="faculty_id" class="form-select">
                             <option value="">Select Faculty...</option>
                         </select>
-                        <div class="form-text">Required: Associate lecturer with their primary academic faculty.</div>
+                        <div class="form-text">Choose the faculty division this teacher belongs to.</div>
                     </div>
 
                     <div class="mb-3">
@@ -179,13 +182,13 @@ require_once __DIR__ . '/../../includes/header.php';
                             <span class="input-group-text bg-light text-muted" aria-hidden="true"><i class="bi bi-key"></i></span>
                             <input type="password" id="password" class="form-control" placeholder="••••••••" autocomplete="new-password">
                         </div>
-                        <div class="form-text">For existing users, leave blank to preserve current password.</div>
+                        <div class="form-text">For existing users, leave blank to keep the current password.</div>
                     </div>
 
                     <div class="form-check form-switch mt-3">
                         <input type="checkbox" id="isActive" class="form-check-input" checked role="switch">
-                        <label class="form-check-label fw-medium text-slate-800" for="isActive">Account Active</label>
-                        <div class="form-text">Inactive accounts cannot authenticate into CourseMonitor.</div>
+                        <label class="form-check-label fw-medium text-slate-800" for="isActive">Active Account</label>
+                        <div class="form-text">Inactive accounts cannot sign in to CourseMonitor.</div>
                     </div>
                 </div>
                 <div class="modal-footer border-top bg-light px-4 py-3">
@@ -284,8 +287,8 @@ require_once __DIR__ . '/../../includes/header.php';
                         <td colspan="7">
                             <div class="cm-empty-state py-4">
                                 <div class="cm-empty-icon text-danger" aria-hidden="true"><i class="bi bi-exclamation-octagon"></i></div>
-                                <h3 class="cm-empty-title">Failed to load user accounts</h3>
-                                <p class="cm-empty-desc">An error occurred while connecting to the user directory service.</p>
+                                <h3 class="cm-empty-title">Failed to load users</h3>
+                                <p class="cm-empty-desc">An error occurred while loading user accounts. Please check your connection.</p>
                                 <button type="button" onclick="loadUsers()" class="btn btn-sm btn-outline-primary">Try Again</button>
                             </div>
                         </td>
@@ -312,6 +315,7 @@ require_once __DIR__ . '/../../includes/header.php';
         });
 
         document.getElementById('matchCount').textContent = filtered.length;
+        document.getElementById('recordSummary').textContent = `Showing ${filtered.length} of ${allUsers.length} users`;
         renderUsers(filtered);
     }
 
@@ -325,8 +329,8 @@ require_once __DIR__ . '/../../includes/header.php';
                     <td colspan="7">
                         <div class="cm-empty-state py-4">
                             <div class="cm-empty-icon" aria-hidden="true"><i class="bi bi-people"></i></div>
-                            <h3 class="cm-empty-title">No User Accounts Found</h3>
-                            <p class="cm-empty-desc">No accounts matched the active search filters. Try clearing filters or create a new user.</p>
+                            <h3 class="cm-empty-title">No Users Found</h3>
+                            <p class="cm-empty-desc">No accounts match the current search or filters. Try adjusting your query or add a new user.</p>
                         </div>
                     </td>
                 </tr>
@@ -348,7 +352,7 @@ require_once __DIR__ . '/../../includes/header.php';
             } else if (user.role === 'head') {
                 roleBadge = '<span class="badge cm-badge-info"><i class="bi bi-building me-1" aria-hidden="true"></i>Head</span>';
             } else if (user.role === 'lecturer') {
-                roleBadge = '<span class="badge cm-badge-neutral"><i class="bi bi-person me-1" aria-hidden="true"></i>Lecturer</span>';
+                roleBadge = '<span class="badge cm-badge-neutral"><i class="bi bi-person me-1" aria-hidden="true"></i>Teacher</span>';
             }
 
             const statusBadge = user.is_active == 1 
@@ -362,7 +366,7 @@ require_once __DIR__ . '/../../includes/header.php';
                     <td class="font-monospace text-muted small">${idx + 1}</td>
                     <td>
                         <div class="d-flex align-items-center gap-2">
-                            <div class="cm-user-avatar" style="width: 28px; height: 28px; font-size: 0.8rem;" aria-hidden="true">
+                            <div class="cm-user-avatar" style="width: 32px; height: 32px; font-size: 0.85rem;" aria-hidden="true">
                                 ${escapeHtml((user.full_name || user.username || 'U').charAt(0).toUpperCase())}
                             </div>
                             <div>
@@ -380,12 +384,10 @@ require_once __DIR__ . '/../../includes/header.php';
                     <td class="text-end">
                         <div class="btn-group btn-group-sm" role="group" aria-label="User actions">
                             <button type="button" onclick="editUser(${userJson})" class="btn btn-outline-primary" aria-label="Edit ${escapeHtml(user.full_name)}">
-                                <i class="bi bi-pencil" aria-hidden="true"></i>
-                                <span class="d-none d-md-inline ms-1">Edit</span>
+                                <i class="bi bi-pencil me-1" aria-hidden="true"></i>Edit
                             </button>
                             <button type="button" onclick="deleteUser(${Number(user.id)}, '${escapeHtml(user.full_name)}')" class="btn btn-outline-danger" aria-label="Delete ${escapeHtml(user.full_name)}">
-                                <i class="bi bi-trash" aria-hidden="true"></i>
-                                <span class="d-none d-md-inline ms-1">Delete</span>
+                                <i class="bi bi-trash me-1" aria-hidden="true"></i>Delete
                             </button>
                         </div>
                     </td>
@@ -409,7 +411,7 @@ require_once __DIR__ . '/../../includes/header.php';
     function openModal() {
         document.getElementById('userForm').reset();
         document.getElementById('userId').value = '';
-        document.getElementById('modalTitle').textContent = 'Add New User';
+        document.getElementById('modalTitle').textContent = 'Add User';
         document.getElementById('pwdHelpText').textContent = '(Required for new accounts)';
         document.getElementById('password').required = true;
         document.getElementById('modalAlert').className = 'alert alert-danger d-none py-2 px-3 small';
@@ -429,7 +431,7 @@ require_once __DIR__ . '/../../includes/header.php';
         document.getElementById('isActive').checked = user.is_active == 1;
         document.getElementById('password').value = '';
         document.getElementById('password').required = false;
-        document.getElementById('pwdHelpText').textContent = '(Leave blank to retain current password)';
+        document.getElementById('pwdHelpText').textContent = '(Leave blank to keep existing password)';
         document.getElementById('modalAlert').className = 'alert alert-danger d-none py-2 px-3 small';
 
         toggleAffiliation();
@@ -437,7 +439,7 @@ require_once __DIR__ . '/../../includes/header.php';
     }
 
     function deleteUser(id, name) {
-        if (!confirm(`Are you sure you want to permanently delete user account "${name}"? This action cannot be undone.`)) {
+        if (!confirm(`Are you sure you want to permanently delete user "${name}"? This action cannot be undone.`)) {
             return;
         }
 
@@ -460,7 +462,7 @@ require_once __DIR__ . '/../../includes/header.php';
         })
         .catch(err => {
             console.error(err);
-            showAlert('Network communication error during deletion.', 'danger');
+            showAlert('Network error during deletion.', 'danger');
         });
     }
 
@@ -476,17 +478,17 @@ require_once __DIR__ . '/../../includes/header.php';
         const password = document.getElementById('password').value;
 
         if (role === 'head' && !deptId) {
-            modalAlert.textContent = 'Please select a department for this Department Head.';
+            modalAlert.textContent = 'Please choose a department for this Department Head.';
             modalAlert.classList.remove('d-none');
             return;
         }
         if (role === 'lecturer' && !facultyId) {
-            modalAlert.textContent = 'Please select a faculty affiliation for this Lecturer.';
+            modalAlert.textContent = 'Please choose a faculty for this Teacher.';
             modalAlert.classList.remove('d-none');
             return;
         }
         if (!id && !password) {
-            modalAlert.textContent = 'A password is required when creating a new user account.';
+            modalAlert.textContent = 'A password is required for new user accounts.';
             modalAlert.classList.remove('d-none');
             return;
         }
@@ -521,10 +523,10 @@ require_once __DIR__ . '/../../includes/header.php';
 
             if (resp.success) {
                 modalInstance.hide();
-                showAlert(`User account "${data.full_name}" was saved successfully.`, 'success');
+                showAlert(`User "${data.full_name}" was saved successfully.`, 'success');
                 loadUsers();
             } else {
-                modalAlert.textContent = resp.error || 'Failed to save user account.';
+                modalAlert.textContent = resp.error || 'Failed to save user.';
                 modalAlert.classList.remove('d-none');
             }
         })
@@ -532,7 +534,7 @@ require_once __DIR__ . '/../../includes/header.php';
             console.error(err);
             saveBtn.disabled = false;
             saveBtn.innerHTML = originalBtnText;
-            modalAlert.textContent = 'Network communication error while saving user.';
+            modalAlert.textContent = 'Network error while saving user.';
             modalAlert.classList.remove('d-none');
         });
     }

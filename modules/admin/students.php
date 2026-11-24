@@ -3,7 +3,7 @@
 require_once __DIR__ . '/../../includes/auth_functions.php';
 requireRole('admin');
 
-$pageTitle = 'Student Management';
+$pageTitle = 'Students';
 require_once __DIR__ . '/../../includes/header.php';
 ?>
 
@@ -22,8 +22,8 @@ require_once __DIR__ . '/../../includes/header.php';
 
     <div class="cm-page-header">
         <div>
-            <h1 class="cm-page-title">Student Records &amp; Enrollment</h1>
-            <p class="cm-page-subtitle">Academic student roster, matriculation numbers, semester progression, and department enrollment</p>
+            <h1 class="cm-page-title">Students</h1>
+            <p class="cm-page-subtitle">View enrolled students, update semester progression, and manage records</p>
         </div>
         <div class="d-flex align-items-center gap-2">
             <button type="button" onclick="openModal()" class="btn btn-primary" id="btnOpenAddStudent">
@@ -37,6 +37,7 @@ require_once __DIR__ . '/../../includes/header.php';
 
     <!-- Data Matrix Card -->
     <div class="cm-card">
+        <!-- Filter Toolbar -->
         <div class="cm-card-header flex-column flex-md-row align-items-stretch align-items-md-center gap-3">
             <div class="d-flex flex-wrap align-items-center gap-2 flex-grow-1">
                 <!-- Search Input -->
@@ -45,7 +46,7 @@ require_once __DIR__ . '/../../includes/header.php';
                         <i class="bi bi-search" aria-hidden="true"></i>
                     </span>
                     <input type="text" id="searchInput" class="form-control border-start-0" 
-                           placeholder="Search ID, name, or email..." 
+                           placeholder="Search by name, student ID, or email..." 
                            aria-label="Search students" aria-describedby="search-addon"
                            oninput="filterStudents()">
                 </div>
@@ -69,7 +70,7 @@ require_once __DIR__ . '/../../includes/header.php';
             </div>
 
             <div class="d-flex align-items-center gap-2 text-muted small">
-                <span>Enrolled Records:</span>
+                <span>Total Students:</span>
                 <span class="badge cm-badge-neutral font-monospace" id="matchCount">0</span>
             </div>
         </div>
@@ -82,17 +83,17 @@ require_once __DIR__ . '/../../includes/header.php';
                             <th scope="col" style="width: 50px;">#</th>
                             <th scope="col" style="width: 160px;">Student ID</th>
                             <th scope="col">Full Name</th>
-                            <th scope="col">Institutional Email</th>
-                            <th scope="col" style="width: 120px;">Semester</th>
+                            <th scope="col">Email</th>
+                            <th scope="col" style="width: 130px;">Semester</th>
                             <th scope="col">Department</th>
-                            <th scope="col" class="text-end" style="width: 180px;">Actions</th>
+                            <th scope="col" class="text-end" style="width: 170px;">Actions</th>
                         </tr>
                     </thead>
                     <tbody id="studentTableBody">
                         <tr>
                             <td colspan="7" class="text-center py-4 text-muted">
                                 <div class="spinner-border spinner-border-sm text-primary me-2" role="status"></div>
-                                Loading student records...
+                                Loading students...
                             </td>
                         </tr>
                     </tbody>
@@ -100,20 +101,19 @@ require_once __DIR__ . '/../../includes/header.php';
             </div>
         </div>
 
-        <!-- Optional Table Pagination / Footer Summary -->
         <div class="cm-card-footer d-flex justify-content-between align-items-center">
-            <span class="text-muted small" id="recordSummary">Showing all matching records</span>
-            <span class="badge cm-badge-neutral small">Official Academic Registry</span>
+            <span class="text-muted small" id="recordSummary">Showing student records</span>
+            <span class="badge cm-badge-neutral small">Student Directory</span>
         </div>
     </div>
 </div>
 
-<!-- Accessible Add / Edit Student Modal -->
+<!-- Add / Edit Student Modal -->
 <div class="modal fade" id="studentModal" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-modal="true" data-bs-backdrop="static">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content cm-card border-0">
             <div class="modal-header border-bottom">
-                <h2 class="modal-title h5 mb-0 fw-semibold text-slate-800" id="modalTitle">Add Student Record</h2>
+                <h2 class="modal-title h5 mb-0 fw-semibold text-slate-800" id="modalTitle">Add Student</h2>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close dialog"></button>
             </div>
             <form id="studentForm" onsubmit="saveStudent(event)" novalidate>
@@ -131,7 +131,7 @@ require_once __DIR__ . '/../../includes/header.php';
                             <span class="input-group-text bg-light text-muted" aria-hidden="true"><i class="bi bi-card-text"></i></span>
                             <input type="text" id="student_id_number" class="form-control font-monospace" placeholder="e.g. STU-2026-0042" required autocomplete="off">
                         </div>
-                        <div class="form-text">Institutional student identification number or matriculation code.</div>
+                        <div class="form-text">Unique student matriculation or ID number.</div>
                     </div>
 
                     <div class="mb-3">
@@ -143,11 +143,11 @@ require_once __DIR__ . '/../../includes/header.php';
 
                     <div class="mb-3">
                         <label for="email" class="form-label">
-                            Institutional Email <span class="required" aria-hidden="true">*</span>
+                            Email Address <span class="required" aria-hidden="true">*</span>
                         </label>
                         <div class="input-group">
                             <span class="input-group-text bg-light text-muted" aria-hidden="true"><i class="bi bi-envelope"></i></span>
-                            <input type="email" id="email" class="form-control" placeholder="e.g. jdoe@institution.edu" required autocomplete="email">
+                            <input type="email" id="email" class="form-control" placeholder="e.g. jdoe@example.edu" required autocomplete="email">
                         </div>
                     </div>
 
@@ -257,8 +257,8 @@ require_once __DIR__ . '/../../includes/header.php';
                         <td colspan="7">
                             <div class="cm-empty-state py-4">
                                 <div class="cm-empty-icon text-danger" aria-hidden="true"><i class="bi bi-exclamation-octagon"></i></div>
-                                <h3 class="cm-empty-title">Failed to Load Students</h3>
-                                <p class="cm-empty-desc">An error occurred while communicating with the student records registry.</p>
+                                <h3 class="cm-empty-title">Failed to load students</h3>
+                                <p class="cm-empty-desc">An error occurred while loading students. Please check your connection.</p>
                                 <button type="button" onclick="loadStudents()" class="btn btn-sm btn-outline-primary">Try Again</button>
                             </div>
                         </td>
@@ -285,7 +285,7 @@ require_once __DIR__ . '/../../includes/header.php';
         });
 
         document.getElementById('matchCount').textContent = filtered.length;
-        document.getElementById('recordSummary').textContent = `Showing ${filtered.length} of ${allStudents.length} student records`;
+        document.getElementById('recordSummary').textContent = `Showing ${filtered.length} of ${allStudents.length} students`;
         renderStudents(filtered);
     }
 
@@ -299,8 +299,8 @@ require_once __DIR__ . '/../../includes/header.php';
                     <td colspan="7">
                         <div class="cm-empty-state py-4">
                             <div class="cm-empty-icon" aria-hidden="true"><i class="bi bi-mortarboard"></i></div>
-                            <h3 class="cm-empty-title">No Student Records Found</h3>
-                            <p class="cm-empty-desc">No students match the current filters. Adjust your search or enroll a new student.</p>
+                            <h3 class="cm-empty-title">No Students Found</h3>
+                            <p class="cm-empty-desc">No student records match the active search or filters. Adjust filters or add a new student.</p>
                         </div>
                     </td>
                 </tr>
@@ -327,7 +327,7 @@ require_once __DIR__ . '/../../includes/header.php';
                         <span class="font-monospace small text-secondary">${escapeHtml(s.email)}</span>
                     </td>
                     <td>
-                        <span class="badge cm-badge-primary font-monospace">Sem ${escapeHtml(semNum)}</span>
+                        <span class="badge cm-badge-primary font-monospace">Semester ${escapeHtml(semNum)}</span>
                     </td>
                     <td>
                         <span class="text-slate-800">
@@ -337,12 +337,10 @@ require_once __DIR__ . '/../../includes/header.php';
                     <td class="text-end">
                         <div class="btn-group btn-group-sm" role="group" aria-label="Student actions">
                             <button type="button" onclick="editStudent(${studentJson})" class="btn btn-outline-primary" aria-label="Edit student ${escapeHtml(s.name)}">
-                                <i class="bi bi-pencil" aria-hidden="true"></i>
-                                <span class="d-none d-md-inline ms-1">Edit</span>
+                                <i class="bi bi-pencil me-1" aria-hidden="true"></i>Edit
                             </button>
                             <button type="button" onclick="deleteStudent(${Number(s.id)}, '${escapeHtml(s.name)}')" class="btn btn-outline-danger" aria-label="Delete student ${escapeHtml(s.name)}">
-                                <i class="bi bi-trash" aria-hidden="true"></i>
-                                <span class="d-none d-md-inline ms-1">Delete</span>
+                                <i class="bi bi-trash me-1" aria-hidden="true"></i>Delete
                             </button>
                         </div>
                     </td>
@@ -355,7 +353,7 @@ require_once __DIR__ . '/../../includes/header.php';
         document.getElementById('studentForm').reset();
         document.getElementById('id').value = '';
         document.getElementById('current_semester').value = '1';
-        document.getElementById('modalTitle').textContent = 'Add Student Record';
+        document.getElementById('modalTitle').textContent = 'Add Student';
         document.getElementById('modalAlert').className = 'alert alert-danger d-none py-2 px-3 small';
         modalInstance.show();
     }
@@ -373,7 +371,7 @@ require_once __DIR__ . '/../../includes/header.php';
     }
 
     function deleteStudent(id, name) {
-        if (!confirm(`Are you sure you want to permanently delete student "${name}"? All associated attendance and grade records will be deleted.`)) {
+        if (!confirm(`Are you sure you want to delete student "${name}"? This action cannot be undone.`)) {
             return;
         }
 
@@ -388,10 +386,10 @@ require_once __DIR__ . '/../../includes/header.php';
         .then(r => r.json())
         .then(resp => {
             if (resp.success) {
-                showAlert(`Student record "${name}" was deleted successfully.`, 'success');
+                showAlert(`Student "${name}" was deleted successfully.`, 'success');
                 loadStudents();
             } else {
-                showAlert(resp.error || 'Failed to delete student record.', 'danger');
+                showAlert(resp.error || 'Failed to delete student.', 'danger');
             }
         })
         .catch(err => {
@@ -413,7 +411,7 @@ require_once __DIR__ . '/../../includes/header.php';
         const deptId = document.getElementById('department_id').value;
 
         if (!studentIdNum || !name || !email || !deptId) {
-            modalAlert.textContent = 'Please complete all required fields including Department assignment.';
+            modalAlert.textContent = 'Please fill in all required fields, including Department.';
             modalAlert.classList.remove('d-none');
             return;
         }
@@ -445,10 +443,10 @@ require_once __DIR__ . '/../../includes/header.php';
 
             if (resp.success) {
                 modalInstance.hide();
-                showAlert(`Student record "${name}" was saved successfully.`, 'success');
+                showAlert(`Student "${name}" was saved successfully.`, 'success');
                 loadStudents();
             } else {
-                modalAlert.textContent = resp.error || 'Failed to save student record.';
+                modalAlert.textContent = resp.error || 'Failed to save student.';
                 modalAlert.classList.remove('d-none');
             }
         })
@@ -456,7 +454,7 @@ require_once __DIR__ . '/../../includes/header.php';
             console.error(err);
             saveBtn.disabled = false;
             saveBtn.innerHTML = originalBtnText;
-            modalAlert.textContent = 'Network communication error while saving student.';
+            modalAlert.textContent = 'Network error while saving student.';
             modalAlert.classList.remove('d-none');
         });
     }
