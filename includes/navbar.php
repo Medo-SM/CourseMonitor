@@ -133,6 +133,13 @@ $userInitial = strtoupper(substr($userName, 0, 1));
 
                 <!-- User Controls -->
                 <div class="d-flex align-items-center gap-2 mt-3 mt-lg-0">
+                    <!-- Theme Toggle Button -->
+                    <button id="themeToggleBtn" type="button" class="btn btn-sm cm-theme-toggle" aria-label="Toggle dark or light theme" title="Toggle between Dark and Light mode">
+                        <i class="bi bi-moon-stars-fill theme-icon-dark" aria-hidden="true"></i>
+                        <i class="bi bi-sun-fill theme-icon-light" aria-hidden="true"></i>
+                        <span class="d-none d-xl-inline ms-1 theme-toggle-text">Theme</span>
+                    </button>
+
                     <?php if ($user): ?>
                         <div class="cm-user-badge d-none d-sm-inline-flex" title="Signed in as <?= htmlspecialchars($userName, ENT_QUOTES, 'UTF-8') ?>">
                             <span class="cm-user-avatar" aria-hidden="true"><?= htmlspecialchars($userInitial, ENT_QUOTES, 'UTF-8') ?></span>

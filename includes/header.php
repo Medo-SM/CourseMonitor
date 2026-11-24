@@ -19,13 +19,32 @@ $titleStr = !empty($pageTitle)
     : 'CourseMonitor | Student Attendance & Grades Made Simple';
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark" data-bs-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="description" content="CourseMonitor - Student Attendance & Grades Made Simple">
-    <meta name="theme-color" content="#1e293b">
+    <meta name="theme-color" content="#0b0f17">
     <title><?= $titleStr ?></title>
+
+    <!-- Theme Initializer (Immediate inline execution to prevent FOUC) -->
+    <script>
+        (function() {
+            try {
+                var stored = localStorage.getItem('cm_theme');
+                var theme = stored ? stored : 'dark';
+                document.documentElement.setAttribute('data-theme', theme);
+                document.documentElement.setAttribute('data-bs-theme', theme);
+                var meta = document.querySelector('meta[name="theme-color"]');
+                if (meta) {
+                    meta.setAttribute('content', theme === 'dark' ? '#0b0f17' : '#1e293b');
+                }
+            } catch (e) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                document.documentElement.setAttribute('data-bs-theme', 'dark');
+            }
+        })();
+    </script>
 
     <!-- Bootstrap 5 CDN -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
