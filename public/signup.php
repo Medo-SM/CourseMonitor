@@ -50,7 +50,7 @@ if ($facQuery) {
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!verifyCsrfToken($_POST['csrf_token'] ?? '')) {
-        $error = "Your security validation token has expired. Please refresh the page and try again.";
+        $error = "Your security session has expired. Please refresh the page and try again.";
     } else {
         $username = trim($_POST['username'] ?? '');
         $fullName = trim($_POST['full_name'] ?? '');
@@ -73,15 +73,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (empty($username) || empty($fullName) || empty($email) || empty($password)) {
             $error = "All required fields must be completed.";
         } elseif (strlen($password) < 6) {
-            $error = "Password must be at least 6 characters in length.";
+            $error = "Password must be at least 6 characters long.";
         } elseif ($password !== $confirmPassword) {
-            $error = "Passwords do not match. Please enter the same password in both fields.";
+            $error = "The passwords you entered do not match. Please try again.";
         } elseif (!in_array($role, ['lecturer', 'head'], true)) {
-            $error = "Please select a valid institutional role (Lecturer or Department Head).";
+            $error = "Please select a valid role (Teacher or Department Head).";
         } elseif ($role === 'head' && !$department_id) {
-            $error = "Department Heads must select their assigned Academic Department.";
+            $error = "Please choose your department.";
         } elseif ($role === 'lecturer' && !$faculty_id) {
-            $error = "Lecturers must select their affiliated Academic Faculty.";
+            $error = "Please choose your faculty.";
         } else {
             // Check duplicates
             $stmt = $mysqli->prepare("SELECT id FROM users WHERE username = ? OR email = ?");
@@ -90,7 +90,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $stmt->execute();
                 $stmt->store_result();
                 if ($stmt->num_rows > 0) {
-                    $error = "The specified username or email address is already registered.";
+                    $error = "That username or email is already registered. If you already have an account, you can sign in below.";
                 }
                 $stmt->close();
             }
@@ -121,7 +121,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             }
                         }
                         $loginUrl = htmlspecialchars(base_url('/public/login.php'), ENT_QUOTES, 'UTF-8');
-                        $success = "Registration completed successfully. You may now sign in with your new credentials.";
+                        $success = "Your account has been created. You can now sign in with your credentials.";
                     } else {
                         $error = "Registration failed: " . $insertStmt->error;
                     }
@@ -134,7 +134,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-$pageTitle = 'Request Staff Account';
+$pageTitle = 'Create an Account';
 $showNavbar = true;
 require_once __DIR__ . '/../includes/header.php';
 ?>
@@ -144,20 +144,20 @@ require_once __DIR__ . '/../includes/header.php';
         <div class="col-12 col-md-10 col-lg-8 col-xl-7" style="max-width: 620px;">
             <div class="cm-card shadow-sm border bg-white">
                 <div class="cm-card-body p-4 p-sm-5">
-                    <!-- Academic Crest & Header -->
+                    <!-- Brand Icon & Header -->
                     <div class="text-center mb-4">
                         <div class="d-inline-flex align-items-center justify-content-center rounded-circle bg-slate-100 text-primary mb-3" style="width: 52px; height: 52px; font-size: 1.5rem;" aria-hidden="true">
                             <i class="bi bi-person-plus-fill"></i>
                         </div>
-                        <h1 class="h4 fw-bold text-slate-900 mb-1">Request Staff Account</h1>
-                        <p class="text-xs text-secondary mb-0">Academic Performance &amp; Attendance Management System</p>
+                        <h1 class="h4 fw-bold text-slate-900 mb-1">Create an Account</h1>
+                        <p class="text-sm text-secondary mb-0">Join CourseMonitor to manage your courses and students</p>
                     </div>
 
                     <?php if (!empty($error)): ?>
                         <div class="alert alert-danger d-flex align-items-start gap-2 mb-4" role="alert" aria-live="assertive">
-                            <i class="bi bi-exclamation-triangle-fill flex-shrink-0 mt-1" aria-hidden="true"></i>
+                            <i class="bi bi-exclamation-circle-fill flex-shrink-0 mt-1" aria-hidden="true"></i>
                             <div class="text-xs">
-                                <span class="fw-semibold">Registration notice:</span> <?= htmlspecialchars($error, ENT_QUOTES, 'UTF-8') ?>
+                                <span class="fw-semibold">Notice:</span> <?= htmlspecialchars($error, ENT_QUOTES, 'UTF-8') ?>
                             </div>
                         </div>
                     <?php endif; ?>
@@ -167,22 +167,22 @@ require_once __DIR__ . '/../includes/header.php';
                             <div class="d-inline-flex align-items-center justify-content-center rounded-circle bg-success-50 text-success mb-3" style="width: 48px; height: 48px; font-size: 1.5rem;" aria-hidden="true">
                                 <i class="bi bi-check-lg"></i>
                             </div>
-                            <h2 class="h5 fw-bold text-slate-900 mb-2">Registration Complete</h2>
-                            <p class="text-xs text-secondary mb-4"><?= htmlspecialchars($success, ENT_QUOTES, 'UTF-8') ?></p>
+                            <h2 class="h5 fw-bold text-slate-900 mb-2">Account Created Successfully</h2>
+                            <p class="text-sm text-secondary mb-4"><?= htmlspecialchars($success, ENT_QUOTES, 'UTF-8') ?></p>
                             <a href="<?= htmlspecialchars(base_url('/public/login.php'), ENT_QUOTES, 'UTF-8') ?>" class="btn btn-primary px-4">
                                 <i class="bi bi-box-arrow-in-right me-1" aria-hidden="true"></i>
-                                <span>Proceed to Sign In</span>
+                                <span>Sign In</span>
                             </a>
                         </div>
                     <?php else: ?>
                         <form method="POST" action="" class="needs-validation">
                             <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(generateCsrfToken(), ENT_QUOTES, 'UTF-8') ?>">
 
-                            <!-- Fieldset 1: Account Information -->
+                            <!-- Fieldset 1: Account Details -->
                             <fieldset class="mb-4">
                                 <legend class="h6 fw-bold text-slate-900 border-bottom pb-2 mb-3 d-flex align-items-center gap-2">
                                     <i class="bi bi-person-badge text-primary" aria-hidden="true"></i>
-                                    <span>Account Credentials</span>
+                                    <span>Account Details</span>
                                 </legend>
 
                                 <div class="row g-3">
@@ -196,9 +196,9 @@ require_once __DIR__ . '/../includes/header.php';
                                             name="username" 
                                             class="form-control" 
                                             required 
-                                            aria-required="true"
-                                            autocomplete="username"
-                                            placeholder="e.g. jdoe or staff ID"
+                                            aria-required="true" 
+                                            autocomplete="username" 
+                                            placeholder="e.g. jdoe" 
                                             value="<?= htmlspecialchars($usernameVal, ENT_QUOTES, 'UTF-8') ?>"
                                         >
                                     </div>
@@ -213,16 +213,16 @@ require_once __DIR__ . '/../includes/header.php';
                                             name="full_name" 
                                             class="form-control" 
                                             required 
-                                            aria-required="true"
-                                            autocomplete="name"
-                                            placeholder="e.g. Dr. Jane Doe"
+                                            aria-required="true" 
+                                            autocomplete="name" 
+                                            placeholder="e.g. Dr. Jane Doe" 
                                             value="<?= htmlspecialchars($fullNameVal, ENT_QUOTES, 'UTF-8') ?>"
                                         >
                                     </div>
 
                                     <div class="col-12">
                                         <label for="email" class="form-label">
-                                            Institutional Email <span class="text-danger" aria-hidden="true">*</span>
+                                            Email Address <span class="text-danger" aria-hidden="true">*</span>
                                         </label>
                                         <input 
                                             type="email" 
@@ -230,12 +230,12 @@ require_once __DIR__ . '/../includes/header.php';
                                             name="email" 
                                             class="form-control" 
                                             required 
-                                            aria-required="true"
-                                            autocomplete="email"
-                                            placeholder="name@university.edu"
+                                            aria-required="true" 
+                                            autocomplete="email" 
+                                            placeholder="name@university.edu" 
                                             value="<?= htmlspecialchars($emailVal, ENT_QUOTES, 'UTF-8') ?>"
                                         >
-                                        <div class="form-text text-xs">Official institutional email address for authentication notices.</div>
+                                        <div class="form-text text-xs">Used for sign in and account notices.</div>
                                     </div>
 
                                     <div class="col-12 col-sm-6">
@@ -249,8 +249,8 @@ require_once __DIR__ . '/../includes/header.php';
                                                 name="password" 
                                                 class="form-control" 
                                                 required 
-                                                aria-required="true"
-                                                autocomplete="new-password"
+                                                aria-required="true" 
+                                                autocomplete="new-password" 
                                                 placeholder="At least 6 characters"
                                             >
                                             <button 
@@ -258,7 +258,7 @@ require_once __DIR__ . '/../includes/header.php';
                                                 class="btn btn-outline-secondary border-start-0 text-secondary" 
                                                 id="togglePasswordBtn1" 
                                                 aria-label="Show password" 
-                                                title="Show password"
+                                                title="Show password" 
                                                 onclick="toggleVisibility('password', 'togglePasswordIcon1', 'togglePasswordBtn1')"
                                             >
                                                 <i class="bi bi-eye" id="togglePasswordIcon1" aria-hidden="true"></i>
@@ -277,16 +277,16 @@ require_once __DIR__ . '/../includes/header.php';
                                                 name="confirm_password" 
                                                 class="form-control" 
                                                 required 
-                                                aria-required="true"
-                                                autocomplete="new-password"
-                                                placeholder="Re-enter password"
+                                                aria-required="true" 
+                                                autocomplete="new-password" 
+                                                placeholder="Re-enter your password"
                                             >
                                             <button 
                                                 type="button" 
                                                 class="btn btn-outline-secondary border-start-0 text-secondary" 
                                                 id="togglePasswordBtn2" 
                                                 aria-label="Show password confirmation" 
-                                                title="Show password confirmation"
+                                                title="Show password confirmation" 
                                                 onclick="toggleVisibility('confirm_password', 'togglePasswordIcon2', 'togglePasswordBtn2')"
                                             >
                                                 <i class="bi bi-eye" id="togglePasswordIcon2" aria-hidden="true"></i>
@@ -296,30 +296,30 @@ require_once __DIR__ . '/../includes/header.php';
                                 </div>
                             </fieldset>
 
-                            <!-- Fieldset 2: Academic Role & Institutional Affiliation -->
+                            <!-- Fieldset 2: Your School & Role -->
                             <fieldset class="mb-4">
                                 <legend class="h6 fw-bold text-slate-900 border-bottom pb-2 mb-3 d-flex align-items-center gap-2">
-                                    <i class="bi bi-diagram-3 text-primary" aria-hidden="true"></i>
-                                    <span>Academic Role &amp; Affiliation</span>
+                                    <i class="bi bi-mortarboard text-primary" aria-hidden="true"></i>
+                                    <span>Your School &amp; Role</span>
                                 </legend>
 
                                 <div class="row g-3">
                                     <div class="col-12">
                                         <label for="role" class="form-label">
-                                            Institutional Role <span class="text-danger" aria-hidden="true">*</span>
+                                            Your Role <span class="text-danger" aria-hidden="true">*</span>
                                         </label>
                                         <select id="role" name="role" class="form-select" required aria-required="true" onchange="toggleAffiliation()">
-                                            <option value="">Select your role...</option>
-                                            <option value="lecturer" <?= $roleVal === 'lecturer' ? 'selected' : '' ?>>Lecturer (Course Instructor)</option>
-                                            <option value="head" <?= $roleVal === 'head' ? 'selected' : '' ?>>Department Head (Chair / Leadership)</option>
+                                            <option value="">Choose your role...</option>
+                                            <option value="lecturer" <?= $roleVal === 'lecturer' ? 'selected' : '' ?>>Teacher (Course Instructor)</option>
+                                            <option value="head" <?= $roleVal === 'head' ? 'selected' : '' ?>>Department Head</option>
                                         </select>
-                                        <div class="form-text text-xs">Role assignments determine dashboard workspace permissions.</div>
+                                        <div class="form-text text-xs">Determines your workspace access and features.</div>
                                     </div>
 
                                     <!-- Department Selection (For Head of Department) -->
                                     <div class="col-12" id="deptGroup" style="<?= $roleVal === 'head' ? 'display:block;' : 'display:none;' ?>">
                                         <label for="department_id" class="form-label">
-                                            Academic Department <span class="text-danger" aria-hidden="true">*</span>
+                                            Department <span class="text-danger" aria-hidden="true">*</span>
                                         </label>
                                         <select id="department_id" name="department_id" class="form-select" aria-describedby="dept-help">
                                             <option value="">Select your department...</option>
@@ -329,13 +329,13 @@ require_once __DIR__ . '/../includes/header.php';
                                                 </option>
                                             <?php endforeach; ?>
                                         </select>
-                                        <div class="form-text text-xs" id="dept-help">Required for Department Head administrative oversight.</div>
+                                        <div class="form-text text-xs" id="dept-help">The academic department you manage.</div>
                                     </div>
 
                                     <!-- Faculty Selection (For Lecturer) -->
                                     <div class="col-12" id="facultyGroup" style="<?= $roleVal === 'lecturer' ? 'display:block;' : 'display:none;' ?>">
                                         <label for="faculty_id" class="form-label">
-                                            Academic Faculty <span class="text-danger" aria-hidden="true">*</span>
+                                            Faculty <span class="text-danger" aria-hidden="true">*</span>
                                         </label>
                                         <select id="faculty_id" name="faculty_id" class="form-select" aria-describedby="faculty-help">
                                             <option value="">Select your faculty...</option>
@@ -345,24 +345,24 @@ require_once __DIR__ . '/../includes/header.php';
                                                 </option>
                                             <?php endforeach; ?>
                                         </select>
-                                        <div class="form-text text-xs" id="faculty-help">Required for Lecturer course allocations and attendance logging.</div>
+                                        <div class="form-text text-xs" id="faculty-help">The faculty your courses belong to.</div>
                                     </div>
                                 </div>
                             </fieldset>
 
                             <!-- Submit Action -->
-                            <button type="submit" class="btn btn-primary w-100 py-2">
+                            <button type="submit" class="btn btn-primary w-100 py-2 fs-6 fw-medium">
                                 <i class="bi bi-person-check me-1" aria-hidden="true"></i>
-                                <span>Submit Account Registration</span>
+                                <span>Create Account</span>
                             </button>
                         </form>
                     <?php endif; ?>
 
                     <!-- Sign In Link -->
                     <div class="text-center pt-3 mt-4 border-top">
-                        <span class="text-xs text-secondary">Already have an institutional account?</span>
-                        <a href="<?= htmlspecialchars(base_url('/public/login.php'), ENT_QUOTES, 'UTF-8') ?>" class="text-xs fw-semibold text-primary ms-1">
-                            Sign In to Dashboard
+                        <span class="text-sm text-secondary">Already have an account?</span>
+                        <a href="<?= htmlspecialchars(base_url('/public/login.php'), ENT_QUOTES, 'UTF-8') ?>" class="text-sm fw-semibold text-primary ms-1">
+                            Sign In
                         </a>
                     </div>
                 </div>
@@ -370,7 +370,7 @@ require_once __DIR__ . '/../includes/header.php';
                 <div class="cm-card-footer bg-slate-50 border-top text-center py-3">
                     <p class="text-xs text-muted mb-0">
                         <i class="bi bi-shield-check me-1" aria-hidden="true"></i>
-                        Submitted credentials are verified against faculty records and institutional rosters.
+                        Your information is safely stored and protected with role-based access.
                     </p>
                 </div>
             </div>

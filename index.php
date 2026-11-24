@@ -21,52 +21,56 @@ if (isLoggedIn()) {
     exit;
 }
 
-$pageTitle = 'Academic Performance & Attendance Management Portal';
+$pageTitle = 'Student Attendance & Grades Made Simple';
 $showNavbar = true;
 require_once __DIR__ . '/includes/header.php';
 ?>
 
 <!-- Hero Section -->
 <section class="py-5 bg-white border-bottom" aria-labelledby="hero-heading">
-    <div class="container px-3 px-lg-4 py-2 py-lg-4">
+    <div class="container px-3 px-lg-4 py-3 py-lg-5">
         <div class="row align-items-center g-5">
             <div class="col-lg-7">
-                <div class="d-inline-flex align-items-center gap-2 px-3 py-1 mb-3 rounded-pill cm-badge-neutral border text-xs font-monospace">
-                    <i class="bi bi-shield-check text-primary" aria-hidden="true"></i>
-                    <span>Official Academic Registry Portal</span>
+                <div class="d-inline-flex align-items-center gap-2 px-3 py-1 mb-3 rounded-pill cm-badge-neutral border text-xs">
+                    <i class="bi bi-mortarboard text-primary" aria-hidden="true"></i>
+                    <span>CourseMonitor Academic Portal</span>
                 </div>
                 
                 <h1 id="hero-heading" class="display-5 fw-bold text-slate-900 mb-3 lh-sm text-balance">
-                    Academic Performance &amp; Attendance Management System
+                    CourseMonitor — Student Attendance &amp; Grades Made Simple
                 </h1>
                 
                 <p class="lead text-secondary mb-4 text-pretty" style="max-width: 620px;">
-                    A unified institutional platform for course governance, continuous coursework grading, and daily lecture attendance verification across academic faculties and departments.
+                    A calm, reliable space for teachers, department heads, and administrators to track attendance, enter grades, and support students.
                 </p>
 
-                <div class="d-flex flex-wrap gap-3 pt-2">
+                <div class="d-flex flex-wrap align-items-center gap-3 pt-2">
                     <a href="<?= htmlspecialchars(base_url('/public/login.php'), ENT_QUOTES, 'UTF-8') ?>" class="btn btn-primary btn-lg">
-                        <i class="bi bi-box-arrow-in-right" aria-hidden="true"></i>
-                        <span>Sign In to Dashboard</span>
+                        <i class="bi bi-box-arrow-in-right me-1" aria-hidden="true"></i>
+                        <span>Sign In</span>
                     </a>
                     <a href="<?= htmlspecialchars(base_url('/public/signup.php'), ENT_QUOTES, 'UTF-8') ?>" class="btn btn-outline-secondary btn-lg">
-                        <i class="bi bi-person-plus" aria-hidden="true"></i>
-                        <span>Request Account</span>
+                        <i class="bi bi-person-plus me-1" aria-hidden="true"></i>
+                        <span>Create Account</span>
+                    </a>
+                    <a href="#features" class="btn btn-link text-decoration-none text-secondary d-inline-flex align-items-center gap-1 fs-6 px-2">
+                        <span>Explore Features</span>
+                        <i class="bi bi-arrow-down-short fs-5" aria-hidden="true"></i>
                     </a>
                 </div>
 
-                <div class="d-flex align-items-center gap-4 mt-4 pt-3 border-top text-xs text-muted">
+                <div class="d-flex flex-wrap align-items-center gap-4 mt-4 pt-3 border-top text-xs text-muted">
                     <div class="d-flex align-items-center gap-2">
                         <i class="bi bi-check-circle-fill text-success" aria-hidden="true"></i>
-                        <span>Role-Based Access Control</span>
+                        <span>Role-based access</span>
                     </div>
                     <div class="d-flex align-items-center gap-2">
                         <i class="bi bi-check-circle-fill text-success" aria-hidden="true"></i>
-                        <span>CSRF Protected</span>
+                        <span>Private &amp; secure</span>
                     </div>
                     <div class="d-flex align-items-center gap-2">
                         <i class="bi bi-check-circle-fill text-success" aria-hidden="true"></i>
-                        <span>Immutable Audit Trail</span>
+                        <span>Easy record exports</span>
                     </div>
                 </div>
             </div>
@@ -81,11 +85,11 @@ require_once __DIR__ . '/includes/header.php';
                             </span>
                             <span class="fw-semibold text-slate-900 text-sm">CS304 · Database Systems</span>
                         </div>
-                        <span class="badge cm-badge-success">Semester 1</span>
+                        <span class="badge cm-badge-success">Active Semester</span>
                     </div>
 
                     <div class="cm-card-body p-4">
-                        <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
                             <span class="text-xs text-uppercase tracking-wider text-muted fw-semibold">Attendance Overview</span>
                             <span class="cm-tabular text-sm fw-bold text-success">94.8% Active</span>
                         </div>
@@ -114,11 +118,11 @@ require_once __DIR__ . '/includes/header.php';
                         <!-- Recent Course Activity Snippet -->
                         <div class="pt-2 border-top">
                             <div class="d-flex align-items-center justify-content-between text-xs py-1">
-                                <span class="text-secondary"><i class="bi bi-check2-circle text-success me-1" aria-hidden="true"></i> Midterm Marks Approved</span>
+                                <span class="text-secondary"><i class="bi bi-check2-circle text-success me-1" aria-hidden="true"></i> Midterm marks saved</span>
                                 <span class="text-muted cm-tabular">Today</span>
                             </div>
                             <div class="d-flex align-items-center justify-content-between text-xs py-1">
-                                <span class="text-secondary"><i class="bi bi-clock-history text-primary me-1" aria-hidden="true"></i> Lab 06 Attendance Logged</span>
+                                <span class="text-secondary"><i class="bi bi-clock-history text-primary me-1" aria-hidden="true"></i> Class 24 attendance recorded</span>
                                 <span class="text-muted cm-tabular">Yesterday</span>
                             </div>
                         </div>
@@ -126,7 +130,7 @@ require_once __DIR__ . '/includes/header.php';
 
                     <div class="cm-card-footer bg-slate-50 border-top d-flex align-items-center justify-content-between text-xs">
                         <span class="text-muted">Faculty of Computing &amp; Informatics</span>
-                        <span class="badge cm-badge-neutral font-monospace">Accredited</span>
+                        <span class="badge cm-badge-neutral font-monospace">Fall Term</span>
                     </div>
                 </div>
             </div>
@@ -135,48 +139,48 @@ require_once __DIR__ . '/includes/header.php';
 </section>
 
 <!-- Role Highlights Section -->
-<section class="py-5" aria-labelledby="roles-heading">
+<section id="features" class="py-5" aria-labelledby="roles-heading">
     <div class="container px-3 px-lg-4">
         <div class="text-center mb-5">
-            <h2 id="roles-heading" class="cm-page-title mb-2">Designed for Every Academic Stakeholder</h2>
+            <h2 id="roles-heading" class="cm-page-title mb-2">Built for Your Everyday Work</h2>
             <p class="text-secondary mx-auto text-pretty" style="max-width: 600px;">
-                Clear operational boundaries and specialized toolsets tailored to instructional staff, department leadership, and institutional registrars.
+                Simple, dedicated tools designed for teachers, department chairs, and administrators.
             </p>
         </div>
 
         <div class="row g-4">
-            <!-- Lecturer Feature Card -->
+            <!-- Lecturer / Teacher Feature Card -->
             <div class="col-lg-4 col-md-6">
                 <div class="cm-card h-100 p-4 border bg-white shadow-sm d-flex flex-column">
                     <div class="mb-3">
                         <span class="badge cm-badge-success mb-2">
-                            <i class="bi bi-person-video3 me-1" aria-hidden="true"></i> Course Instructors
+                            <i class="bi bi-person-video3 me-1" aria-hidden="true"></i> Teachers
                         </span>
-                        <h3 class="h5 fw-bold text-slate-900 mt-2 mb-2">Lecture Attendance &amp; Gradebook</h3>
+                        <h3 class="h5 fw-bold text-slate-900 mt-2 mb-2">For Teachers</h3>
                         <p class="text-secondary text-sm mb-4">
-                            Log attendance status rapidly per session and maintain continuous coursework scores with complete assessment breakdown.
+                            Take attendance in seconds, enter quiz and exam marks, and track student progress at a glance.
                         </p>
                     </div>
 
                     <ul class="list-unstyled text-sm text-secondary mb-4 space-y-2 flex-grow-1">
                         <li class="d-flex align-items-start gap-2 mb-2">
                             <i class="bi bi-check2 text-success mt-1" aria-hidden="true"></i>
-                            <span>Session attendance logging with Present, Absent, and Late indicators</span>
+                            <span>Mark students Present, Absent, or Late in one click</span>
                         </li>
                         <li class="d-flex align-items-start gap-2 mb-2">
                             <i class="bi bi-check2 text-success mt-1" aria-hidden="true"></i>
-                            <span>Continuous assessment scoring for quizzes, midterms, and finals</span>
+                            <span>Enter marks for quizzes, assignments, and exams</span>
                         </li>
                         <li class="d-flex align-items-start gap-2 mb-2">
                             <i class="bi bi-check2 text-success mt-1" aria-hidden="true"></i>
-                            <span>Bulk roster grade imports via standard CSV and Excel formats</span>
+                            <span>Import class grades quickly from Excel or CSV files</span>
                         </li>
                     </ul>
 
                     <div class="pt-3 border-top mt-auto">
                         <a href="<?= htmlspecialchars(base_url('/public/login.php'), ENT_QUOTES, 'UTF-8') ?>" class="btn btn-outline-primary w-100">
-                            <span>Sign In as Lecturer</span>
-                            <i class="bi bi-arrow-right" aria-hidden="true"></i>
+                            <span>Sign In as Teacher</span>
+                            <i class="bi bi-arrow-right ms-1" aria-hidden="true"></i>
                         </a>
                     </div>
                 </div>
@@ -187,33 +191,33 @@ require_once __DIR__ . '/includes/header.php';
                 <div class="cm-card h-100 p-4 border bg-white shadow-sm d-flex flex-column">
                     <div class="mb-3">
                         <span class="badge cm-badge-info mb-2">
-                            <i class="bi bi-building me-1" aria-hidden="true"></i> Department Leadership
+                            <i class="bi bi-building me-1" aria-hidden="true"></i> Department Heads
                         </span>
-                        <h3 class="h5 fw-bold text-slate-900 mt-2 mb-2">Academic Oversight &amp; Approvals</h3>
+                        <h3 class="h5 fw-bold text-slate-900 mt-2 mb-2">For Department Heads</h3>
                         <p class="text-secondary text-sm mb-4">
-                            Monitor departmental syllabus delivery, evaluate grade alteration requests, and review timestamped audit trails.
+                            Oversee department courses, review grade adjustments, and spot struggling students early.
                         </p>
                     </div>
 
                     <ul class="list-unstyled text-sm text-secondary mb-4 space-y-2 flex-grow-1">
                         <li class="d-flex align-items-start gap-2 mb-2">
                             <i class="bi bi-check2 text-info mt-1" aria-hidden="true"></i>
-                            <span>Comprehensive departmental course and lecturer allocation tracking</span>
+                            <span>See course attendance rates and grade distributions</span>
                         </li>
                         <li class="d-flex align-items-start gap-2 mb-2">
                             <i class="bi bi-check2 text-info mt-1" aria-hidden="true"></i>
-                            <span>Review and approval workflow for post-submission grade modifications</span>
+                            <span>Review and approve grade adjustments with clear notes</span>
                         </li>
                         <li class="d-flex align-items-start gap-2 mb-2">
                             <i class="bi bi-check2 text-info mt-1" aria-hidden="true"></i>
-                            <span>Exportable semester attendance summaries and audit logs</span>
+                            <span>Export department-wide summaries anytime</span>
                         </li>
                     </ul>
 
                     <div class="pt-3 border-top mt-auto">
                         <a href="<?= htmlspecialchars(base_url('/public/login.php'), ENT_QUOTES, 'UTF-8') ?>" class="btn btn-outline-primary w-100">
                             <span>Sign In as Department Head</span>
-                            <i class="bi bi-arrow-right" aria-hidden="true"></i>
+                            <i class="bi bi-arrow-right ms-1" aria-hidden="true"></i>
                         </a>
                     </div>
                 </div>
@@ -224,33 +228,33 @@ require_once __DIR__ . '/includes/header.php';
                 <div class="cm-card h-100 p-4 border bg-white shadow-sm d-flex flex-column">
                     <div class="mb-3">
                         <span class="badge cm-badge-primary mb-2">
-                            <i class="bi bi-shield-lock me-1" aria-hidden="true"></i> System Administration
+                            <i class="bi bi-shield-lock me-1" aria-hidden="true"></i> Administrators
                         </span>
-                        <h3 class="h5 fw-bold text-slate-900 mt-2 mb-2">Institutional System Governance</h3>
+                        <h3 class="h5 fw-bold text-slate-900 mt-2 mb-2">For Administrators</h3>
                         <p class="text-secondary text-sm mb-4">
-                            Manage user accounts, department structures, student registries, and system-wide security configurations.
+                            Manage user accounts, assign teachers to courses, and configure department settings.
                         </p>
                     </div>
 
                     <ul class="list-unstyled text-sm text-secondary mb-4 space-y-2 flex-grow-1">
                         <li class="d-flex align-items-start gap-2 mb-2">
                             <i class="bi bi-check2 text-primary mt-1" aria-hidden="true"></i>
-                            <span>User account lifecycle provisioning with role-based access control</span>
+                            <span>Create and manage teacher and department head accounts</span>
                         </li>
                         <li class="d-flex align-items-start gap-2 mb-2">
                             <i class="bi bi-check2 text-primary mt-1" aria-hidden="true"></i>
-                            <span>Faculty, department, and student registry organizational cataloging</span>
+                            <span>Organize faculties, departments, and course offerings</span>
                         </li>
                         <li class="d-flex align-items-start gap-2 mb-2">
                             <i class="bi bi-check2 text-primary mt-1" aria-hidden="true"></i>
-                            <span>Course catalog management with assigned credit hours and prerequisites</span>
+                            <span>Assign instructors to course sections easily</span>
                         </li>
                     </ul>
 
                     <div class="pt-3 border-top mt-auto">
                         <a href="<?= htmlspecialchars(base_url('/public/login.php'), ENT_QUOTES, 'UTF-8') ?>" class="btn btn-outline-primary w-100">
                             <span>Sign In as Administrator</span>
-                            <i class="bi bi-arrow-right" aria-hidden="true"></i>
+                            <i class="bi bi-arrow-right ms-1" aria-hidden="true"></i>
                         </a>
                     </div>
                 </div>
@@ -259,8 +263,8 @@ require_once __DIR__ . '/includes/header.php';
     </div>
 </section>
 
-<!-- Institutional Security & Standards Section -->
-<section class="py-5 bg-white border-top border-bottom" aria-label="Institutional Standards">
+<!-- Reassurance & Highlights Section -->
+<section class="py-5 bg-white border-top border-bottom" aria-label="Key Benefits">
     <div class="container px-3 px-lg-4">
         <div class="row g-4">
             <div class="col-md-4">
@@ -269,9 +273,9 @@ require_once __DIR__ . '/includes/header.php';
                         <i class="bi bi-shield-check"></i>
                     </div>
                     <div>
-                        <h4 class="h6 fw-bold text-slate-900 mb-1">Role-Based Access Isolation</h4>
+                        <h4 class="h6 fw-bold text-slate-900 mb-1">Protected &amp; Private</h4>
                         <p class="text-xs text-secondary mb-0">
-                            Strict cryptographic session controls safeguard student data and grade modifications across every organizational tier.
+                            Only authorized staff can see student information and grades, keeping personal data safe.
                         </p>
                     </div>
                 </div>
@@ -283,9 +287,9 @@ require_once __DIR__ . '/includes/header.php';
                         <i class="bi bi-clock-history"></i>
                     </div>
                     <div>
-                        <h4 class="h6 fw-bold text-slate-900 mb-1">Immutable Audit Traceability</h4>
+                        <h4 class="h6 fw-bold text-slate-900 mb-1">Clear Change History</h4>
                         <p class="text-xs text-secondary mb-0">
-                            Every assessment alteration, attendance submission, and user administrative action is recorded with microsecond accuracy.
+                            Every grade and attendance update is recorded with who made it and when, so records stay reliable.
                         </p>
                     </div>
                 </div>
@@ -297,9 +301,9 @@ require_once __DIR__ . '/includes/header.php';
                         <i class="bi bi-file-earmark-spreadsheet"></i>
                     </div>
                     <div>
-                        <h4 class="h6 fw-bold text-slate-900 mb-1">Standardized Spreadsheet Interchange</h4>
+                        <h4 class="h6 fw-bold text-slate-900 mb-1">Spreadsheet Friendly</h4>
                         <p class="text-xs text-secondary mb-0">
-                            Import bulk student rosters and export semester attendance summaries smoothly in universally supported CSV and Excel structures.
+                            Easily upload student rosters and download reports in Excel and CSV formats without manual copying.
                         </p>
                     </div>
                 </div>

@@ -26,32 +26,49 @@ $usernameVal = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!verifyCsrfToken($_POST['csrf_token'] ?? '')) {
-        $error = "Your security validation token has expired. Please refresh the page and try again.";
+        $error = "Your security session has expired. Please refresh the page and try again.";
     } else {
         $usernameVal = trim($_POST['username'] ?? '');
         $password = $_POST['password'] ?? '';
         
         if (empty($usernameVal) || empty($password)) {
-            $error = "Please enter both your username and password.";
-        } elseif (login($usernameVal, $password)) {
-            // Redirect based on role
-            switch ($_SESSION['role']) {
-                case 'admin':
-                    header("Location: " . base_url('/modules/admin/dashboard.php'));
-                    break;
-                case 'head':
-                    header("Location: " . base_url('/modules/head/dashboard.php'));
-                    break;
-                case 'lecturer':
-                    header("Location: " . base_url('/modules/lecturer/dashboard.php'));
-                    break;
-                default:
-                    header("Location: " . base_url('/'));
-                    break;
-            }
-            exit;
+            $error = "Please enter both your username or email and your password.";
         } else {
-            $error = "Invalid username or password. Please verify your credentials and try again.";
+            // Check if user entered an email address; if so, resolve to their username
+            $actualUsername = $usernameVal;
+            if (str_contains($usernameVal, '@') && isset($mysqli) && $mysqli && !$mysqli->connect_error) {
+                $lookup = $mysqli->prepare("SELECT username FROM users WHERE email = ? AND is_active = 1 LIMIT 1");
+                if ($lookup) {
+                    $lookup->bind_param("s", $usernameVal);
+                    $lookup->execute();
+                    $res = $lookup->get_result();
+                    if ($userRow = $res->fetch_assoc()) {
+                        $actualUsername = $userRow['username'];
+                    }
+                    $lookup->close();
+                }
+            }
+
+            if (login($actualUsername, $password)) {
+                // Redirect based on role
+                switch ($_SESSION['role']) {
+                    case 'admin':
+                        header("Location: " . base_url('/modules/admin/dashboard.php'));
+                        break;
+                    case 'head':
+                        header("Location: " . base_url('/modules/head/dashboard.php'));
+                        break;
+                    case 'lecturer':
+                        header("Location: " . base_url('/modules/lecturer/dashboard.php'));
+                        break;
+                    default:
+                        header("Location: " . base_url('/'));
+                        break;
+                }
+                exit;
+            } else {
+                $error = "The username or password you entered is incorrect. Please check your details and try again.";
+            }
         }
     }
 }
@@ -66,20 +83,20 @@ require_once __DIR__ . '/../includes/header.php';
         <div class="col-12 col-sm-10 col-md-8 col-lg-5 col-xl-4" style="max-width: 440px;">
             <div class="cm-card shadow-sm border bg-white">
                 <div class="cm-card-body p-4 p-sm-5">
-                    <!-- Academic Crest & Header -->
+                    <!-- Brand Icon & Header -->
                     <div class="text-center mb-4">
                         <div class="d-inline-flex align-items-center justify-content-center rounded-circle bg-slate-100 text-primary mb-3" style="width: 52px; height: 52px; font-size: 1.5rem;" aria-hidden="true">
                             <i class="bi bi-mortarboard-fill"></i>
                         </div>
-                        <h1 class="h4 fw-bold text-slate-900 mb-1">CourseMonitor</h1>
-                        <p class="text-xs text-secondary mb-0">Institutional Performance &amp; Attendance Portal</p>
+                        <h1 class="h4 fw-bold text-slate-900 mb-1">Welcome Back</h1>
+                        <p class="text-sm text-secondary mb-0">Sign in to your account</p>
                     </div>
 
                     <?php if (!empty($error)): ?>
                         <div class="alert alert-danger d-flex align-items-start gap-2 mb-4" role="alert" aria-live="assertive" id="login-error">
-                            <i class="bi bi-exclamation-triangle-fill flex-shrink-0 mt-1" aria-hidden="true"></i>
+                            <i class="bi bi-exclamation-circle-fill flex-shrink-0 mt-1" aria-hidden="true"></i>
                             <div class="text-xs">
-                                <span class="fw-semibold">Sign in failed:</span> <?= htmlspecialchars($error, ENT_QUOTES, 'UTF-8') ?>
+                                <span class="fw-semibold">Unable to sign in:</span> <?= htmlspecialchars($error, ENT_QUOTES, 'UTF-8') ?>
                             </div>
                         </div>
                     <?php endif; ?>
@@ -87,10 +104,10 @@ require_once __DIR__ . '/../includes/header.php';
                     <form method="POST" action="" class="needs-validation">
                         <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(generateCsrfToken(), ENT_QUOTES, 'UTF-8') ?>">
                         
-                        <!-- Username Field -->
+                        <!-- Username / Email Field -->
                         <div class="mb-3">
                             <label for="username" class="form-label">
-                                Username <span class="text-danger" aria-hidden="true">*</span>
+                                Username or Email <span class="text-danger" aria-hidden="true">*</span>
                             </label>
                             <div class="input-group">
                                 <span class="input-group-text bg-slate-50 text-secondary border-end-0" id="username-addon">
@@ -105,7 +122,7 @@ require_once __DIR__ . '/../includes/header.php';
                                     aria-required="true" 
                                     autocomplete="username" 
                                     aria-describedby="username-addon <?= !empty($error) ? 'login-error' : '' ?>"
-                                    placeholder="Enter your username"
+                                    placeholder="Enter your username or email"
                                     value="<?= htmlspecialchars($usernameVal, ENT_QUOTES, 'UTF-8') ?>"
                                     autofocus
                                 >
@@ -144,30 +161,30 @@ require_once __DIR__ . '/../includes/header.php';
                                 </button>
                             </div>
                             <div class="form-text text-xs mt-1" id="password-help">
-                                <i class="bi bi-shield-check me-1" aria-hidden="true"></i>Passwords are strictly case-sensitive.
+                                <i class="bi bi-info-circle me-1" aria-hidden="true"></i>Passwords are case-sensitive.
                             </div>
                         </div>
 
                         <!-- Submit Button -->
-                        <button type="submit" class="btn btn-primary w-100 py-2">
+                        <button type="submit" class="btn btn-primary w-100 py-2 fs-6 fw-medium">
                             <i class="bi bi-box-arrow-in-right me-1" aria-hidden="true"></i>
-                            <span>Sign In to Dashboard</span>
+                            <span>Sign In</span>
                         </button>
                     </form>
 
                     <!-- Account Registration Link -->
                     <div class="text-center pt-3 mt-4 border-top">
-                        <span class="text-xs text-secondary">Need staff access?</span>
-                        <a href="<?= htmlspecialchars(base_url('/public/signup.php'), ENT_QUOTES, 'UTF-8') ?>" class="text-xs fw-semibold text-primary ms-1">
-                            Request account registration
+                        <span class="text-sm text-secondary">Don't have an account yet?</span>
+                        <a href="<?= htmlspecialchars(base_url('/public/signup.php'), ENT_QUOTES, 'UTF-8') ?>" class="text-sm fw-semibold text-primary ms-1">
+                            Create an account
                         </a>
                     </div>
                 </div>
 
                 <div class="cm-card-footer bg-slate-50 border-top text-center py-3">
                     <p class="text-xs text-muted mb-0">
-                        <i class="bi bi-lock-fill me-1" aria-hidden="true"></i>
-                        Protected institutional system. All access attempts are monitored and recorded.
+                        <i class="bi bi-shield-check me-1" aria-hidden="true"></i>
+                        CourseMonitor protects your data with secure authentication.
                     </p>
                 </div>
             </div>
