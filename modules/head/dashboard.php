@@ -1,11 +1,12 @@
 <?php
+// modules/head/dashboard.php
 require_once __DIR__ . '/../../includes/auth_functions.php';
 requireRole('head');
 
 $user = getCurrentUser();
 $head_id = $user['user_id'];
 
-// Get Department ID
+// Get Department ID and Name
 $dept_stmt = $mysqli->prepare("SELECT id, name FROM departments WHERE head_id = ?");
 $dept_stmt->bind_param("i", $head_id);
 $dept_stmt->execute();
@@ -13,10 +14,43 @@ $dept_res = $dept_stmt->get_result();
 $dept = $dept_res->fetch_assoc();
 $dept_stmt->close();
 
-$dept_id = $dept ? $dept['id'] : 0;
+$dept_id = $dept ? (int)$dept['id'] : 0;
 $dept_name = $dept ? $dept['name'] : 'Unknown Department';
 
-// At-Risk Students Count (Overall)
+// Department Course Count
+$courses_count = 0;
+if ($dept_id) {
+    $c_stmt = $mysqli->prepare("SELECT COUNT(*) FROM courses WHERE department_id = ?");
+    $c_stmt->bind_param("i", $dept_id);
+    $c_stmt->execute();
+    $c_stmt->bind_result($courses_count);
+    $c_stmt->fetch();
+    $c_stmt->close();
+}
+
+// Active Department Lecturers Count
+$lecturers_count = 0;
+if ($dept_id) {
+    $l_stmt = $mysqli->prepare("SELECT COUNT(DISTINCT lecturer_id) FROM courses WHERE department_id = ? AND lecturer_id IS NOT NULL");
+    $l_stmt->bind_param("i", $dept_id);
+    $l_stmt->execute();
+    $l_stmt->bind_result($lecturers_count);
+    $l_stmt->fetch();
+    $l_stmt->close();
+}
+
+// Department Enrolled Students Count
+$students_count = 0;
+if ($dept_id) {
+    $s_stmt = $mysqli->prepare("SELECT COUNT(*) FROM students WHERE department_id = ?");
+    $s_stmt->bind_param("i", $dept_id);
+    $s_stmt->execute();
+    $s_stmt->bind_result($students_count);
+    $s_stmt->fetch();
+    $s_stmt->close();
+}
+
+// At-Risk Students Count (Overall Attendance < 75%)
 $at_risk_count = 0;
 if ($dept_id) {
     $risk_stmt = $mysqli->prepare("
@@ -35,18 +69,16 @@ if ($dept_id) {
     $risk_stmt->close();
 }
 
-// Calculate Stats Per Year (1, 2, 3, 4)
+// Calculate Stats Per Academic Year (1, 2, 3, 4)
 $years_data = [
-    1 => ['grade' => 0, 'attendance' => 0, 'att_total' => 0, 'att_present' => 0],
-    2 => ['grade' => 0, 'attendance' => 0, 'att_total' => 0, 'att_present' => 0],
-    3 => ['grade' => 0, 'attendance' => 0, 'att_total' => 0, 'att_present' => 0],
-    4 => ['grade' => 0, 'attendance' => 0, 'att_total' => 0, 'att_present' => 0]
+    1 => ['grade' => '0.0', 'attendance' => '0.0', 'att_total' => 0, 'att_present' => 0],
+    2 => ['grade' => '0.0', 'attendance' => '0.0', 'att_total' => 0, 'att_present' => 0],
+    3 => ['grade' => '0.0', 'attendance' => '0.0', 'att_total' => 0, 'att_present' => 0],
+    4 => ['grade' => '0.0', 'attendance' => '0.0', 'att_total' => 0, 'att_present' => 0]
 ];
 
 if ($dept_id) {
-    // 1. Grades per Year
-    // Join coursework -> students to get semester
-    // Year 1: Sem 1,2 | Year 2: Sem 3,4 | etc.
+    // 1. Grades per Year (Year 1: Sem 1,2 | Year 2: Sem 3,4 | etc.)
     $g_sql = "SELECT AVG(cw.grade) as avg_g, CEIL(s.current_semester / 2) as year_level
               FROM coursework cw
               JOIN students s ON cw.student_id = s.id
@@ -59,7 +91,7 @@ if ($dept_id) {
     while ($row = $res->fetch_assoc()) {
         $y = intval($row['year_level']);
         if (isset($years_data[$y])) {
-            $years_data[$y]['grade'] = number_format($row['avg_g'], 1);
+            $years_data[$y]['grade'] = number_format((float)$row['avg_g'], 1);
         }
     }
     $stmt->close();
@@ -79,8 +111,8 @@ if ($dept_id) {
     while ($row = $res->fetch_assoc()) {
         $y = intval($row['year_level']);
         if (isset($years_data[$y])) {
-            $years_data[$y]['att_total'] = $row['total'];
-            $years_data[$y]['att_present'] = $row['present'];
+            $years_data[$y]['att_total'] = (int)$row['total'];
+            $years_data[$y]['att_present'] = (int)$row['present'];
             if ($row['total'] > 0) {
                 $years_data[$y]['attendance'] = number_format(($row['present'] / $row['total']) * 100, 1);
             }
@@ -88,116 +120,341 @@ if ($dept_id) {
     }
     $stmt->close();
 }
+
+// Recent Audit Activity
+$recent_audits = [];
+if ($dept_id) {
+    $audit_stmt = $mysqli->prepare("
+        SELECT al.id, al.table_name, al.record_id, al.action, al.old_value, al.new_value, al.modified_at,
+               u.full_name as modifier_name
+        FROM audit_logs al
+        JOIN users u ON al.modified_by = u.id
+        WHERE al.modified_by = ?
+        ORDER BY al.modified_at DESC
+        LIMIT 5
+    ");
+    $audit_stmt->bind_param("i", $head_id);
+    $audit_stmt->execute();
+    $audit_res = $audit_stmt->get_result();
+    while ($row = $audit_res->fetch_assoc()) {
+        $recent_audits[] = $row;
+    }
+    $audit_stmt->close();
+}
+
+$pageTitle = 'Department Dashboard';
+require_once __DIR__ . '/../../includes/header.php';
 ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Department Head Dashboard - CourseMonitor</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        .stat-card { transition: all 0.3s; border: none; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        .stat-card:hover { transform: translateY(-5px); box-shadow: 0 8px 12px rgba(0,0,0,0.15); }
-        .stat-val { font-size: 1.8rem; font-weight: bold; }
-    </style>
-</head>
-<body class="bg-light">
-    <header class="navbar navbar-dark bg-dark px-3">
-        <span class="navbar-brand mb-0 h1">Head of Department: <?php echo htmlspecialchars($dept_name); ?></span>
-        <a href="/CourseMonitor/public/logout.php" class="btn btn-outline-light btn-sm">Logout</a>
-    </header>
-    <main class="container py-4">
-        <h2 class="mb-4">Department Overview</h2>
-        
-        <div class="row g-4 mb-5">
-            <!-- Year 1 -->
-            <div class="col-md-3">
-                <div class="card stat-card h-100">
-                    <div class="card-header bg-primary text-white text-center fw-bold">Year 1</div>
-                    <div class="card-body text-center">
-                        <div class="mb-3">
-                            <small class="text-muted d-block">Avg Grade</small>
-                            <span class="stat-val text-primary"><?php echo $years_data[1]['grade']; ?></span>
-                        </div>
-                        <div>
-                            <small class="text-muted d-block">Attendance</small>
-                            <span class="stat-val text-success"><?php echo $years_data[1]['attendance']; ?>%</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Year 2 -->
-            <div class="col-md-3">
-                <div class="card stat-card h-100">
-                    <div class="card-header bg-info text-white text-center fw-bold">Year 2</div>
-                    <div class="card-body text-center">
-                        <div class="mb-3">
-                            <small class="text-muted d-block">Avg Grade</small>
-                            <span class="stat-val text-primary"><?php echo $years_data[2]['grade']; ?></span>
-                        </div>
-                        <div>
-                            <small class="text-muted d-block">Attendance</small>
-                            <span class="stat-val text-success"><?php echo $years_data[2]['attendance']; ?>%</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
 
-            <!-- Year 3 -->
-            <div class="col-md-3">
-                <div class="card stat-card h-100">
-                    <div class="card-header bg-warning text-dark text-center fw-bold">Year 3</div>
-                    <div class="card-body text-center">
-                        <div class="mb-3">
-                            <small class="text-muted d-block">Avg Grade</small>
-                            <span class="stat-val text-primary"><?php echo $years_data[3]['grade']; ?></span>
-                        </div>
-                        <div>
-                            <small class="text-muted d-block">Attendance</small>
-                            <span class="stat-val text-success"><?php echo $years_data[3]['attendance']; ?>%</span>
-                        </div>
-                    </div>
-                </div>
+<div class="container-fluid px-3 px-lg-4 py-4">
+    <!-- Page Header -->
+    <div class="cm-page-header">
+        <div>
+            <div class="d-flex align-items-center gap-2 mb-1">
+                <span class="badge cm-badge-info">Head of Department</span>
+                <span class="text-secondary small">&bull;</span>
+                <span class="text-secondary small fw-medium"><?= htmlspecialchars($dept_name, ENT_QUOTES, 'UTF-8') ?></span>
             </div>
-
-            <!-- Year 4 -->
-            <div class="col-md-3">
-                <div class="card stat-card h-100">
-                    <div class="card-header bg-success text-white text-center fw-bold">Year 4</div>
-                    <div class="card-body text-center">
-                        <div class="mb-3">
-                            <small class="text-muted d-block">Avg Grade</small>
-                            <span class="stat-val text-primary"><?php echo $years_data[4]['grade']; ?></span>
-                        </div>
-                        <div>
-                            <small class="text-muted d-block">Attendance</small>
-                            <span class="stat-val text-success"><?php echo $years_data[4]['attendance']; ?>%</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <h1 class="cm-page-title">Department Dashboard</h1>
+            <p class="cm-page-subtitle">Academic performance overview, attendance monitoring, and administrative controls</p>
         </div>
-
-        <div class="alert alert-danger d-flex align-items-center mb-4" role="alert">
-            <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill"/></svg>
-            <div>
-                <strong>At-Risk Students (Attendance < 75%):</strong> <span class="fs-5 fw-bold ms-2"><?php echo $at_risk_count; ?></span>
-            </div>
-        </div>
-        
-        <h3 class="mb-3">Management</h3>
-        <div class="list-group mb-4 shadow-sm">
-            <a href="/CourseMonitor/modules/head/reports.php" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
-                View Reports
-                <span class="badge bg-primary rounded-pill">Details</span>
+        <div class="d-flex flex-wrap align-items-center gap-2">
+            <a href="<?= htmlspecialchars(base_url('/modules/head/reports.php'), ENT_QUOTES, 'UTF-8') ?>" class="btn btn-outline-primary btn-sm">
+                <i class="bi bi-file-earmark-bar-graph" aria-hidden="true"></i>
+                <span>View Reports</span>
             </a>
-            <a href="/CourseMonitor/modules/head/modify_records.php" class="list-group-item list-group-item-action">Modify Records</a>
-            <a href="/CourseMonitor/modules/head/audit_logs.php" class="list-group-item list-group-item-action">View Modification History</a>
-            <a href="/CourseMonitor/modules/head/courses.php" class="list-group-item list-group-item-action text-primary">Manage Department Courses</a>
+            <a href="<?= htmlspecialchars(base_url('/modules/head/modify_records.php'), ENT_QUOTES, 'UTF-8') ?>" class="btn btn-outline-primary btn-sm">
+                <i class="bi bi-pencil-square" aria-hidden="true"></i>
+                <span>Review &amp; Modify</span>
+            </a>
+            <a href="<?= htmlspecialchars(base_url('/modules/head/courses.php'), ENT_QUOTES, 'UTF-8') ?>" class="btn btn-primary btn-sm">
+                <i class="bi bi-book" aria-hidden="true"></i>
+                <span>Manage Courses</span>
+            </a>
         </div>
-    </main>
+    </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+    <?php if (!$dept_id): ?>
+        <div class="alert cm-alert-warning" role="alert">
+            <i class="bi bi-exclamation-triangle-fill fs-5" aria-hidden="true"></i>
+            <div>
+                <strong>Department Not Assigned</strong>
+                <p class="mb-0 mt-1">Your user account is not currently assigned to lead a department. Please contact the system administrator to configure your departmental assignment.</p>
+            </div>
+        </div>
+    <?php endif; ?>
+
+    <!-- Summary Metrics -->
+    <section aria-labelledby="summary-metrics-heading" class="mb-4">
+        <h2 id="summary-metrics-heading" class="visually-hidden">Key Department Metrics</h2>
+        <div class="row g-3">
+            <!-- Department Courses -->
+            <div class="col-sm-6 col-xl-3">
+                <div class="cm-stat-card">
+                    <div class="cm-stat-header">
+                        <span class="cm-stat-label">Department Courses</span>
+                        <div class="cm-stat-icon primary" aria-hidden="true">
+                            <i class="bi bi-book"></i>
+                        </div>
+                    </div>
+                    <div class="cm-stat-val tabular-nums"><?= (int)$courses_count ?></div>
+                    <p class="cm-stat-meta">
+                        <span class="text-secondary">Curriculum offerings</span>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Active Lecturers -->
+            <div class="col-sm-6 col-xl-3">
+                <div class="cm-stat-card">
+                    <div class="cm-stat-header">
+                        <span class="cm-stat-label">Assigned Lecturers</span>
+                        <div class="cm-stat-icon success" aria-hidden="true">
+                            <i class="bi bi-person-badge"></i>
+                        </div>
+                    </div>
+                    <div class="cm-stat-val tabular-nums"><?= (int)$lecturers_count ?></div>
+                    <p class="cm-stat-meta">
+                        <span class="text-secondary">Instructors actively teaching</span>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Department Students -->
+            <div class="col-sm-6 col-xl-3">
+                <div class="cm-stat-card">
+                    <div class="cm-stat-header">
+                        <span class="cm-stat-label">Enrolled Students</span>
+                        <div class="cm-stat-icon primary" aria-hidden="true">
+                            <i class="bi bi-mortarboard"></i>
+                        </div>
+                    </div>
+                    <div class="cm-stat-val tabular-nums"><?= (int)$students_count ?></div>
+                    <p class="cm-stat-meta">
+                        <span class="text-secondary">In departmental cohorts</span>
+                    </p>
+                </div>
+            </div>
+
+            <!-- At-Risk Students -->
+            <div class="col-sm-6 col-xl-3">
+                <div class="cm-stat-card <?= $at_risk_count > 0 ? 'border-danger' : '' ?>">
+                    <div class="cm-stat-header">
+                        <span class="cm-stat-label">At-Risk Students</span>
+                        <div class="cm-stat-icon danger" aria-hidden="true">
+                            <i class="bi bi-exclamation-triangle"></i>
+                        </div>
+                    </div>
+                    <div class="cm-stat-val tabular-nums <?= $at_risk_count > 0 ? 'text-danger' : 'text-success' ?>">
+                        <?= (int)$at_risk_count ?>
+                    </div>
+                    <p class="cm-stat-meta">
+                        <span class="badge <?= $at_risk_count > 0 ? 'cm-badge-danger' : 'cm-badge-success' ?>">
+                            <?= $at_risk_count > 0 ? 'Attendance < 75%' : 'Good standing' ?>
+                        </span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Academic Level Performance Breakdown (Years 1 to 4) -->
+    <section aria-labelledby="cohort-breakdown-heading" class="mb-4">
+        <div class="d-flex align-items-center justify-content-between mb-3">
+            <div>
+                <h2 id="cohort-breakdown-heading" class="h4 mb-0">Cohort Academic Performance</h2>
+                <p class="text-secondary small mb-0">Semester progression and attendance metrics aggregated by academic year level</p>
+            </div>
+        </div>
+
+        <div class="row g-3">
+            <?php 
+            $yearLabels = [
+                1 => ['title' => 'Year 1', 'badge' => 'cm-badge-primary', 'semesters' => 'Semesters 1 & 2'],
+                2 => ['title' => 'Year 2', 'badge' => 'cm-badge-info', 'semesters' => 'Semesters 3 & 4'],
+                3 => ['title' => 'Year 3', 'badge' => 'cm-badge-warning', 'semesters' => 'Semesters 5 & 6'],
+                4 => ['title' => 'Year 4', 'badge' => 'cm-badge-success', 'semesters' => 'Semesters 7 & 8']
+            ];
+            foreach ($yearLabels as $year => $meta): 
+                $avgGrade = $years_data[$year]['grade'];
+                $attRate = $years_data[$year]['attendance'];
+            ?>
+                <div class="col-sm-6 col-xl-3">
+                    <div class="card cm-card h-100">
+                        <div class="cm-card-header py-2 px-3 bg-light">
+                            <div class="d-flex align-items-center justify-content-between w-100">
+                                <span class="fw-semibold text-primary"><?= htmlspecialchars($meta['title']) ?></span>
+                                <span class="badge <?= $meta['badge'] ?>"><?= htmlspecialchars($meta['semesters']) ?></span>
+                            </div>
+                        </div>
+                        <div class="cm-card-body p-3">
+                            <div class="mb-3">
+                                <div class="d-flex justify-content-between align-items-baseline mb-1">
+                                    <span class="text-secondary small">Average Grade</span>
+                                    <span class="fw-bold tabular-nums fs-5 text-primary"><?= htmlspecialchars($avgGrade) ?></span>
+                                </div>
+                                <div class="progress" style="height: 6px;" role="progressbar" aria-label="Average grade for <?= htmlspecialchars($meta['title']) ?>" aria-valuenow="<?= (float)$avgGrade ?>" aria-valuemin="0" aria-valuemax="100">
+                                    <div class="progress-bar bg-primary" style="width: <?= min(100, max(0, (float)$avgGrade)) ?>%;"></div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <div class="d-flex justify-content-between align-items-baseline mb-1">
+                                    <span class="text-secondary small">Attendance Rate</span>
+                                    <span class="fw-bold tabular-nums fs-5 <?= (float)$attRate >= 75 ? 'text-success' : 'text-danger' ?>">
+                                        <?= htmlspecialchars($attRate) ?>%
+                                    </span>
+                                </div>
+                                <div class="progress" style="height: 6px;" role="progressbar" aria-label="Attendance rate for <?= htmlspecialchars($meta['title']) ?>" aria-valuenow="<?= (float)$attRate ?>" aria-valuemin="0" aria-valuemax="100">
+                                    <div class="progress-bar <?= (float)$attRate >= 75 ? 'bg-success' : 'bg-danger' ?>" style="width: <?= min(100, max(0, (float)$attRate)) ?>%;"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="cm-card-footer py-2 px-3 text-muted small d-flex justify-content-between">
+                            <span>Recorded sessions:</span>
+                            <span class="fw-medium tabular-nums text-secondary"><?= (int)$years_data[$year]['att_total'] ?></span>
+                        </div>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        </div>
+    </section>
+
+    <!-- Main Grid: Recent Activity & Management Shortcuts -->
+    <div class="row g-4">
+        <!-- Recent Audit Modifications -->
+        <div class="col-lg-8">
+            <div class="card cm-card h-100">
+                <div class="cm-card-header">
+                    <div>
+                        <h2 class="cm-card-title h5 mb-0">Recent Record Modifications</h2>
+                        <span class="text-secondary small">Latest administrative grade and attendance adjustments</span>
+                    </div>
+                    <a href="<?= htmlspecialchars(base_url('/modules/head/audit_logs.php'), ENT_QUOTES, 'UTF-8') ?>" class="btn btn-outline-secondary btn-sm">
+                        <span>Full Audit History</span>
+                        <i class="bi bi-arrow-right" aria-hidden="true"></i>
+                    </a>
+                </div>
+                <div class="cm-card-body p-0">
+                    <?php if (empty($recent_audits)): ?>
+                        <div class="cm-empty-state py-5">
+                            <div class="cm-empty-icon" aria-hidden="true">
+                                <i class="bi bi-clock-history"></i>
+                            </div>
+                            <h3 class="cm-empty-title h6">No Modification Records</h3>
+                            <p class="cm-empty-desc">No record alterations have been logged for this department yet. Any grade or attendance adjustments will be tracked here.</p>
+                        </div>
+                    <?php else: ?>
+                        <div class="table-responsive border-0 rounded-0">
+                            <table class="table cm-table table-hover align-middle mb-0">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Timestamp</th>
+                                        <th scope="col">Entity</th>
+                                        <th scope="col">Action</th>
+                                        <th scope="col">Change (Old &rarr; New)</th>
+                                        <th scope="col">Attribution</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php foreach ($recent_audits as $item): 
+                                        $timestamp = date('M d, Y H:i', strtotime($item['modified_at']));
+                                        $badgeClass = 'cm-badge-neutral';
+                                        if (stripos($item['action'], 'UPDATE') !== false) {
+                                            $badgeClass = 'cm-badge-info';
+                                        } elseif (stripos($item['action'], 'CREATE') !== false) {
+                                            $badgeClass = 'cm-badge-success';
+                                        } elseif (stripos($item['action'], 'DELETE') !== false) {
+                                            $badgeClass = 'cm-badge-danger';
+                                        }
+                                    ?>
+                                        <tr>
+                                            <td class="tabular-nums text-secondary small text-nowrap"><?= htmlspecialchars($timestamp, ENT_QUOTES, 'UTF-8') ?></td>
+                                            <td>
+                                                <span class="badge cm-badge-neutral text-capitalize font-monospace">
+                                                    <?= htmlspecialchars($item['table_name'], ENT_QUOTES, 'UTF-8') ?>
+                                                </span>
+                                                <span class="text-secondary small ms-1 tabular-nums">#<?= (int)$item['record_id'] ?></span>
+                                            </td>
+                                            <td>
+                                                <span class="badge <?= $badgeClass ?>"><?= htmlspecialchars($item['action'], ENT_QUOTES, 'UTF-8') ?></span>
+                                            </td>
+                                            <td class="small">
+                                                <span class="text-danger text-decoration-line-through tabular-nums"><?= htmlspecialchars($item['old_value'] ?? 'None', ENT_QUOTES, 'UTF-8') ?></span>
+                                                <span class="text-secondary mx-1">&rarr;</span>
+                                                <span class="text-success fw-semibold tabular-nums"><?= htmlspecialchars($item['new_value'] ?? 'None', ENT_QUOTES, 'UTF-8') ?></span>
+                                            </td>
+                                            <td class="text-secondary small text-nowrap">
+                                                <?= htmlspecialchars($item['modifier_name'] ?? 'System', ENT_QUOTES, 'UTF-8') ?>
+                                            </td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    <?php endif; ?>
+                </div>
+            </div>
+        </div>
+
+        <!-- Department Management Shortcuts -->
+        <div class="col-lg-4">
+            <div class="card cm-card h-100">
+                <div class="cm-card-header">
+                    <h2 class="cm-card-title h5 mb-0">Management Shortcuts</h2>
+                </div>
+                <div class="cm-card-body">
+                    <div class="d-flex flex-column gap-3">
+                        <a href="<?= htmlspecialchars(base_url('/modules/head/courses.php'), ENT_QUOTES, 'UTF-8') ?>" class="text-decoration-none p-3 rounded border border-light-subtle bg-body-tertiary d-flex align-items-center gap-3 transition-base">
+                            <div class="cm-stat-icon primary flex-shrink-0" aria-hidden="true">
+                                <i class="bi bi-journal-bookmark"></i>
+                            </div>
+                            <div class="flex-grow-1 min-w-0">
+                                <div class="fw-semibold text-primary">Department Courses</div>
+                                <div class="text-secondary small">Assign lecturers &amp; configure semesters</div>
+                            </div>
+                            <i class="bi bi-chevron-right text-muted" aria-hidden="true"></i>
+                        </a>
+
+                        <a href="<?= htmlspecialchars(base_url('/modules/head/modify_records.php'), ENT_QUOTES, 'UTF-8') ?>" class="text-decoration-none p-3 rounded border border-light-subtle bg-body-tertiary d-flex align-items-center gap-3 transition-base">
+                            <div class="cm-stat-icon warning flex-shrink-0" aria-hidden="true">
+                                <i class="bi bi-pencil-square"></i>
+                            </div>
+                            <div class="flex-grow-1 min-w-0">
+                                <div class="fw-semibold text-primary">Review &amp; Modify Records</div>
+                                <div class="text-secondary small">Audit trail review for grades &amp; attendance</div>
+                            </div>
+                            <i class="bi bi-chevron-right text-muted" aria-hidden="true"></i>
+                        </a>
+
+                        <a href="<?= htmlspecialchars(base_url('/modules/head/reports.php'), ENT_QUOTES, 'UTF-8') ?>" class="text-decoration-none p-3 rounded border border-light-subtle bg-body-tertiary d-flex align-items-center gap-3 transition-base">
+                            <div class="cm-stat-icon success flex-shrink-0" aria-hidden="true">
+                                <i class="bi bi-bar-chart-line"></i>
+                            </div>
+                            <div class="flex-grow-1 min-w-0">
+                                <div class="fw-semibold text-primary">Department Reports</div>
+                                <div class="text-secondary small">Course analytics &amp; attendance breakdown</div>
+                            </div>
+                            <i class="bi bi-chevron-right text-muted" aria-hidden="true"></i>
+                        </a>
+
+                        <a href="<?= htmlspecialchars(base_url('/modules/head/audit_logs.php'), ENT_QUOTES, 'UTF-8') ?>" class="text-decoration-none p-3 rounded border border-light-subtle bg-body-tertiary d-flex align-items-center gap-3 transition-base">
+                            <div class="cm-stat-icon primary flex-shrink-0" aria-hidden="true">
+                                <i class="bi bi-shield-check"></i>
+                            </div>
+                            <div class="flex-grow-1 min-w-0">
+                                <div class="fw-semibold text-primary">Audit Trail</div>
+                                <div class="text-secondary small">Historical log of all verified revisions</div>
+                            </div>
+                            <i class="bi bi-chevron-right text-muted" aria-hidden="true"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<?php
+require_once __DIR__ . '/../../includes/footer.php';
+?>
