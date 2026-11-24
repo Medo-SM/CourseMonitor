@@ -1,7 +1,7 @@
 <?php
 /**
  * CourseMonitor Shared Footer Partial (includes/footer.php)
- * Clean institutional footer, container closure, and script bundle.
+ * Student Attendance & Grades Made Simple
  */
 
 if (defined('CM_FOOTER_RENDERED')) {
@@ -17,10 +17,10 @@ define('CM_FOOTER_RENDERED', true);
             <div class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-2">
                 <div class="d-flex align-items-center gap-2">
                     <span class="text-secondary">&copy; <?= date('Y') ?> CourseMonitor.</span>
-                    <span class="d-none d-sm-inline text-muted">Academic Performance &amp; Attendance Management System</span>
+                    <span class="d-none d-sm-inline text-muted">Student Attendance &amp; Grades Made Simple</span>
                 </div>
                 <div class="d-flex align-items-center gap-3">
-                    <span class="badge cm-badge-neutral font-monospace">System v2.4.0</span>
+                    <span class="badge cm-badge-neutral font-monospace">v2.4</span>
                     <span class="text-muted small">All rights reserved</span>
                 </div>
             </div>

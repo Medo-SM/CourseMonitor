@@ -1,10 +1,11 @@
 <?php
 /**
  * CourseMonitor Shared Header Partial (includes/header.php)
+ * Student Attendance & Grades Made Simple
  * 
  * Usage:
- *   $pageTitle = 'Manage Courses'; // Optional page title
- *   $showNavbar = true;            // Optional, set false on landing or auth if custom nav needed
+ *   $pageTitle = 'My Classes'; // Optional page title
+ *   $showNavbar = true;        // Optional, set false on landing or auth if custom nav needed
  *   $extraHead = '<style>...</style>'; // Optional extra head tags
  *   require_once __DIR__ . '/includes/header.php';
  */
@@ -15,15 +16,15 @@ if (!function_exists('base_url')) {
 
 $titleStr = !empty($pageTitle) 
     ? htmlspecialchars($pageTitle, ENT_QUOTES, 'UTF-8') . ' | CourseMonitor' 
-    : 'CourseMonitor | Academic Performance & Attendance Management';
+    : 'CourseMonitor | Student Attendance & Grades Made Simple';
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <meta name="description" content="CourseMonitor - Academic Performance & Attendance Management System">
-    <meta name="theme-color" content="#1e3a8a">
+    <meta name="description" content="CourseMonitor - Student Attendance & Grades Made Simple">
+    <meta name="theme-color" content="#1e293b">
     <title><?= $titleStr ?></title>
 
     <!-- Bootstrap 5 CDN -->
@@ -32,7 +33,7 @@ $titleStr = !empty($pageTitle)
     <!-- Bootstrap Icons CDN -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
 
-    <!-- CourseMonitor High-Craft Design System -->
+    <!-- CourseMonitor Design System -->
     <link href="<?= htmlspecialchars(base_url('/public/css/app.css'), ENT_QUOTES, 'UTF-8') ?>" rel="stylesheet">
 
     <?php if (!empty($extraHead)): ?>

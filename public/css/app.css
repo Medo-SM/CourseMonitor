@@ -1,108 +1,126 @@
 /**
  * CourseMonitor Design System (app.css)
- * Academic Performance & Attendance Management System
+ * Student Attendance & Grades Made Simple
  * 
- * Built with craftsmanship following:
- * - better-ui (exact transitions, scale 0.96 on press, outer=inner+padding)
- * - better-colors (slate neutral ramp, deep academic navy/indigo, WCAG 2.2 AA >= 4.5:1 text, >= 3:1 controls)
- * - better-typography (modern system stack, 12px-32px scale, tabular-nums for data)
- * - better-layout (4px/8px rhythm, logical properties, sticky headers)
- * - better-accessibility (visible focus-visible rings, skip links, reduced-motion)
- * - unslop (quiet academic chrome, zero glowing gradients, high utility)
+ * Eye-friendly, soft, and soothing academic UI:
+ * - Softer, warmer neutral palette (warm stone/zinc tones, gentle paper background, soft charcoal text)
+ * - Calming primary academic slate-blue / indigo (approachable, gentle button states, no harsh contrast)
+ * - Soft pastel semantic badges with clear dark text (WCAG 2.2 AA compliant >= 4.5:1)
+ * - Subtle, smooth card elevations (soft shadows, 10px-12px border radii)
+ * - Tabular numbers for grades, IDs, dates, and percentages
+ * - Keyboard-accessible focus-visible indicators and skip-to-content support
+ * - Clean institutional navigation with intuitive layout
  */
 
 :root {
   /* ==========================================================================
-     1. COLOR PALETTE
+     1. SOOTHING, EYE-FRIENDLY COLOR PALETTE
      ========================================================================== */
   
-  /* Slate Neutral Ramp */
-  --color-slate-50:  #f8fafc;
-  --color-slate-100: #f1f5f9;
-  --color-slate-200: #e2e8f0;
-  --color-slate-300: #cbd5e1;
-  --color-slate-400: #94a3b8;
-  --color-slate-500: #64748b;
-  --color-slate-600: #475569;
-  --color-slate-700: #334155;
-  --color-slate-800: #1e293b;
-  --color-slate-900: #0f172a;
-  --color-slate-950: #020617;
+  /* Warm Neutral Ramp (Stone / Zinc harmony - gentle on the eyes, avoids glare) */
+  --color-neutral-50:  #f8f9fa; /* Soft paper background */
+  --color-neutral-100: #f1f3f5; /* Subtle raised surface */
+  --color-neutral-200: #e5e7eb; /* Gentle border lines */
+  --color-neutral-300: #d1d5db; /* Control borders */
+  --color-neutral-400: #9ca3af; /* Muted icons / placeholders */
+  --color-neutral-500: #6b7280; /* Muted secondary text (4.8:1 on white) */
+  --color-neutral-600: #4b5563; /* Clear body secondary text (7.2:1 on white) */
+  --color-neutral-700: #374151; /* Dark charcoal text (9.9:1 on white) */
+  --color-neutral-800: #1f2937; /* Soft dark charcoal headings (13.8:1 on white) */
+  --color-neutral-900: #111827; /* Rich deep charcoal for emphasis */
+  --color-neutral-950: #0f172a; /* Deep nav base */
 
-  /* Primary Academic Navy & Indigo */
+  /* Backwards-compatibility aliases for slate tokens */
+  --color-slate-50:  var(--color-neutral-50);
+  --color-slate-100: var(--color-neutral-100);
+  --color-slate-200: var(--color-neutral-200);
+  --color-slate-300: var(--color-neutral-300);
+  --color-slate-400: var(--color-neutral-400);
+  --color-slate-500: var(--color-neutral-500);
+  --color-slate-600: var(--color-neutral-600);
+  --color-slate-700: var(--color-neutral-700);
+  --color-slate-800: var(--color-neutral-800);
+  --color-slate-900: var(--color-neutral-900);
+  --color-slate-950: var(--color-neutral-950);
+
+  /* Calming Primary Academic Slate-Blue / Indigo */
   --color-primary-50:  #eff6ff;
   --color-primary-100: #dbeafe;
   --color-primary-200: #bfdbfe;
   --color-primary-300: #93c5fd;
   --color-primary-400: #60a5fa;
-  --color-primary-500: #3b82f6;
-  --color-primary-600: #2563eb;
-  --color-primary-700: #1d4ed8;
-  --color-primary-800: #1e40af;
+  --color-primary-500: #3b82f6; /* Calming slate-blue */
+  --color-primary-600: #2563eb; /* Primary action button (5.2:1 on white) */
+  --color-primary-700: #1d4ed8; /* Button hover (7.2:1 on white) */
+  --color-primary-800: #1e40af; /* Button active */
   --color-primary-900: #1e3a8a; /* Deep academic navy */
   --color-primary-950: #172554;
 
-  /* Semantic Status Tokens - Emerald (Success) */
-  --color-success-50:  #ecfdf5;
-  --color-success-100: #d1fae5;
-  --color-success-200: #a7f3d0;
-  --color-success-500: #10b981;
-  --color-success-600: #059669;
-  --color-success-700: #047857;
-  --color-success-800: #065f46;
+  /* Gentle Semantic Status - Soft Emerald (Success / Present) */
+  --color-success-50:  #f0fdf4;
+  --color-success-100: #dcfce7; /* Soft emerald fill */
+  --color-success-200: #bbf7d0;
+  --color-success-300: #86efac;
+  --color-success-500: #22c55e;
+  --color-success-600: #16a34a;
+  --color-success-700: #15803d;
+  --color-success-800: #166534; /* Clear dark emerald text (6.4:1 on #dcfce7) */
 
-  /* Semantic Status Tokens - Amber (Warning) */
+  /* Gentle Semantic Status - Soft Amber (Warning / Late / Review) */
   --color-warning-50:  #fffbeb;
-  --color-warning-100: #fef3c7;
+  --color-warning-100: #fef3c7; /* Soft amber fill */
   --color-warning-200: #fde68a;
+  --color-warning-300: #fcd34d;
   --color-warning-500: #f59e0b;
   --color-warning-600: #d97706;
   --color-warning-700: #b45309;
-  --color-warning-800: #92400e;
+  --color-warning-800: #92400e; /* Clear dark amber text (7.1:1 on #fef3c7) */
 
-  /* Semantic Status Tokens - Rose (Danger / At-Risk) */
-  --color-danger-50:  #fef2f2;
-  --color-danger-100: #fee2e2;
-  --color-danger-200: #fecaca;
-  --color-danger-500: #ef4444;
-  --color-danger-600: #dc2626;
-  --color-danger-700: #b91c1c;
-  --color-danger-800: #991b1b;
+  /* Gentle Semantic Status - Soft Rose (Danger / Absent / At-Risk) */
+  --color-danger-50:  #fff1f2;
+  --color-danger-100: #fee2e2; /* Soft rose fill */
+  --color-danger-200: #fecdd3;
+  --color-danger-300: #fda4af;
+  --color-danger-500: #f43f5e;
+  --color-danger-600: #e11d48;
+  --color-danger-700: #be123c;
+  --color-danger-800: #991b1b; /* Clear dark rose text (7.7:1 on #fee2e2) */
 
-  /* Semantic Status Tokens - Sky (Info) */
+  /* Gentle Semantic Status - Soft Blue / Sky (Info / General) */
   --color-info-50:  #f0f9ff;
-  --color-info-100: #e0f2fe;
+  --color-info-100: #e0f2fe; /* Soft blue fill */
   --color-info-200: #bae6fd;
+  --color-info-300: #7dd3fc;
   --color-info-500: #0ea5e9;
   --color-info-600: #0284c7;
   --color-info-700: #0369a1;
-  --color-info-800: #075985;
+  --color-info-800: #075985; /* Clear dark blue text (7.0:1 on #e0f2fe) */
 
   /* Semantic UI Tokens */
-  --cm-bg-body:           var(--color-slate-50);
+  --cm-bg-body:           var(--color-neutral-50);
   --cm-bg-surface:        #ffffff;
-  --cm-bg-surface-raised: var(--color-slate-100);
-  --cm-bg-subtle:         var(--color-slate-50);
+  --cm-bg-surface-raised: var(--color-neutral-100);
+  --cm-bg-subtle:         var(--color-neutral-50);
 
-  --cm-border-subtle:  var(--color-slate-200);
-  --cm-border-default: var(--color-slate-300);
-  --cm-border-input:   var(--color-slate-400); /* 3.04:1 contrast against white */
-  --cm-border-strong:  var(--color-slate-600);
+  --cm-border-subtle:  rgba(0, 0, 0, 0.07);
+  --cm-border-default: var(--color-neutral-200);
+  --cm-border-input:   var(--color-neutral-300);
+  --cm-border-strong:  var(--color-neutral-500);
 
-  --cm-text-primary:   var(--color-slate-900); /* 15.6:1 contrast against white */
-  --cm-text-secondary: var(--color-slate-600); /* 7.0:1 contrast against white */
-  --cm-text-muted:     var(--color-slate-500); /* 4.6:1 contrast against white */
+  --cm-text-primary:   var(--color-neutral-800); /* 13.8:1 on white, soft dark charcoal */
+  --cm-text-secondary: var(--color-neutral-600); /* 7.2:1 on white */
+  --cm-text-muted:     var(--color-neutral-500); /* 4.8:1 on white */
   --cm-text-inverse:   #ffffff;
 
-  --cm-primary:        var(--color-primary-900);
-  --cm-primary-hover:  var(--color-primary-800);
-  --cm-primary-active: var(--color-primary-950);
+  --cm-primary:        var(--color-primary-600);
+  --cm-primary-hover:  var(--color-primary-700);
+  --cm-primary-active: var(--color-primary-800);
   --cm-primary-subtle: var(--color-primary-50);
 
   /* ==========================================================================
-     2. TYPOGRAPHY SCALE & TOKENS
+     2. TYPOGRAPHY SCALE & FONT TOKENS
      ========================================================================== */
-  --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 
   --text-xs:   0.75rem;    /* 12px */
@@ -111,7 +129,7 @@
   --text-lg:   1.125rem;   /* 18px */
   --text-xl:   1.25rem;    /* 20px */
   --text-2xl:  1.5rem;     /* 24px */
-  --text-3xl:  2rem;       /* 32px */
+  --text-3xl:  1.875rem;   /* 30px */
 
   /* ==========================================================================
      3. SPACING RHYTHM (4px / 8px Grid)
@@ -128,22 +146,23 @@
   --space-16: 4rem;   /* 64px */
 
   /* ==========================================================================
-     4. ELEVATIONS & SHADOWS
+     4. SOFT ELEVATIONS & BORDER RADII
      ========================================================================== */
-  --shadow-xs: 0 1px 2px 0 rgba(15, 23, 42, 0.05);
-  --shadow-sm: 0 1px 3px 0 rgba(15, 23, 42, 0.07), 0 1px 2px -1px rgba(15, 23, 42, 0.05);
-  --shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.07), 0 2px 4px -2px rgba(15, 23, 42, 0.05);
-  --shadow-lg: 0 10px 15px -3px rgba(15, 23, 42, 0.07), 0 4px 6px -4px rgba(15, 23, 42, 0.04);
+  /* Subtle, smooth, natural shadows (no harsh black halos) */
+  --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.03);
+  --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.04), 0 1px 2px -1px rgba(0, 0, 0, 0.02);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.04), 0 2px 4px -2px rgba(0, 0, 0, 0.02);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -4px rgba(0, 0, 0, 0.02);
 
-  /* Border Radii (Outer = Inner + Padding) */
-  --radius-xs: 3px;
-  --radius-sm: 4px;
-  --radius-md: 6px;  /* standard button / control */
-  --radius-lg: 8px;  /* nested card containers */
-  --radius-xl: 12px; /* outer card container */
+  /* Harmonious Border Radii (Outer = Inner + Padding) */
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 8px;   /* buttons, inputs, pills */
+  --radius-lg: 10px;  /* nested panels, tables */
+  --radius-xl: 12px;  /* cards, main containers */
   --radius-full: 9999px;
 
-  /* Timing */
+  /* Transitions */
   --transition-fast: 150ms ease-out;
   --transition-normal: 200ms ease-out;
 }
@@ -214,7 +233,7 @@ p {
 }
 
 a {
-  color: var(--color-primary-700);
+  color: var(--color-primary-600);
   text-decoration: underline;
   text-underline-offset: 3px;
   text-decoration-thickness: 1px;
@@ -222,7 +241,7 @@ a {
 }
 
 a:hover {
-  color: var(--color-primary-900);
+  color: var(--color-primary-700);
 }
 
 /* Accessible focus rings */
@@ -235,20 +254,20 @@ a:hover {
   outline-offset: 2px !important;
 }
 
-/* Skip link for keyboard users */
+/* Skip link for keyboard accessibility */
 .skip-link {
   position: absolute;
   top: -9999px;
   left: 1rem;
   z-index: 9999;
   padding: 0.5rem 1rem;
-  background-color: var(--color-primary-900);
+  background-color: var(--color-primary-700);
   color: #ffffff;
   font-weight: 600;
   border-radius: var(--radius-md);
   text-decoration: none;
   box-shadow: var(--shadow-lg);
-  border: 1px solid var(--color-primary-500);
+  border: 1px solid var(--color-primary-400);
 }
 
 .skip-link:focus-visible {
@@ -267,7 +286,7 @@ a:hover {
   font-size: var(--text-sm);
   font-weight: 500;
   line-height: 1.4;
-  padding: 0.5rem 0.875rem; /* >= 38px height */
+  padding: 0.5rem 0.9375rem;
   min-height: 38px;
   border-radius: var(--radius-md);
   border: 1px solid transparent;
@@ -293,7 +312,7 @@ a:hover {
   transform: none !important;
 }
 
-/* Primary Button (Academic Navy) */
+/* Primary Button (Soothing Slate-Blue) */
 .btn-primary {
   background-color: var(--cm-primary);
   color: #ffffff;
@@ -306,6 +325,7 @@ a:hover {
   background-color: var(--cm-primary-hover);
   border-color: var(--cm-primary-hover);
   color: #ffffff;
+  box-shadow: var(--shadow-sm);
 }
 
 .btn-primary:active {
@@ -316,15 +336,15 @@ a:hover {
 
 /* Secondary Button */
 .btn-secondary {
-  background-color: var(--color-slate-100);
+  background-color: var(--color-neutral-100);
   color: var(--cm-text-primary);
   border-color: var(--cm-border-default);
 }
 
 .btn-secondary:hover,
 .btn-secondary:focus {
-  background-color: var(--color-slate-200);
-  border-color: var(--color-slate-400);
+  background-color: var(--color-neutral-200);
+  border-color: var(--color-neutral-300);
   color: var(--cm-text-primary);
 }
 
@@ -332,33 +352,33 @@ a:hover {
 .btn-outline-primary {
   background-color: transparent;
   color: var(--cm-primary);
-  border-color: var(--cm-primary);
+  border-color: var(--color-primary-300);
 }
 
 .btn-outline-primary:hover,
 .btn-outline-primary:focus {
   background-color: var(--cm-primary-subtle);
   color: var(--cm-primary-hover);
-  border-color: var(--cm-primary-hover);
+  border-color: var(--cm-primary);
 }
 
 .btn-outline-secondary {
   background-color: transparent;
-  color: var(--color-slate-700);
+  color: var(--color-neutral-700);
   border-color: var(--cm-border-default);
 }
 
 .btn-outline-secondary:hover,
 .btn-outline-secondary:focus {
-  background-color: var(--color-slate-100);
-  border-color: var(--color-slate-400);
-  color: var(--color-slate-900);
+  background-color: var(--color-neutral-100);
+  border-color: var(--color-neutral-400);
+  color: var(--color-neutral-900);
 }
 
 .btn-outline-danger {
   background-color: transparent;
   color: var(--color-danger-700);
-  border-color: var(--color-danger-300, #fca5a5);
+  border-color: var(--color-danger-200);
 }
 
 .btn-outline-danger:hover,
@@ -373,6 +393,7 @@ a:hover {
   background-color: var(--color-danger-600);
   color: #ffffff;
   border-color: var(--color-danger-600);
+  box-shadow: var(--shadow-xs);
 }
 
 .btn-danger:hover,
@@ -387,6 +408,7 @@ a:hover {
   background-color: var(--color-success-600);
   color: #ffffff;
   border-color: var(--color-success-600);
+  box-shadow: var(--shadow-xs);
 }
 
 .btn-success:hover,
@@ -396,18 +418,18 @@ a:hover {
   color: #ffffff;
 }
 
-/* Sizes */
+/* Button Sizes */
 .btn-sm {
   font-size: var(--text-xs);
-  padding: 0.3125rem 0.625rem;
+  padding: 0.3125rem 0.6875rem;
   min-height: 30px;
   border-radius: var(--radius-sm);
 }
 
 .btn-lg {
   font-size: var(--text-base);
-  padding: 0.6875rem 1.25rem;
-  min-height: 44px; /* Optimal mobile target */
+  padding: 0.6875rem 1.375rem;
+  min-height: 44px; /* Optimal accessible touch target */
   border-radius: var(--radius-md);
 }
 
@@ -432,12 +454,12 @@ a:hover {
   display: block;
   width: 100%;
   font-family: var(--font-sans);
-  font-size: var(--text-base); /* 16px to prevent iOS auto-zoom */
+  font-size: var(--text-base); /* 16px prevents iOS Safari auto-zoom */
   color: var(--cm-text-primary);
   background-color: #ffffff;
-  border: 1px solid var(--cm-border-input); /* 3:1 contrast against white */
+  border: 1px solid var(--cm-border-input);
   border-radius: var(--radius-md);
-  padding: 0.5rem 0.75rem;
+  padding: 0.5rem 0.8125rem;
   min-height: 40px;
   line-height: 1.5;
   transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
@@ -453,19 +475,19 @@ a:hover {
 
 .form-control:focus,
 .form-select:focus {
-  border-color: var(--color-primary-600);
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+  border-color: var(--color-primary-500);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
   outline: none;
 }
 
 .form-control::placeholder {
-  color: var(--color-slate-400);
+  color: var(--color-neutral-400);
   opacity: 1;
 }
 
 .form-control:disabled,
 .form-select:disabled {
-  background-color: var(--color-slate-100);
+  background-color: var(--color-neutral-100);
   border-color: var(--cm-border-subtle);
   color: var(--cm-text-muted);
   cursor: not-allowed;
@@ -480,7 +502,7 @@ a:hover {
 
 .form-control.is-invalid:focus,
 .form-select.is-invalid:focus {
-  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.15);
+  box-shadow: 0 0 0 3px rgba(225, 29, 72, 0.15);
 }
 
 .invalid-feedback {
@@ -514,7 +536,7 @@ a:hover {
 
 .card-header,
 .cm-card-header {
-  padding: 0.875rem 1.25rem;
+  padding: 0.9375rem 1.25rem;
   background-color: var(--cm-bg-surface);
   border-bottom: 1px solid var(--cm-border-subtle);
   display: flex;
@@ -540,13 +562,13 @@ a:hover {
 .card-footer,
 .cm-card-footer {
   padding: 0.75rem 1.25rem;
-  background-color: var(--color-slate-50);
+  background-color: var(--color-neutral-50);
   border-top: 1px solid var(--cm-border-subtle);
   font-size: var(--text-sm);
   color: var(--cm-text-secondary);
 }
 
-/* High-Craft Academic Metric Stat-Card */
+/* Gentle Academic Metric Stat-Card */
 .cm-stat-card,
 .stat-card {
   background-color: var(--cm-bg-surface);
@@ -565,7 +587,7 @@ a:hover {
 .stat-card:hover {
   transform: translateY(-2px);
   box-shadow: var(--shadow-md);
-  border-color: var(--cm-border-default);
+  border-color: var(--color-neutral-300);
 }
 
 .cm-stat-header {
@@ -585,35 +607,40 @@ a:hover {
 }
 
 .cm-stat-icon {
-  width: 36px;
-  height: 36px;
+  width: 38px;
+  height: 38px;
   border-radius: var(--radius-md);
   display: inline-flex;
   align-items: center;
   justify-content: center;
   font-size: 1.125rem;
-  background-color: var(--color-slate-100);
+  background-color: var(--color-neutral-100);
   color: var(--cm-text-secondary);
 }
 
 .cm-stat-icon.primary {
   background-color: var(--color-primary-50);
-  color: var(--color-primary-800);
+  color: var(--color-primary-700);
 }
 
 .cm-stat-icon.success {
-  background-color: var(--color-success-50);
-  color: var(--color-success-700);
+  background-color: var(--color-success-100);
+  color: var(--color-success-800);
 }
 
 .cm-stat-icon.warning {
-  background-color: var(--color-warning-50);
-  color: var(--color-warning-700);
+  background-color: var(--color-warning-100);
+  color: var(--color-warning-800);
 }
 
 .cm-stat-icon.danger {
-  background-color: var(--color-danger-50);
-  color: var(--color-danger-700);
+  background-color: var(--color-danger-100);
+  color: var(--color-danger-800);
+}
+
+.cm-stat-icon.info {
+  background-color: var(--color-info-100);
+  color: var(--color-info-800);
 }
 
 .cm-stat-val,
@@ -657,15 +684,15 @@ a:hover {
 
 .table > thead > tr > th,
 .cm-table > thead > tr > th {
-  background-color: var(--color-slate-100);
-  color: var(--color-slate-700);
+  background-color: var(--color-neutral-100);
+  color: var(--color-neutral-700);
   font-size: var(--text-xs);
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  padding: 0.75rem 1rem;
+  padding: 0.8125rem 1rem;
   border-top: none;
-  border-bottom: 1px solid var(--color-slate-300);
+  border-bottom: 1px solid var(--color-neutral-200);
   white-space: nowrap;
   vertical-align: middle;
 }
@@ -676,13 +703,13 @@ a:hover {
   position: sticky;
   top: 0;
   z-index: 2;
-  background-color: var(--color-slate-100);
-  box-shadow: inset 0 -1px 0 var(--color-slate-300);
+  background-color: var(--color-neutral-100);
+  box-shadow: inset 0 -1px 0 var(--color-neutral-200);
 }
 
 .table > tbody > tr > td,
 .cm-table > tbody > tr > td {
-  padding: 0.75rem 1rem;
+  padding: 0.8125rem 1rem;
   vertical-align: middle;
   border-bottom: 1px solid var(--cm-border-subtle);
   font-size: var(--text-sm);
@@ -694,10 +721,10 @@ a:hover {
   border-bottom: none;
 }
 
-/* High-frequency row hover (better-ui instant feedback) */
+/* High-frequency row hover (instant, eye-friendly feedback) */
 .table-hover > tbody > tr:hover,
 .cm-table > tbody > tr:hover {
-  background-color: var(--color-slate-50);
+  background-color: rgba(0, 0, 0, 0.018);
 }
 
 /* Numeric columns align right and tabular */
@@ -709,14 +736,14 @@ a:hover {
 }
 
 /* ==========================================================================
-   10. BADGES & STATUS PILLS
+   10. GENTLE SEMANTIC BADGES & STATUS PILLS
    ========================================================================== */
 .badge,
 .cm-badge {
   display: inline-flex;
   align-items: center;
   gap: var(--space-1);
-  padding: 0.25rem 0.5rem;
+  padding: 0.28125rem 0.5625rem;
   font-size: var(--text-xs);
   font-weight: 600;
   line-height: 1;
@@ -725,18 +752,18 @@ a:hover {
   white-space: nowrap;
 }
 
-/* High contrast WCAG 2.2 compliant badge styles */
+/* Soft, pleasant pastel fills with clear dark text (WCAG 2.2 AA compliant >= 4.5:1) */
 .badge-primary,
 .cm-badge-primary {
   background-color: var(--color-primary-50);
   border-color: var(--color-primary-200);
-  color: var(--color-primary-900);
+  color: var(--color-primary-800);
 }
 
 .badge-success,
 .cm-badge-success,
 .badge-present {
-  background-color: var(--color-success-50);
+  background-color: var(--color-success-100);
   border-color: var(--color-success-200);
   color: var(--color-success-800);
 }
@@ -744,7 +771,7 @@ a:hover {
 .badge-warning,
 .cm-badge-warning,
 .badge-late {
-  background-color: var(--color-warning-50);
+  background-color: var(--color-warning-100);
   border-color: var(--color-warning-200);
   color: var(--color-warning-800);
 }
@@ -753,23 +780,23 @@ a:hover {
 .cm-badge-danger,
 .badge-absent,
 .badge-risk {
-  background-color: var(--color-danger-50);
+  background-color: var(--color-danger-100);
   border-color: var(--color-danger-200);
   color: var(--color-danger-800);
 }
 
 .badge-info,
 .cm-badge-info {
-  background-color: var(--color-info-50);
+  background-color: var(--color-info-100);
   border-color: var(--color-info-200);
   color: var(--color-info-800);
 }
 
 .badge-secondary,
 .cm-badge-neutral {
-  background-color: var(--color-slate-100);
-  border-color: var(--color-slate-300);
-  color: var(--color-slate-800);
+  background-color: var(--color-neutral-100);
+  border-color: var(--color-neutral-200);
+  color: var(--color-neutral-700);
 }
 
 /* ==========================================================================
@@ -777,7 +804,7 @@ a:hover {
    ========================================================================== */
 .alert,
 .cm-alert {
-  padding: 0.875rem 1rem;
+  padding: 0.875rem 1.125rem;
   border-radius: var(--radius-md);
   border: 1px solid transparent;
   border-left-width: 4px;
@@ -835,8 +862,8 @@ a:hover {
   height: 56px;
   margin: 0 auto var(--space-4);
   border-radius: var(--radius-full);
-  background-color: var(--color-slate-100);
-  color: var(--color-slate-400);
+  background-color: var(--color-neutral-100);
+  color: var(--color-neutral-400);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -861,8 +888,8 @@ a:hover {
    13. INSTITUTIONAL NAVIGATION & CHROME
    ========================================================================== */
 .cm-navbar {
-  background-color: var(--color-slate-900);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  background-color: #1e293b; /* Soothing dark slate navy - calm and easy on the eye */
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   padding: 0.625rem 1rem;
 }
 
@@ -878,22 +905,22 @@ a:hover {
 }
 
 .cm-brand-mark {
-  width: 28px;
-  height: 28px;
-  background-color: var(--color-primary-600);
+  width: 30px;
+  height: 30px;
+  background-color: var(--color-primary-500);
   color: #ffffff;
   border-radius: var(--radius-sm);
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.875rem;
+  font-size: 0.9375rem;
 }
 
 .cm-nav-link {
-  color: var(--color-slate-300) !important;
+  color: rgba(255, 255, 255, 0.78) !important;
   font-size: var(--text-sm);
   font-weight: 500;
-  padding: 0.4375rem 0.75rem !important;
+  padding: 0.4375rem 0.8125rem !important;
   border-radius: var(--radius-md);
   text-decoration: none !important;
   transition: color var(--transition-fast), background-color var(--transition-fast);
@@ -907,15 +934,16 @@ a:hover {
 
 .cm-nav-link.active {
   color: #ffffff !important;
-  background-color: rgba(255, 255, 255, 0.15) !important;
+  background-color: rgba(255, 255, 255, 0.16) !important;
   font-weight: 600;
 }
 
+/* User pill in top navbar */
 .cm-user-badge {
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
-  padding: 0.25rem 0.625rem;
+  padding: 0.25rem 0.6875rem;
   background-color: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: var(--radius-full);
@@ -924,10 +952,10 @@ a:hover {
 }
 
 .cm-user-avatar {
-  width: 22px;
-  height: 22px;
+  width: 24px;
+  height: 24px;
   border-radius: var(--radius-full);
-  background-color: var(--color-primary-600);
+  background-color: var(--color-primary-500);
   color: #ffffff;
   display: inline-flex;
   align-items: center;
@@ -936,7 +964,7 @@ a:hover {
   font-weight: 600;
 }
 
-/* Page Header Banner */
+/* Intuitive Page Header Layout */
 .cm-page-header {
   margin-bottom: var(--space-6);
   padding-bottom: var(--space-4);
@@ -946,6 +974,23 @@ a:hover {
   align-items: center;
   justify-content: space-between;
   gap: var(--space-3);
+}
+
+.cm-page-header-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.cm-page-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: var(--text-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-primary-600);
+  margin-bottom: var(--space-1);
 }
 
 .cm-page-title {
@@ -960,6 +1005,12 @@ a:hover {
   margin: var(--space-1) 0 0;
   font-size: var(--text-sm);
   color: var(--cm-text-secondary);
+}
+
+.cm-page-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
 }
 
 /* Institutional Footer */
