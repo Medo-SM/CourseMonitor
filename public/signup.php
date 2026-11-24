@@ -142,14 +142,14 @@ require_once __DIR__ . '/../includes/header.php';
 <div class="container py-5 my-auto">
     <div class="row justify-content-center">
         <div class="col-12 col-md-10 col-lg-8 col-xl-7" style="max-width: 620px;">
-            <div class="cm-card shadow-sm border bg-white">
+            <div class="cm-card shadow-sm border">
                 <div class="cm-card-body p-4 p-sm-5">
                     <!-- Brand Icon & Header -->
                     <div class="text-center mb-4">
-                        <div class="d-inline-flex align-items-center justify-content-center rounded-circle bg-slate-100 text-primary mb-3" style="width: 52px; height: 52px; font-size: 1.5rem;" aria-hidden="true">
+                        <div class="d-inline-flex align-items-center justify-content-center rounded-circle text-primary mb-3" style="width: 52px; height: 52px; font-size: 1.5rem; background-color: var(--cm-bg-subtle);" aria-hidden="true">
                             <i class="bi bi-person-plus-fill"></i>
                         </div>
-                        <h1 class="h4 fw-bold text-slate-900 mb-1">Create an Account</h1>
+                        <h1 class="h4 fw-bold mb-1">Create an Account</h1>
                         <p class="text-sm text-secondary mb-0">Join CourseMonitor to manage your courses and students</p>
                     </div>
 
@@ -163,11 +163,11 @@ require_once __DIR__ . '/../includes/header.php';
                     <?php endif; ?>
 
                     <?php if (!empty($success)): ?>
-                        <div class="cm-card border-success bg-white text-center p-4 mb-4">
-                            <div class="d-inline-flex align-items-center justify-content-center rounded-circle bg-success-50 text-success mb-3" style="width: 48px; height: 48px; font-size: 1.5rem;" aria-hidden="true">
+                        <div class="cm-card border-success text-center p-4 mb-4">
+                            <div class="d-inline-flex align-items-center justify-content-center rounded-circle mb-3" style="width: 48px; height: 48px; font-size: 1.5rem; background-color: var(--color-success-bg); color: var(--color-success-text);" aria-hidden="true">
                                 <i class="bi bi-check-lg"></i>
                             </div>
-                            <h2 class="h5 fw-bold text-slate-900 mb-2">Account Created Successfully</h2>
+                            <h2 class="h5 fw-bold mb-2">Account Created Successfully</h2>
                             <p class="text-sm text-secondary mb-4"><?= htmlspecialchars($success, ENT_QUOTES, 'UTF-8') ?></p>
                             <a href="<?= htmlspecialchars(base_url('/public/login.php'), ENT_QUOTES, 'UTF-8') ?>" class="btn btn-primary px-4">
                                 <i class="bi bi-box-arrow-in-right me-1" aria-hidden="true"></i>
@@ -180,7 +180,7 @@ require_once __DIR__ . '/../includes/header.php';
 
                             <!-- Fieldset 1: Account Details -->
                             <fieldset class="mb-4">
-                                <legend class="h6 fw-bold text-slate-900 border-bottom pb-2 mb-3 d-flex align-items-center gap-2">
+                                <legend class="h6 fw-bold border-bottom pb-2 mb-3 d-flex align-items-center gap-2">
                                     <i class="bi bi-person-badge text-primary" aria-hidden="true"></i>
                                     <span>Account Details</span>
                                 </legend>
@@ -298,7 +298,7 @@ require_once __DIR__ . '/../includes/header.php';
 
                             <!-- Fieldset 2: Your School & Role -->
                             <fieldset class="mb-4">
-                                <legend class="h6 fw-bold text-slate-900 border-bottom pb-2 mb-3 d-flex align-items-center gap-2">
+                                <legend class="h6 fw-bold border-bottom pb-2 mb-3 d-flex align-items-center gap-2">
                                     <i class="bi bi-mortarboard text-primary" aria-hidden="true"></i>
                                     <span>Your School &amp; Role</span>
                                 </legend>
@@ -367,7 +367,7 @@ require_once __DIR__ . '/../includes/header.php';
                     </div>
                 </div>
 
-                <div class="cm-card-footer bg-slate-50 border-top text-center py-3">
+                <div class="cm-card-footer border-top text-center py-3">
                     <p class="text-xs text-muted mb-0">
                         <i class="bi bi-shield-check me-1" aria-hidden="true"></i>
                         Your information is safely stored and protected with role-based access.

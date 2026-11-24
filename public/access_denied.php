@@ -30,26 +30,26 @@ if ($role === 'admin') {
 <div class="container py-5 my-auto">
     <div class="row justify-content-center">
         <div class="col-12 col-md-8 col-lg-6 col-xl-5" style="max-width: 540px;">
-            <div class="cm-card shadow-sm border bg-white text-center">
+            <div class="cm-card shadow-sm border text-center">
                 <div class="cm-card-body p-4 p-sm-5">
                     <!-- Icon Emblem -->
-                    <div class="d-inline-flex align-items-center justify-content-center rounded-circle bg-warning-50 text-warning mb-3" style="width: 56px; height: 56px; font-size: 1.75rem;" aria-hidden="true">
+                    <div class="d-inline-flex align-items-center justify-content-center rounded-circle text-warning mb-3" style="width: 56px; height: 56px; font-size: 1.75rem; background-color: rgba(245, 158, 11, 0.16);" aria-hidden="true">
                         <i class="bi bi-shield-lock"></i>
                     </div>
 
-                    <h1 class="h4 fw-bold text-slate-900 mb-2">Page Not Accessible</h1>
+                    <h1 class="h4 fw-bold mb-2">Page Not Accessible</h1>
                     <p class="text-secondary text-sm mb-4">
                         You don't have permission to view this page. Let's get you back to your dashboard.
                     </p>
 
                     <?php if ($isAuth): ?>
                         <!-- Active Session Details Callout -->
-                        <div class="p-3 rounded-2 bg-slate-50 border text-start mb-4">
+                        <div class="p-3 rounded-2 border text-start mb-4" style="background-color: var(--cm-bg-subtle);">
                             <div class="d-flex align-items-center justify-content-between mb-2">
                                 <span class="text-xs text-muted">Signed in as</span>
                                 <span class="badge cm-badge-neutral"><?= htmlspecialchars($roleLabel, ENT_QUOTES, 'UTF-8') ?></span>
                             </div>
-                            <div class="text-sm fw-semibold text-slate-900 mb-1">
+                            <div class="text-sm fw-semibold mb-1">
                                 <?= htmlspecialchars($userName, ENT_QUOTES, 'UTF-8') ?>
                             </div>
                             <div class="text-xs text-secondary">
@@ -70,7 +70,7 @@ if ($role === 'admin') {
                         </div>
                     <?php else: ?>
                         <!-- Unauthenticated Notice -->
-                        <div class="p-3 rounded-2 bg-slate-50 border text-start mb-4">
+                        <div class="p-3 rounded-2 border text-start mb-4" style="background-color: var(--cm-bg-subtle);">
                             <div class="text-xs text-secondary">
                                 You need to be signed in to access this page. Please sign in with your account to continue.
                             </div>
@@ -94,7 +94,7 @@ if ($role === 'admin') {
                     </div>
                 </div>
 
-                <div class="cm-card-footer bg-slate-50 border-top text-center py-3">
+                <div class="cm-card-footer border-top text-center py-3">
                     <span class="text-xs text-muted">
                         CourseMonitor Access Control
                     </span>

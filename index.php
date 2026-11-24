@@ -27,7 +27,7 @@ require_once __DIR__ . '/includes/header.php';
 ?>
 
 <!-- Hero Section -->
-<section class="py-5 bg-white border-bottom" aria-labelledby="hero-heading">
+<section class="py-5 border-bottom" style="background-color: var(--cm-bg-surface);" aria-labelledby="hero-heading">
     <div class="container px-3 px-lg-4 py-3 py-lg-5">
         <div class="row align-items-center g-5">
             <div class="col-lg-7">
@@ -36,7 +36,7 @@ require_once __DIR__ . '/includes/header.php';
                     <span>CourseMonitor Academic Portal</span>
                 </div>
                 
-                <h1 id="hero-heading" class="display-5 fw-bold text-slate-900 mb-3 lh-sm text-balance">
+                <h1 id="hero-heading" class="display-5 fw-bold mb-3 lh-sm text-balance">
                     CourseMonitor — Student Attendance &amp; Grades Made Simple
                 </h1>
                 
@@ -78,12 +78,12 @@ require_once __DIR__ . '/includes/header.php';
             <div class="col-lg-5">
                 <!-- Academic Coursework & Attendance Preview Card -->
                 <div class="cm-card shadow-sm border">
-                    <div class="cm-card-header bg-slate-50 border-bottom d-flex align-items-center justify-content-between py-3">
+                    <div class="cm-card-header border-bottom d-flex align-items-center justify-content-between py-3">
                         <div class="d-flex align-items-center gap-2">
                             <span class="cm-brand-mark" style="width: 24px; height: 24px; font-size: 0.75rem;" aria-hidden="true">
                                 <i class="bi bi-journal-check"></i>
                             </span>
-                            <span class="fw-semibold text-slate-900 text-sm">CS304 · Database Systems</span>
+                            <span class="fw-semibold text-sm">CS304 · Database Systems</span>
                         </div>
                         <span class="badge cm-badge-success">Active Semester</span>
                     </div>
@@ -102,15 +102,15 @@ require_once __DIR__ . '/includes/header.php';
                         <!-- Coursework Stats -->
                         <div class="row g-2 mb-3">
                             <div class="col-6">
-                                <div class="p-3 rounded-2 bg-slate-50 border text-center">
+                                <div class="p-3 rounded-2 border text-center" style="background-color: var(--cm-bg-subtle);">
                                     <span class="d-block text-xs text-muted mb-1">Enrolled Students</span>
-                                    <span class="cm-tabular fs-5 fw-bold text-slate-900">48</span>
+                                    <span class="cm-tabular fs-5 fw-bold">48</span>
                                 </div>
                             </div>
                             <div class="col-6">
-                                <div class="p-3 rounded-2 bg-slate-50 border text-center">
+                                <div class="p-3 rounded-2 border text-center" style="background-color: var(--cm-bg-subtle);">
                                     <span class="d-block text-xs text-muted mb-1">Sessions Held</span>
-                                    <span class="cm-tabular fs-5 fw-bold text-slate-900">24 / 28</span>
+                                    <span class="cm-tabular fs-5 fw-bold">24 / 28</span>
                                 </div>
                             </div>
                         </div>
@@ -128,7 +128,7 @@ require_once __DIR__ . '/includes/header.php';
                         </div>
                     </div>
 
-                    <div class="cm-card-footer bg-slate-50 border-top d-flex align-items-center justify-content-between text-xs">
+                    <div class="cm-card-footer border-top d-flex align-items-center justify-content-between text-xs">
                         <span class="text-muted">Faculty of Computing &amp; Informatics</span>
                         <span class="badge cm-badge-neutral font-monospace">Fall Term</span>
                     </div>
@@ -151,12 +151,12 @@ require_once __DIR__ . '/includes/header.php';
         <div class="row g-4">
             <!-- Lecturer / Teacher Feature Card -->
             <div class="col-lg-4 col-md-6">
-                <div class="cm-card h-100 p-4 border bg-white shadow-sm d-flex flex-column">
+                <div class="cm-card h-100 p-4 shadow-sm d-flex flex-column">
                     <div class="mb-3">
                         <span class="badge cm-badge-success mb-2">
                             <i class="bi bi-person-video3 me-1" aria-hidden="true"></i> Teachers
                         </span>
-                        <h3 class="h5 fw-bold text-slate-900 mt-2 mb-2">For Teachers</h3>
+                        <h3 class="h5 fw-bold mt-2 mb-2">For Teachers</h3>
                         <p class="text-secondary text-sm mb-4">
                             Take attendance in seconds, enter quiz and exam marks, and track student progress at a glance.
                         </p>
@@ -188,12 +188,12 @@ require_once __DIR__ . '/includes/header.php';
 
             <!-- Department Head Feature Card -->
             <div class="col-lg-4 col-md-6">
-                <div class="cm-card h-100 p-4 border bg-white shadow-sm d-flex flex-column">
+                <div class="cm-card h-100 p-4 shadow-sm d-flex flex-column">
                     <div class="mb-3">
                         <span class="badge cm-badge-info mb-2">
                             <i class="bi bi-building me-1" aria-hidden="true"></i> Department Heads
                         </span>
-                        <h3 class="h5 fw-bold text-slate-900 mt-2 mb-2">For Department Heads</h3>
+                        <h3 class="h5 fw-bold mt-2 mb-2">For Department Heads</h3>
                         <p class="text-secondary text-sm mb-4">
                             Oversee department courses, review grade adjustments, and spot struggling students early.
                         </p>
@@ -225,12 +225,12 @@ require_once __DIR__ . '/includes/header.php';
 
             <!-- Administrator Feature Card -->
             <div class="col-lg-4 col-md-12">
-                <div class="cm-card h-100 p-4 border bg-white shadow-sm d-flex flex-column">
+                <div class="cm-card h-100 p-4 shadow-sm d-flex flex-column">
                     <div class="mb-3">
                         <span class="badge cm-badge-primary mb-2">
                             <i class="bi bi-shield-lock me-1" aria-hidden="true"></i> Administrators
                         </span>
-                        <h3 class="h5 fw-bold text-slate-900 mt-2 mb-2">For Administrators</h3>
+                        <h3 class="h5 fw-bold mt-2 mb-2">For Administrators</h3>
                         <p class="text-secondary text-sm mb-4">
                             Manage user accounts, assign teachers to courses, and configure department settings.
                         </p>
@@ -264,16 +264,16 @@ require_once __DIR__ . '/includes/header.php';
 </section>
 
 <!-- Reassurance & Highlights Section -->
-<section class="py-5 bg-white border-top border-bottom" aria-label="Key Benefits">
+<section class="py-5 border-top border-bottom" style="background-color: var(--cm-bg-surface);" aria-label="Key Benefits">
     <div class="container px-3 px-lg-4">
         <div class="row g-4">
             <div class="col-md-4">
                 <div class="d-flex align-items-start gap-3">
-                    <div class="p-2 rounded-2 bg-slate-100 text-primary fs-4" aria-hidden="true">
+                    <div class="p-2 rounded-2 text-primary fs-4" style="background-color: var(--cm-bg-subtle);" aria-hidden="true">
                         <i class="bi bi-shield-check"></i>
                     </div>
                     <div>
-                        <h4 class="h6 fw-bold text-slate-900 mb-1">Protected &amp; Private</h4>
+                        <h4 class="h6 fw-bold mb-1">Protected &amp; Private</h4>
                         <p class="text-xs text-secondary mb-0">
                             Only authorized staff can see student information and grades, keeping personal data safe.
                         </p>
@@ -283,11 +283,11 @@ require_once __DIR__ . '/includes/header.php';
 
             <div class="col-md-4">
                 <div class="d-flex align-items-start gap-3">
-                    <div class="p-2 rounded-2 bg-slate-100 text-primary fs-4" aria-hidden="true">
+                    <div class="p-2 rounded-2 text-primary fs-4" style="background-color: var(--cm-bg-subtle);" aria-hidden="true">
                         <i class="bi bi-clock-history"></i>
                     </div>
                     <div>
-                        <h4 class="h6 fw-bold text-slate-900 mb-1">Clear Change History</h4>
+                        <h4 class="h6 fw-bold mb-1">Clear Change History</h4>
                         <p class="text-xs text-secondary mb-0">
                             Every grade and attendance update is recorded with who made it and when, so records stay reliable.
                         </p>
@@ -297,11 +297,11 @@ require_once __DIR__ . '/includes/header.php';
 
             <div class="col-md-4">
                 <div class="d-flex align-items-start gap-3">
-                    <div class="p-2 rounded-2 bg-slate-100 text-primary fs-4" aria-hidden="true">
+                    <div class="p-2 rounded-2 text-primary fs-4" style="background-color: var(--cm-bg-subtle);" aria-hidden="true">
                         <i class="bi bi-file-earmark-spreadsheet"></i>
                     </div>
                     <div>
-                        <h4 class="h6 fw-bold text-slate-900 mb-1">Spreadsheet Friendly</h4>
+                        <h4 class="h6 fw-bold mb-1">Spreadsheet Friendly</h4>
                         <p class="text-xs text-secondary mb-0">
                             Easily upload student rosters and download reports in Excel and CSV formats without manual copying.
                         </p>

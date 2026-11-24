@@ -81,14 +81,14 @@ require_once __DIR__ . '/../includes/header.php';
 <div class="container py-5 my-auto">
     <div class="row justify-content-center">
         <div class="col-12 col-sm-10 col-md-8 col-lg-5 col-xl-4" style="max-width: 440px;">
-            <div class="cm-card shadow-sm border bg-white">
+            <div class="cm-card shadow-sm border">
                 <div class="cm-card-body p-4 p-sm-5">
                     <!-- Brand Icon & Header -->
                     <div class="text-center mb-4">
-                        <div class="d-inline-flex align-items-center justify-content-center rounded-circle bg-slate-100 text-primary mb-3" style="width: 52px; height: 52px; font-size: 1.5rem;" aria-hidden="true">
+                        <div class="d-inline-flex align-items-center justify-content-center rounded-circle text-primary mb-3" style="width: 52px; height: 52px; font-size: 1.5rem; background-color: var(--cm-bg-subtle);" aria-hidden="true">
                             <i class="bi bi-mortarboard-fill"></i>
                         </div>
-                        <h1 class="h4 fw-bold text-slate-900 mb-1">Welcome Back</h1>
+                        <h1 class="h4 fw-bold mb-1">Welcome Back</h1>
                         <p class="text-sm text-secondary mb-0">Sign in to your account</p>
                     </div>
 
@@ -110,7 +110,7 @@ require_once __DIR__ . '/../includes/header.php';
                                 Username or Email <span class="text-danger" aria-hidden="true">*</span>
                             </label>
                             <div class="input-group">
-                                <span class="input-group-text bg-slate-50 text-secondary border-end-0" id="username-addon">
+                                <span class="input-group-text text-secondary border-end-0" style="background-color: var(--cm-bg-subtle);" id="username-addon">
                                     <i class="bi bi-person" aria-hidden="true"></i>
                                 </span>
                                 <input 
@@ -135,7 +135,7 @@ require_once __DIR__ . '/../includes/header.php';
                                 Password <span class="text-danger" aria-hidden="true">*</span>
                             </label>
                             <div class="input-group">
-                                <span class="input-group-text bg-slate-50 text-secondary border-end-0" id="password-addon">
+                                <span class="input-group-text text-secondary border-end-0" style="background-color: var(--cm-bg-subtle);" id="password-addon">
                                     <i class="bi bi-key" aria-hidden="true"></i>
                                 </span>
                                 <input 
@@ -181,7 +181,7 @@ require_once __DIR__ . '/../includes/header.php';
                     </div>
                 </div>
 
-                <div class="cm-card-footer bg-slate-50 border-top text-center py-3">
+                <div class="cm-card-footer border-top text-center py-3">
                     <p class="text-xs text-muted mb-0">
                         <i class="bi bi-shield-check me-1" aria-hidden="true"></i>
                         CourseMonitor protects your data with secure authentication.
