@@ -16,7 +16,7 @@ require_once __DIR__ . '/../../includes/header.php';
                     <i class="bi bi-house me-1" aria-hidden="true"></i>Admin
                 </a>
             </li>
-            <li class="breadcrumb-item active text-slate-800 fw-medium" aria-current="page">Users</li>
+            <li class="breadcrumb-item active fw-medium" aria-current="page">Users</li>
         </ol>
     </nav>
 
@@ -42,7 +42,7 @@ require_once __DIR__ . '/../../includes/header.php';
             <div class="d-flex flex-wrap align-items-center gap-2 flex-grow-1">
                 <!-- Search Input -->
                 <div class="input-group" style="max-width: 320px;">
-                    <span class="input-group-text bg-light text-muted border-end-0" id="search-addon">
+                    <span class="input-group-text border-end-0" id="search-addon">
                         <i class="bi bi-search" aria-hidden="true"></i>
                     </span>
                     <input type="text" id="searchInput" class="form-control border-start-0" 
@@ -114,7 +114,7 @@ require_once __DIR__ . '/../../includes/header.php';
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content cm-card border-0">
             <div class="modal-header border-bottom">
-                <h2 class="modal-title h5 mb-0 fw-semibold text-slate-800" id="modalTitle">Add User</h2>
+                <h2 class="modal-title h5 mb-0 fw-semibold" id="modalTitle">Add User</h2>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close dialog"></button>
             </div>
             <form id="userForm" onsubmit="saveUser(event)" novalidate>
@@ -127,7 +127,7 @@ require_once __DIR__ . '/../../includes/header.php';
                     <div class="mb-3">
                         <label for="username" class="form-label">Username <span class="required" aria-hidden="true">*</span></label>
                         <div class="input-group">
-                            <span class="input-group-text bg-light text-muted" aria-hidden="true"><i class="bi bi-at"></i></span>
+                            <span class="input-group-text" aria-hidden="true"><i class="bi bi-at"></i></span>
                             <input type="text" id="username" class="form-control" placeholder="e.g. jsmith" required autocomplete="username">
                         </div>
                         <div class="form-text">Used to sign in to the system.</div>
@@ -141,7 +141,7 @@ require_once __DIR__ . '/../../includes/header.php';
                     <div class="mb-3">
                         <label for="email" class="form-label">Email Address <span class="required" aria-hidden="true">*</span></label>
                         <div class="input-group">
-                            <span class="input-group-text bg-light text-muted" aria-hidden="true"><i class="bi bi-envelope"></i></span>
+                            <span class="input-group-text" aria-hidden="true"><i class="bi bi-envelope"></i></span>
                             <input type="email" id="email" class="form-control" placeholder="e.g. jsmith@example.edu" required autocomplete="email">
                         </div>
                     </div>
@@ -179,7 +179,7 @@ require_once __DIR__ . '/../../includes/header.php';
                             Password <span class="text-muted fw-normal" id="pwdHelpText">(Required for new users)</span>
                         </label>
                         <div class="input-group">
-                            <span class="input-group-text bg-light text-muted" aria-hidden="true"><i class="bi bi-key"></i></span>
+                            <span class="input-group-text" aria-hidden="true"><i class="bi bi-key"></i></span>
                             <input type="password" id="password" class="form-control" placeholder="••••••••" autocomplete="new-password">
                         </div>
                         <div class="form-text">For existing users, leave blank to keep the current password.</div>
@@ -187,11 +187,11 @@ require_once __DIR__ . '/../../includes/header.php';
 
                     <div class="form-check form-switch mt-3">
                         <input type="checkbox" id="isActive" class="form-check-input" checked role="switch">
-                        <label class="form-check-label fw-medium text-slate-800" for="isActive">Active Account</label>
+                        <label class="form-check-label fw-medium" for="isActive">Active Account</label>
                         <div class="form-text">Inactive accounts cannot sign in to CourseMonitor.</div>
                     </div>
                 </div>
-                <div class="modal-footer border-top bg-light px-4 py-3">
+                <div class="modal-footer px-4 py-3">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn btn-primary" id="btnSaveUser">
                         <i class="bi bi-check2 me-1" aria-hidden="true"></i>Save User
@@ -341,9 +341,9 @@ require_once __DIR__ . '/../../includes/header.php';
         users.forEach((user, idx) => {
             let aff = '<span class="text-muted">—</span>';
             if (user.role === 'head') {
-                aff = user.department_name ? `<span class="fw-medium text-slate-800"><i class="bi bi-building me-1 text-muted"></i>${escapeHtml(user.department_name)}</span>` : '<span class="text-muted">Unassigned</span>';
+                aff = user.department_name ? `<span class="fw-medium"><i class="bi bi-building me-1 text-muted"></i>${escapeHtml(user.department_name)}</span>` : '<span class="text-muted">Unassigned</span>';
             } else if (user.role === 'lecturer') {
-                aff = user.faculty_name ? `<span class="fw-medium text-slate-800"><i class="bi bi-diagram-3 me-1 text-muted"></i>${escapeHtml(user.faculty_name)}</span>` : '<span class="text-muted">Unassigned</span>';
+                aff = user.faculty_name ? `<span class="fw-medium"><i class="bi bi-diagram-3 me-1 text-muted"></i>${escapeHtml(user.faculty_name)}</span>` : '<span class="text-muted">Unassigned</span>';
             }
 
             let roleBadge = '<span class="badge cm-badge-neutral">User</span>';
@@ -370,7 +370,7 @@ require_once __DIR__ . '/../../includes/header.php';
                                 ${escapeHtml((user.full_name || user.username || 'U').charAt(0).toUpperCase())}
                             </div>
                             <div>
-                                <div class="fw-semibold text-slate-900">${escapeHtml(user.full_name)}</div>
+                                <div class="fw-semibold">${escapeHtml(user.full_name)}</div>
                                 <div class="font-monospace small text-muted">@${escapeHtml(user.username)}</div>
                             </div>
                         </div>

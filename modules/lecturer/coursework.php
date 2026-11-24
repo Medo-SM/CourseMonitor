@@ -113,7 +113,7 @@ require_once __DIR__ . '/../../includes/header.php';
         <div class="cm-card-body py-2 px-3">
             <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 small text-secondary">
                 <div class="d-flex align-items-center gap-3 flex-wrap">
-                    <span class="fw-semibold text-dark">Grading Progress:</span>
+                    <span class="fw-semibold">Grading Progress:</span>
                     <span>Marks Entered: <span id="statGradedCount" class="badge cm-badge-primary tabular-nums">0 / 0</span></span>
                     <span>Class Average: <span id="statClassAvg" class="badge cm-badge-success tabular-nums">-</span></span>
                     <span>Highest: <span id="statHighest" class="badge cm-badge-info tabular-nums">-</span></span>
@@ -145,7 +145,7 @@ require_once __DIR__ . '/../../includes/header.php';
             <form id="gradeForm" onsubmit="saveGrades(event)">
                 <div class="table-responsive" style="max-height: 70vh;">
                     <table class="table cm-table table-hover align-middle mb-0" id="gradeTable">
-                        <thead class="table-light sticky-top">
+                        <thead class="sticky-top">
                             <tr id="gradeTableHeaderRow">
                                 <th scope="col" style="width: 50px;" class="text-center">#</th>
                                 <th scope="col" style="width: 170px;" class="tabular-nums">Student ID</th>
@@ -171,7 +171,7 @@ require_once __DIR__ . '/../../includes/header.php';
                     </table>
                 </div>
 
-                <div id="gradeFormFooter" class="d-none cm-card-footer bg-white d-flex flex-wrap justify-content-between align-items-center gap-3 py-3 px-4">
+                <div id="gradeFormFooter" class="d-none cm-card-footer d-flex flex-wrap justify-content-between align-items-center gap-3 py-3 px-4">
                     <div class="text-muted small" id="gradeStatusPrompt">
                         Press <kbd>Tab</kbd> or <kbd>Enter</kbd> to move rapidly between student score inputs.
                     </div>
@@ -375,10 +375,10 @@ require_once __DIR__ . '/../../includes/header.php';
             row.id = `row_student_${sid}`;
             row.innerHTML = `
                 <td class="text-center text-muted tabular-nums small">${index + 1}</td>
-                <td class="tabular-nums font-monospace fw-medium text-dark">
+                <td class="tabular-nums font-monospace fw-medium">
                     ${escapeHtml(student.student_id_number)}
                 </td>
-                <td class="fw-medium text-dark">
+                <td class="fw-medium">
                     ${escapeHtml(student.name)}
                 </td>
                 <td class="text-center">
@@ -401,7 +401,7 @@ require_once __DIR__ . '/../../includes/header.php';
                     </div>
                 </td>
                 <td class="text-center">
-                    <span id="preview_total_${sid}" class="tabular-nums fw-bold text-dark font-monospace">
+                    <span id="preview_total_${sid}" class="tabular-nums fw-bold font-monospace">
                         ${currentTotal}
                     </span>
                 </td>
@@ -491,7 +491,7 @@ require_once __DIR__ . '/../../includes/header.php';
             if (gradedCount === totalStudents) {
                 prompt.innerHTML = `<span class="text-success fw-medium"><i class="bi bi-check-circle-fill me-1"></i>All ${totalStudents} students scored. Ready to save.</span>`;
             } else {
-                prompt.innerHTML = `<span><span class="text-dark fw-medium">${gradedCount}</span> of ${totalStudents} students graded (${totalStudents - gradedCount} remaining).</span>`;
+                prompt.innerHTML = `<span><span class="fw-medium">${gradedCount}</span> of ${totalStudents} students graded (${totalStudents - gradedCount} remaining).</span>`;
             }
         }
     }

@@ -16,7 +16,7 @@ require_once __DIR__ . '/../../includes/header.php';
                     <i class="bi bi-house me-1" aria-hidden="true"></i>Admin
                 </a>
             </li>
-            <li class="breadcrumb-item active text-slate-800 fw-medium" aria-current="page">Departments</li>
+            <li class="breadcrumb-item active fw-medium" aria-current="page">Departments</li>
         </ol>
     </nav>
 
@@ -42,7 +42,7 @@ require_once __DIR__ . '/../../includes/header.php';
             <div class="d-flex flex-wrap align-items-center gap-2 flex-grow-1">
                 <!-- Search Input -->
                 <div class="input-group" style="max-width: 320px;">
-                    <span class="input-group-text bg-light text-muted border-end-0" id="search-addon">
+                    <span class="input-group-text border-end-0" id="search-addon">
                         <i class="bi bi-search" aria-hidden="true"></i>
                     </span>
                     <input type="text" id="searchInput" class="form-control border-start-0" 
@@ -101,7 +101,7 @@ require_once __DIR__ . '/../../includes/header.php';
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content cm-card border-0">
             <div class="modal-header border-bottom">
-                <h2 class="modal-title h5 mb-0 fw-semibold text-slate-800" id="modalTitle">Add Department</h2>
+                <h2 class="modal-title h5 mb-0 fw-semibold" id="modalTitle">Add Department</h2>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close dialog"></button>
             </div>
             <form id="deptForm" onsubmit="saveDepartment(event)" novalidate>
@@ -116,7 +116,7 @@ require_once __DIR__ . '/../../includes/header.php';
                             Department Name <span class="required" aria-hidden="true">*</span>
                         </label>
                         <div class="input-group">
-                            <span class="input-group-text bg-light text-muted" aria-hidden="true"><i class="bi bi-building"></i></span>
+                            <span class="input-group-text" aria-hidden="true"><i class="bi bi-building"></i></span>
                             <input type="text" id="name" class="form-control" placeholder="e.g. Department of Computer Science" required>
                         </div>
                     </div>
@@ -141,7 +141,7 @@ require_once __DIR__ . '/../../includes/header.php';
                         <div class="form-text">Only users registered with the Department Head role are listed.</div>
                     </div>
                 </div>
-                <div class="modal-footer border-top bg-light px-4 py-3">
+                <div class="modal-footer px-4 py-3">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn btn-primary" id="btnSaveDept">
                         <i class="bi bi-check2 me-1" aria-hidden="true"></i>Save Department
@@ -299,19 +299,19 @@ require_once __DIR__ . '/../../includes/header.php';
 
             let facultyCol = '<span class="text-muted">—</span>';
             if (d.faculty_name) {
-                facultyCol = `<span class="badge cm-badge-neutral text-slate-800"><i class="bi bi-diagram-3 me-1 text-muted" aria-hidden="true"></i>${escapeHtml(d.faculty_name)}</span>`;
+                facultyCol = `<span class="badge cm-badge-neutral"><i class="bi bi-diagram-3 me-1 text-muted" aria-hidden="true"></i>${escapeHtml(d.faculty_name)}</span>`;
             }
 
             let headCol = '<span class="badge cm-badge-warning"><i class="bi bi-exclamation-circle me-1" aria-hidden="true"></i>Not Assigned</span>';
             if (d.head_name) {
-                headCol = `<span class="fw-medium text-slate-900"><i class="bi bi-person-badge me-1 text-muted" aria-hidden="true"></i>${escapeHtml(d.head_name)}</span>`;
+                headCol = `<span class="fw-medium"><i class="bi bi-person-badge me-1 text-muted" aria-hidden="true"></i>${escapeHtml(d.head_name)}</span>`;
             }
 
             tbody.innerHTML += `
                 <tr>
                     <td class="font-monospace text-muted small">${idx + 1}</td>
                     <td>
-                        <div class="fw-semibold text-slate-900">
+                        <div class="fw-semibold">
                             <i class="bi bi-building me-1 text-primary" aria-hidden="true"></i>${escapeHtml(d.name)}
                         </div>
                     </td>

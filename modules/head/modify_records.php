@@ -73,13 +73,13 @@ require_once __DIR__ . '/../../includes/header.php';
                     </div>
                 </div>
                 <div class="col-4">
-                    <div class="p-2 rounded bg-light text-secondary border border-light-subtle fw-medium small">
+                    <div class="p-2 rounded text-secondary border fw-medium small" style="background-color: var(--cm-bg-subtle);">
                         <span class="badge bg-secondary text-white rounded-circle me-1">2</span>
                         <span>Select Category</span>
                     </div>
                 </div>
                 <div class="col-4">
-                    <div class="p-2 rounded bg-light text-secondary border border-light-subtle fw-medium small">
+                    <div class="p-2 rounded text-secondary border fw-medium small" style="background-color: var(--cm-bg-subtle);">
                         <span class="badge bg-secondary text-white rounded-circle me-1">3</span>
                         <span>Edit Student Record</span>
                     </div>
@@ -90,7 +90,7 @@ require_once __DIR__ . '/../../includes/header.php';
 
     <!-- Step 1 & Step 2 Selection Card -->
     <div class="card cm-card mb-4">
-        <div class="cm-card-header bg-light">
+        <div class="cm-card-header">
             <div class="d-flex align-items-center gap-2">
                 <i class="bi bi-sliders text-secondary" aria-hidden="true"></i>
                 <h2 class="cm-card-title h6 mb-0 fw-bold">Step 1 &amp; Step 2: Select Course &amp; Category</h2>
@@ -162,7 +162,7 @@ require_once __DIR__ . '/../../includes/header.php';
 
             <!-- Student Search Filter (Client-side) -->
             <div class="input-group" style="max-width: 300px;">
-                <span class="input-group-text bg-light border-end-0 text-muted" id="search-icon">
+                <span class="input-group-text border-end-0 text-muted" id="search-icon">
                     <i class="bi bi-search" aria-hidden="true"></i>
                 </span>
                 <input type="search" id="studentSearch" class="form-control border-start-0" 
@@ -242,17 +242,17 @@ require_once __DIR__ . '/../../includes/header.php';
                     </div>
 
                     <!-- Student Context Card -->
-                    <div class="p-3 mb-4 rounded border bg-light">
+                    <div class="p-3 mb-4 rounded border" style="background-color: var(--cm-bg-subtle);">
                         <div class="row g-2 align-items-center">
                             <div class="col-sm-6">
                                 <span class="text-secondary small d-block">Student</span>
-                                <span class="fw-bold text-dark" id="modalStudentName">&mdash;</span>
+                                <span class="fw-bold" id="modalStudentName">&mdash;</span>
                             </div>
                             <div class="col-sm-6 text-sm-end">
                                 <span class="text-secondary small d-block">Student ID</span>
                                 <span class="font-monospace fw-semibold tabular-nums text-primary" id="modalStudentId">&mdash;</span>
                             </div>
-                            <div class="col-12 mt-2 pt-2 border-top border-light-subtle d-flex justify-content-between align-items-center">
+                            <div class="col-12 mt-2 pt-2 border-top d-flex justify-content-between align-items-center">
                                 <span class="text-secondary small" id="modalContextLabel">Item Context:</span>
                                 <span class="badge cm-badge-neutral font-monospace" id="modalContextVal">&mdash;</span>
                             </div>
@@ -260,15 +260,15 @@ require_once __DIR__ . '/../../includes/header.php';
                     </div>
 
                     <!-- Side-by-Side Comparison Container -->
-                    <div class="card mb-4 border border-light-subtle">
-                        <div class="card-header bg-light-subtle py-2 px-3">
+                    <div class="cm-card mb-4 border">
+                        <div class="cm-card-header py-2 px-3">
                             <span class="small fw-bold text-secondary text-uppercase tracking-wider">Comparison</span>
                         </div>
-                        <div class="card-body p-3">
+                        <div class="cm-card-body p-3">
                             <div class="row g-3 align-items-center">
                                 <!-- Original (Current Record) -->
                                 <div class="col-md-5">
-                                    <div class="p-3 rounded border bg-light text-center h-100">
+                                    <div class="p-3 rounded border text-center h-100" style="background-color: var(--cm-bg-subtle);">
                                         <span class="text-secondary small d-block mb-1 fw-medium">Current Record</span>
                                         <div class="fs-4 fw-bold text-danger text-decoration-line-through tabular-nums" id="originalValueDisplay">
                                             &mdash;
@@ -311,7 +311,7 @@ require_once __DIR__ . '/../../includes/header.php';
                     </div>
                 </div>
 
-                <div class="modal-footer border-top py-3 px-4 bg-light">
+                <div class="modal-footer border-top py-3 px-4">
                     <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn btn-primary btn-sm" id="submitModificationBtn">
                         <i class="bi bi-check2-circle me-1" aria-hidden="true"></i>
@@ -527,7 +527,7 @@ require_once __DIR__ . '/../../includes/header.php';
 
             tr.innerHTML = `
                 <td>
-                    <div class="fw-semibold text-dark">${escapeHtml(row.student_name)}</div>
+                    <div class="fw-semibold">${escapeHtml(row.student_name)}</div>
                 </td>
                 <td>
                     <span class="font-monospace text-secondary small tabular-nums">${escapeHtml(row.student_id_number)}</span>

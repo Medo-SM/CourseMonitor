@@ -178,7 +178,7 @@ require_once __DIR__ . '/../../includes/header.php';
         <div class="cm-card-body p-0">
             <div class="table-responsive" style="max-height: 72vh;">
                 <table class="table cm-table cm-table-sticky table-hover align-middle mb-0" id="attendanceTable">
-                    <thead class="table-light" id="matrixThead">
+                    <thead id="matrixThead">
                         <tr>
                             <th scope="col" style="min-width: 140px;">Student ID</th>
                             <th scope="col" style="min-width: 180px;">Student Name</th>
@@ -343,10 +343,10 @@ require_once __DIR__ . '/../../includes/header.php';
                 }
 
                 headerHtml += `
-                    <th scope="col" class="text-center bg-light" style="min-width: 48px;" title="Present Count">P</th>
-                    <th scope="col" class="text-center bg-light" style="min-width: 48px;" title="Absent Count">A</th>
-                    <th scope="col" class="text-center bg-light" style="min-width: 48px;" title="Late Count">L</th>
-                    <th scope="col" class="text-center bg-light" style="min-width: 90px;" title="Attendance Rate">Rate</th>
+                    <th scope="col" class="text-center" style="min-width: 48px;" title="Present Count">P</th>
+                    <th scope="col" class="text-center" style="min-width: 48px;" title="Absent Count">A</th>
+                    <th scope="col" class="text-center" style="min-width: 48px;" title="Late Count">L</th>
+                    <th scope="col" class="text-center" style="min-width: 90px;" title="Attendance Rate">Rate</th>
                 </tr>
                 `;
                 thead.innerHTML = headerHtml;
@@ -364,8 +364,8 @@ require_once __DIR__ . '/../../includes/header.php';
 
                     let rowHtml = `
                         <tr>
-                            <td class="tabular-nums font-monospace fw-medium text-dark">${escapeHtml(student.student_id_number)}</td>
-                            <td class="fw-medium text-dark">${escapeHtml(student.name)}</td>
+                            <td class="tabular-nums font-monospace fw-medium">${escapeHtml(student.student_id_number)}</td>
+                            <td class="fw-medium">${escapeHtml(student.name)}</td>
                     `;
 
                     if (dates.length === 0) {

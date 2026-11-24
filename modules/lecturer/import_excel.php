@@ -72,7 +72,7 @@ require_once __DIR__ . '/../../includes/header.php';
                         <div class="d-flex gap-3 align-items-start">
                             <span class="badge cm-badge-primary rounded-circle p-2 fs-6" style="width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center;">1</span>
                             <div>
-                                <h3 class="h6 mb-1 text-dark fw-semibold">Download template</h3>
+                                <h3 class="h6 mb-1 fw-semibold">Download template</h3>
                                 <p class="text-secondary small mb-0">Choose your class and download a pre-filled CSV template containing your enrolled students.</p>
                             </div>
                         </div>
@@ -80,7 +80,7 @@ require_once __DIR__ . '/../../includes/header.php';
                         <div class="d-flex gap-3 align-items-start">
                             <span class="badge cm-badge-primary rounded-circle p-2 fs-6" style="width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center;">2</span>
                             <div>
-                                <h3 class="h6 mb-1 text-dark fw-semibold">Enter marks</h3>
+                                <h3 class="h6 mb-1 fw-semibold">Enter marks</h3>
                                 <p class="text-secondary small mb-0">Open the file in Excel or any spreadsheet tool and fill in student marks (0 to 100) in the <code>Grade</code> column.</p>
                             </div>
                         </div>
@@ -88,7 +88,7 @@ require_once __DIR__ . '/../../includes/header.php';
                         <div class="d-flex gap-3 align-items-start">
                             <span class="badge cm-badge-primary rounded-circle p-2 fs-6" style="width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center;">3</span>
                             <div>
-                                <h3 class="h6 mb-1 text-dark fw-semibold">Upload file</h3>
+                                <h3 class="h6 mb-1 fw-semibold">Upload file</h3>
                                 <p class="text-secondary small mb-0">Drag and drop your completed CSV file into the upload box on the right and click <strong>Import Grades</strong>.</p>
                             </div>
                         </div>
@@ -107,7 +107,7 @@ require_once __DIR__ . '/../../includes/header.php';
                     <p class="text-muted small mb-2">Your CSV file should have these 3 columns:</p>
                     <div class="table-responsive mb-3">
                         <table class="table cm-table table-bordered mb-0 small">
-                            <thead class="table-light">
+                            <thead>
                                 <tr>
                                     <th scope="col" class="tabular-nums">Student Number</th>
                                     <th scope="col">Student Name</th>
@@ -186,8 +186,8 @@ require_once __DIR__ . '/../../includes/header.php';
                                 CSV File <span class="text-danger" aria-hidden="true">*</span>
                             </label>
                             <div id="dropzoneContainer" 
-                                 class="p-4 border border-2 border-dashed rounded-3 text-center bg-light transition-colors"
-                                 style="border-color: var(--cm-border-default); cursor: pointer;"
+                                 class="p-4 border border-2 border-dashed rounded-3 text-center transition-colors"
+                                 style="background-color: var(--cm-bg-surface-raised); border-color: var(--cm-border-default); cursor: pointer;"
                                  onclick="triggerFileInput()"
                                  ondragover="handleDragOver(event)"
                                  ondragleave="handleDragLeave(event)"
@@ -205,7 +205,7 @@ require_once __DIR__ . '/../../includes/header.php';
                                     <div class="mb-2 text-primary fs-1">
                                         <i class="bi bi-cloud-arrow-up" aria-hidden="true"></i>
                                     </div>
-                                    <p class="fw-semibold text-dark mb-1">Drag and drop your completed CSV file here</p>
+                                    <p class="fw-semibold mb-1">Drag and drop your completed CSV file here</p>
                                     <p class="text-muted small mb-3">or click to browse your computer files</p>
                                     <span class="badge cm-badge-neutral font-monospace">CSV format only</span>
                                 </div>
@@ -213,7 +213,7 @@ require_once __DIR__ . '/../../includes/header.php';
                                 <div id="fileSelectedDisplay" class="d-none align-items-center justify-content-center gap-2 py-2">
                                     <i class="bi bi-file-earmark-spreadsheet text-success fs-3" aria-hidden="true"></i>
                                     <div class="text-start">
-                                        <div id="selectedFileName" class="fw-semibold text-dark text-truncate" style="max-width: 280px;">filename.csv</div>
+                                        <div id="selectedFileName" class="fw-semibold text-truncate" style="max-width: 280px;">filename.csv</div>
                                         <div id="selectedFileSize" class="text-muted small tabular-nums font-monospace">0 KB</div>
                                     </div>
                                     <button type="button" 
@@ -256,7 +256,7 @@ require_once __DIR__ . '/../../includes/header.php';
                             <h4 class="h6 text-danger fw-semibold mb-2">Validation Errors Found:</h4>
                             <div class="table-responsive">
                                 <table class="table cm-table table-hover align-middle mb-0 small">
-                                    <thead class="table-light">
+                                    <thead>
                                         <tr>
                                             <th scope="col" style="width: 50px;" class="text-center">#</th>
                                             <th scope="col">Error Description / Unmatched Record</th>

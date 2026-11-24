@@ -281,9 +281,9 @@ require_once __DIR__ . '/../../includes/header.php';
             ?>
                 <div class="col-sm-6 col-xl-3">
                     <div class="card cm-card h-100">
-                        <div class="cm-card-header py-2 px-3 bg-light">
+                        <div class="cm-card-header py-2 px-3">
                             <div class="d-flex align-items-center justify-content-between w-100">
-                                <span class="fw-semibold text-dark"><?= htmlspecialchars($meta['title']) ?></span>
+                                <span class="fw-semibold"><?= htmlspecialchars($meta['title']) ?></span>
                                 <span class="badge <?= $meta['badge'] ?>"><?= htmlspecialchars($meta['semesters']) ?></span>
                             </div>
                         </div>
@@ -406,7 +406,7 @@ require_once __DIR__ . '/../../includes/header.php';
                 </div>
                 <div class="cm-card-body">
                     <div class="d-flex flex-column gap-3">
-                        <a href="<?= htmlspecialchars(base_url('/modules/head/courses.php'), ENT_QUOTES, 'UTF-8') ?>" class="text-decoration-none p-3 rounded border border-light-subtle bg-body-tertiary d-flex align-items-center gap-3 transition-base">
+                        <a href="<?= htmlspecialchars(base_url('/modules/head/courses.php'), ENT_QUOTES, 'UTF-8') ?>" class="text-decoration-none p-3 rounded border d-flex align-items-center gap-3 transition-base" style="background-color: var(--cm-bg-subtle);">
                             <div class="cm-stat-icon primary flex-shrink-0" aria-hidden="true">
                                 <i class="bi bi-book"></i>
                             </div>
@@ -417,7 +417,7 @@ require_once __DIR__ . '/../../includes/header.php';
                             <i class="bi bi-chevron-right text-muted" aria-hidden="true"></i>
                         </a>
 
-                        <a href="<?= htmlspecialchars(base_url('/modules/head/modify_records.php'), ENT_QUOTES, 'UTF-8') ?>" class="text-decoration-none p-3 rounded border border-light-subtle bg-body-tertiary d-flex align-items-center gap-3 transition-base">
+                        <a href="<?= htmlspecialchars(base_url('/modules/head/modify_records.php'), ENT_QUOTES, 'UTF-8') ?>" class="text-decoration-none p-3 rounded border d-flex align-items-center gap-3 transition-base" style="background-color: var(--cm-bg-subtle);">
                             <div class="cm-stat-icon warning flex-shrink-0" aria-hidden="true">
                                 <i class="bi bi-pencil-square"></i>
                             </div>
@@ -428,7 +428,7 @@ require_once __DIR__ . '/../../includes/header.php';
                             <i class="bi bi-chevron-right text-muted" aria-hidden="true"></i>
                         </a>
 
-                        <a href="<?= htmlspecialchars(base_url('/modules/head/reports.php'), ENT_QUOTES, 'UTF-8') ?>" class="text-decoration-none p-3 rounded border border-light-subtle bg-body-tertiary d-flex align-items-center gap-3 transition-base">
+                        <a href="<?= htmlspecialchars(base_url('/modules/head/reports.php'), ENT_QUOTES, 'UTF-8') ?>" class="text-decoration-none p-3 rounded border d-flex align-items-center gap-3 transition-base" style="background-color: var(--cm-bg-subtle);">
                             <div class="cm-stat-icon success flex-shrink-0" aria-hidden="true">
                                 <i class="bi bi-bar-chart-line"></i>
                             </div>
@@ -439,7 +439,7 @@ require_once __DIR__ . '/../../includes/header.php';
                             <i class="bi bi-chevron-right text-muted" aria-hidden="true"></i>
                         </a>
 
-                        <a href="<?= htmlspecialchars(base_url('/modules/head/audit_logs.php'), ENT_QUOTES, 'UTF-8') ?>" class="text-decoration-none p-3 rounded border border-light-subtle bg-body-tertiary d-flex align-items-center gap-3 transition-base">
+                        <a href="<?= htmlspecialchars(base_url('/modules/head/audit_logs.php'), ENT_QUOTES, 'UTF-8') ?>" class="text-decoration-none p-3 rounded border d-flex align-items-center gap-3 transition-base" style="background-color: var(--cm-bg-subtle);">
                             <div class="cm-stat-icon primary flex-shrink-0" aria-hidden="true">
                                 <i class="bi bi-clock-history"></i>
                             </div>

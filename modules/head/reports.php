@@ -120,7 +120,7 @@ require_once __DIR__ . '/../../includes/header.php';
 
     <!-- Filter Controls Card -->
     <div class="card cm-card mb-4 no-print">
-        <div class="cm-card-header bg-light">
+        <div class="cm-card-header">
             <div class="d-flex align-items-center gap-2">
                 <i class="bi bi-funnel text-secondary" aria-hidden="true"></i>
                 <h2 class="cm-card-title h6 mb-0 fw-bold">Report Filters</h2>
@@ -190,9 +190,9 @@ require_once __DIR__ . '/../../includes/header.php';
         <div class="card cm-card mb-4">
             <div class="cm-card-body p-4 text-center">
                 <span class="badge cm-badge-neutral text-uppercase tracking-wider mb-2">Performance Summary</span>
-                <h2 class="h4 fw-bold text-dark mb-1" id="reportTitle">Department Performance Report</h2>
+                <h2 class="h4 fw-bold mb-1" id="reportTitle">Department Performance Report</h2>
                 <p class="text-secondary small mb-3">
-                    Department: <strong class="text-dark"><?= htmlspecialchars($dept_name, ENT_QUOTES, 'UTF-8') ?></strong> &bull;
+                    Department: <strong><?= htmlspecialchars($dept_name, ENT_QUOTES, 'UTF-8') ?></strong> &bull;
                     Updated <span id="reportDate" class="tabular-nums">--</span>
                 </p>
                 <button type="button" onclick="exportCsvReport()" class="btn btn-outline-primary btn-sm">
@@ -238,7 +238,7 @@ require_once __DIR__ . '/../../includes/header.php';
             <!-- Simple Grade Distribution Bars (A, B, C, D, F) -->
             <div class="col-lg-6">
                 <div class="card cm-card h-100">
-                    <div class="cm-card-header bg-light">
+                    <div class="cm-card-header">
                         <div class="d-flex align-items-center gap-2">
                             <i class="bi bi-bar-chart text-secondary" aria-hidden="true"></i>
                             <h3 class="cm-card-title h6 mb-0 fw-bold">Grade Distribution</h3>
@@ -448,7 +448,7 @@ require_once __DIR__ . '/../../includes/header.php';
                 riskBody.innerHTML += `
                     <tr>
                         <td>
-                            <div class="fw-semibold text-dark">${escapeHtml(row.student_name)}</div>
+                            <div class="fw-semibold">${escapeHtml(row.student_name)}</div>
                         </td>
                         <td>
                             <span class="badge cm-badge-neutral font-monospace">${escapeHtml(row.course_code)}</span>

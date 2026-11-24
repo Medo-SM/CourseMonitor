@@ -98,7 +98,7 @@ require_once __DIR__ . '/../../includes/header.php';
             </div>
             <div class="d-flex align-items-center gap-2 ms-auto" style="min-width: 260px; max-width: 360px;">
                 <div class="input-group input-group-sm">
-                    <span class="input-group-text bg-white border-end-0 text-muted" id="search-addon">
+                    <span class="input-group-text border-end-0 text-muted" id="search-addon">
                         <i class="bi bi-search" aria-hidden="true"></i>
                     </span>
                     <input type="search" 
@@ -219,7 +219,7 @@ require_once __DIR__ . '/../../includes/header.php';
             card.className = 'col-md-6 col-xl-4';
             card.innerHTML = `
                 <div class="card cm-card h-100 d-flex flex-column">
-                    <div class="cm-card-header bg-white border-bottom py-3">
+                    <div class="cm-card-header border-bottom py-3">
                         <span class="badge cm-badge-primary font-monospace fs-6 px-2 py-1" title="Course Code">
                             ${escapeHtml(c.code)}
                         </span>
@@ -228,7 +228,7 @@ require_once __DIR__ . '/../../includes/header.php';
                         </span>
                     </div>
                     <div class="cm-card-body d-flex flex-column flex-grow-1">
-                        <h3 class="h5 card-title text-dark fw-semibold mb-2" title="${escapeHtml(c.name)}">
+                        <h3 class="h5 card-title fw-semibold mb-2" title="${escapeHtml(c.name)}">
                             ${escapeHtml(c.name)}
                         </h3>
                         <div class="d-flex align-items-center text-muted small mb-2">

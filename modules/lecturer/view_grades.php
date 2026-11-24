@@ -121,7 +121,7 @@ require_once __DIR__ . '/../../includes/header.php';
                 <div class="col-md-5">
                     <label for="studentSearchInput" class="form-label fw-medium">Quick Search Student</label>
                     <div class="input-group">
-                        <span class="input-group-text bg-white text-muted border-end-0">
+                        <span class="input-group-text border-end-0">
                             <i class="bi bi-search" aria-hidden="true"></i>
                         </span>
                         <input type="search" 
@@ -179,7 +179,7 @@ require_once __DIR__ . '/../../includes/header.php';
         <div class="cm-card-body p-0">
             <div class="table-responsive" style="max-height: 72vh;">
                 <table class="table cm-table cm-table-sticky table-hover align-middle mb-0" id="gradebookTable">
-                    <thead class="table-light" id="gradebookThead">
+                    <thead id="gradebookThead">
                         <tr>
                             <th scope="col" style="width: 50px;" class="text-center">#</th>
                             <th scope="col" class="tabular-nums" style="min-width: 150px;">Student ID</th>
@@ -201,7 +201,7 @@ require_once __DIR__ . '/../../includes/header.php';
                             </td>
                         </tr>
                     </tbody>
-                    <tfoot id="gradebookTfoot" class="table-light fw-bold border-top-2 d-none">
+                    <tfoot id="gradebookTfoot" class="fw-bold border-top-2 d-none">
                         <!-- Summary averages -->
                     </tfoot>
                 </table>
@@ -385,8 +385,8 @@ require_once __DIR__ . '/../../includes/header.php';
         }
 
         headerHtml += `
-            <th scope="col" class="text-center bg-light tabular-nums fw-bold" style="min-width: 110px;">Cumulative Total</th>
-            <th scope="col" class="text-center bg-light" style="min-width: 120px;">Academic Standing</th>
+            <th scope="col" class="text-center tabular-nums fw-bold" style="min-width: 110px;">Cumulative Total</th>
+            <th scope="col" class="text-center" style="min-width: 120px;">Academic Standing</th>
         </tr>
         `;
         thead.innerHTML = headerHtml;
@@ -432,8 +432,8 @@ require_once __DIR__ . '/../../includes/header.php';
             let rowHtml = `
                 <tr>
                     <td class="text-center text-muted tabular-nums small">${index + 1}</td>
-                    <td class="tabular-nums font-monospace fw-medium text-dark">${escapeHtml(student.student_id_number)}</td>
-                    <td class="fw-medium text-dark">${escapeHtml(student.name)}</td>
+                    <td class="tabular-nums font-monospace fw-medium">${escapeHtml(student.student_id_number)}</td>
+                    <td class="fw-medium">${escapeHtml(student.name)}</td>
             `;
 
             if (assessments.length === 0) {
@@ -475,7 +475,7 @@ require_once __DIR__ . '/../../includes/header.php';
 
             const totalDisplay = recordedAny ? studentTotal.toFixed(1) : '&ndash;';
             rowHtml += `
-                <td class="text-center tabular-nums fw-bold text-dark font-monospace fs-6">${totalDisplay}</td>
+                <td class="text-center tabular-nums fw-bold font-monospace fs-6">${totalDisplay}</td>
                 <td class="text-center">${standingBadge}</td>
             </tr>
             `;
@@ -487,7 +487,7 @@ require_once __DIR__ . '/../../includes/header.php';
         if (assessments.length > 0 && displayStudents.length > 0) {
             let footHtml = `
                 <tr>
-                    <td colspan="3" class="text-end fw-bold text-dark">Assessment Class Averages:</td>
+                    <td colspan="3" class="text-end fw-bold">Assessment Class Averages:</td>
             `;
             assessments.forEach(ass => {
                 const count = colCounts[ass];

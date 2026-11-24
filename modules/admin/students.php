@@ -16,7 +16,7 @@ require_once __DIR__ . '/../../includes/header.php';
                     <i class="bi bi-house me-1" aria-hidden="true"></i>Admin
                 </a>
             </li>
-            <li class="breadcrumb-item active text-slate-800 fw-medium" aria-current="page">Students</li>
+            <li class="breadcrumb-item active fw-medium" aria-current="page">Students</li>
         </ol>
     </nav>
 
@@ -42,7 +42,7 @@ require_once __DIR__ . '/../../includes/header.php';
             <div class="d-flex flex-wrap align-items-center gap-2 flex-grow-1">
                 <!-- Search Input -->
                 <div class="input-group" style="max-width: 320px;">
-                    <span class="input-group-text bg-light text-muted border-end-0" id="search-addon">
+                    <span class="input-group-text border-end-0" id="search-addon">
                         <i class="bi bi-search" aria-hidden="true"></i>
                     </span>
                     <input type="text" id="searchInput" class="form-control border-start-0" 
@@ -113,7 +113,7 @@ require_once __DIR__ . '/../../includes/header.php';
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content cm-card border-0">
             <div class="modal-header border-bottom">
-                <h2 class="modal-title h5 mb-0 fw-semibold text-slate-800" id="modalTitle">Add Student</h2>
+                <h2 class="modal-title h5 mb-0 fw-semibold" id="modalTitle">Add Student</h2>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close dialog"></button>
             </div>
             <form id="studentForm" onsubmit="saveStudent(event)" novalidate>
@@ -128,7 +128,7 @@ require_once __DIR__ . '/../../includes/header.php';
                             Student ID Number <span class="required" aria-hidden="true">*</span>
                         </label>
                         <div class="input-group">
-                            <span class="input-group-text bg-light text-muted" aria-hidden="true"><i class="bi bi-card-text"></i></span>
+                            <span class="input-group-text" aria-hidden="true"><i class="bi bi-card-text"></i></span>
                             <input type="text" id="student_id_number" class="form-control font-monospace" placeholder="e.g. STU-2026-0042" required autocomplete="off">
                         </div>
                         <div class="form-text">Unique student matriculation or ID number.</div>
@@ -146,7 +146,7 @@ require_once __DIR__ . '/../../includes/header.php';
                             Email Address <span class="required" aria-hidden="true">*</span>
                         </label>
                         <div class="input-group">
-                            <span class="input-group-text bg-light text-muted" aria-hidden="true"><i class="bi bi-envelope"></i></span>
+                            <span class="input-group-text" aria-hidden="true"><i class="bi bi-envelope"></i></span>
                             <input type="email" id="email" class="form-control" placeholder="e.g. jdoe@example.edu" required autocomplete="email">
                         </div>
                     </div>
@@ -172,7 +172,7 @@ require_once __DIR__ . '/../../includes/header.php';
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer border-top bg-light px-4 py-3">
+                <div class="modal-footer px-4 py-3">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn btn-primary" id="btnSaveStudent">
                         <i class="bi bi-check2 me-1" aria-hidden="true"></i>Save Student
@@ -321,7 +321,7 @@ require_once __DIR__ . '/../../includes/header.php';
                         </span>
                     </td>
                     <td>
-                        <div class="fw-semibold text-slate-900">${escapeHtml(s.name)}</div>
+                        <div class="fw-semibold">${escapeHtml(s.name)}</div>
                     </td>
                     <td>
                         <span class="font-monospace small text-secondary">${escapeHtml(s.email)}</span>
@@ -330,7 +330,7 @@ require_once __DIR__ . '/../../includes/header.php';
                         <span class="badge cm-badge-primary font-monospace">Semester ${escapeHtml(semNum)}</span>
                     </td>
                     <td>
-                        <span class="text-slate-800">
+                        <span>
                             <i class="bi bi-building me-1 text-muted" aria-hidden="true"></i>${escapeHtml(s.department_name || 'N/A')}
                         </span>
                     </td>

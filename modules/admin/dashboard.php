@@ -155,7 +155,7 @@ require_once __DIR__ . '/../../includes/header.php';
 
     <!-- Quick Navigation Grid -->
     <div class="mb-4">
-        <h2 class="h5 mb-3 fw-semibold text-slate-800">
+        <h2 class="h5 mb-3 fw-semibold">
             <i class="bi bi-grid-fill me-2 text-primary" aria-hidden="true"></i>Manage Modules
         </h2>
         <div class="row g-3">
@@ -287,7 +287,7 @@ require_once __DIR__ . '/../../includes/header.php';
                                 </li>
                                 <li class="d-flex justify-content-between py-1 border-bottom">
                                     <span>PHP Version:</span>
-                                    <span class="font-monospace text-slate-700"><?= PHP_VERSION ?></span>
+                                    <span class="font-monospace"><?= PHP_VERSION ?></span>
                                 </li>
                                 <li class="d-flex justify-content-between py-1">
                                     <span>App Release:</span>
@@ -355,7 +355,7 @@ require_once __DIR__ . '/../../includes/header.php';
                                         <span class="badge <?= $badgeClass ?>"><?= htmlspecialchars($action, ENT_QUOTES, 'UTF-8') ?></span>
                                     </td>
                                     <td>
-                                        <code class="text-slate-800"><?= htmlspecialchars($act['table_name'] ?? 'general', ENT_QUOTES, 'UTF-8') ?></code>
+                                        <code><?= htmlspecialchars($act['table_name'] ?? 'general', ENT_QUOTES, 'UTF-8') ?></code>
                                     </td>
                                     <td class="font-monospace">
                                         #<?= htmlspecialchars((string)($act['record_id'] ?? '-'), ENT_QUOTES, 'UTF-8') ?>
@@ -363,7 +363,7 @@ require_once __DIR__ . '/../../includes/header.php';
                                     <td>
                                         <div class="d-flex align-items-center gap-1">
                                             <i class="bi bi-person text-muted" aria-hidden="true"></i>
-                                            <span class="fw-medium text-slate-800">
+                                            <span class="fw-medium">
                                                 <?= htmlspecialchars($act['modifier_full_name'] ?: ($act['modifier_name'] ?: 'System Administrator'), ENT_QUOTES, 'UTF-8') ?>
                                             </span>
                                         </div>

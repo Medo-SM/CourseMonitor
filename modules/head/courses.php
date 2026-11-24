@@ -93,7 +93,7 @@ require_once __DIR__ . '/../../includes/header.php';
             <!-- Search & Filters -->
             <div class="d-flex flex-grow-1 flex-wrap gap-2">
                 <div class="input-group" style="max-width: 320px;">
-                    <span class="input-group-text bg-light border-end-0 text-muted" id="search-addon">
+                    <span class="input-group-text border-end-0 text-muted" id="search-addon">
                         <i class="bi bi-search" aria-hidden="true"></i>
                     </span>
                     <input type="search" id="searchInput" class="form-control border-start-0" 
@@ -237,7 +237,7 @@ require_once __DIR__ . '/../../includes/header.php';
                             <fieldset>
                                 <legend class="form-label mb-1 d-block fw-semibold">Semesters Offered</legend>
                                 <p class="text-secondary small mb-2">Check the semesters during which this course is taught:</p>
-                                <div class="p-3 border rounded bg-light-subtle">
+                                <div class="p-3 border rounded" style="background-color: var(--cm-bg-subtle);">
                                     <div class="row g-2">
                                         <?php for ($i = 1; $i <= 8; $i++): ?>
                                             <div class="col-6 col-sm-3">
@@ -256,7 +256,7 @@ require_once __DIR__ . '/../../includes/header.php';
                     </div>
                 </div>
 
-                <div class="modal-footer border-top py-3 px-4 bg-light">
+                <div class="modal-footer border-top py-3 px-4">
                     <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn btn-primary btn-sm" id="saveBtn">
                         <i class="bi bi-check-lg me-1" aria-hidden="true"></i>
@@ -428,7 +428,7 @@ require_once __DIR__ . '/../../includes/header.php';
                     <span class="fw-bold font-monospace tabular-nums text-primary">${escapeHtml(c.code)}</span>
                 </td>
                 <td>
-                    <div class="fw-semibold text-dark">${escapeHtml(c.name)}</div>
+                    <div class="fw-semibold">${escapeHtml(c.name)}</div>
                 </td>
                 <td class="text-center">
                     <span class="badge cm-badge-primary tabular-nums">${escapeHtml(String(c.credit_hours))} Cr</span>

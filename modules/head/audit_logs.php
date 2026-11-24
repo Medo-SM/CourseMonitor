@@ -71,7 +71,7 @@ require_once __DIR__ . '/../../includes/header.php';
                     <span class="cm-stat-label">Latest Change</span>
                     <div class="cm-stat-icon warning" aria-hidden="true"><i class="bi bi-clock-history"></i></div>
                 </div>
-                <div class="fs-6 fw-bold tabular-nums text-dark mt-2 mb-1" id="statLatestTime">-</div>
+                <div class="fs-6 fw-bold tabular-nums mt-2 mb-1" id="statLatestTime">-</div>
                 <p class="cm-stat-meta"><span class="text-secondary" id="statLatestModifier">Awaiting logs</span></p>
             </div>
         </div>
@@ -83,7 +83,7 @@ require_once __DIR__ . '/../../includes/header.php';
             <!-- Filters -->
             <div class="d-flex flex-grow-1 flex-wrap gap-2">
                 <div class="input-group" style="max-width: 340px;">
-                    <span class="input-group-text bg-light border-end-0 text-muted" id="search-addon">
+                    <span class="input-group-text border-end-0 text-muted" id="search-addon">
                         <i class="bi bi-search" aria-hidden="true"></i>
                     </span>
                     <input type="search" id="logSearch" class="form-control border-start-0" 
@@ -297,12 +297,12 @@ require_once __DIR__ . '/../../includes/header.php';
                     <span class="font-monospace text-muted small tabular-nums">#${escapeHtml(String(row.id))}</span>
                 </td>
                 <td class="text-nowrap">
-                    <div class="fw-medium small tabular-nums text-dark">${escapeHtml(dateStr)}</div>
+                    <div class="fw-medium small tabular-nums">${escapeHtml(dateStr)}</div>
                     <div class="text-muted small tabular-nums">${escapeHtml(timeStr)}</div>
                 </td>
                 <td>${entityBadge}</td>
                 <td>
-                    <div class="fw-semibold small text-dark">${escapeHtml(row.details || `Record #${row.record_id}`)}</div>
+                    <div class="fw-semibold small">${escapeHtml(row.details || `Record #${row.record_id}`)}</div>
                     <span class="text-muted small tabular-nums">Ref: #${escapeHtml(String(row.record_id))}</span>
                 </td>
                 <td>
@@ -323,7 +323,7 @@ require_once __DIR__ . '/../../includes/header.php';
                 <td>
                     <div class="d-flex align-items-center gap-1 small text-nowrap">
                         <i class="bi bi-person-fill text-secondary" aria-hidden="true"></i>
-                        <span class="fw-medium text-dark">${escapeHtml(row.modifier_name || 'Head')}</span>
+                        <span class="fw-medium">${escapeHtml(row.modifier_name || 'Head')}</span>
                     </div>
                 </td>
             `;

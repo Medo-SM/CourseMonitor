@@ -16,7 +16,7 @@ require_once __DIR__ . '/../../includes/header.php';
                     <i class="bi bi-house me-1" aria-hidden="true"></i>Admin
                 </a>
             </li>
-            <li class="breadcrumb-item active text-slate-800 fw-medium" aria-current="page">Courses</li>
+            <li class="breadcrumb-item active fw-medium" aria-current="page">Courses</li>
         </ol>
     </nav>
 
@@ -42,7 +42,7 @@ require_once __DIR__ . '/../../includes/header.php';
             <div class="d-flex flex-wrap align-items-center gap-2 flex-grow-1">
                 <!-- Search Input -->
                 <div class="input-group" style="max-width: 320px;">
-                    <span class="input-group-text bg-light text-muted border-end-0" id="search-addon">
+                    <span class="input-group-text border-end-0" id="search-addon">
                         <i class="bi bi-search" aria-hidden="true"></i>
                     </span>
                     <input type="text" id="searchInput" class="form-control border-start-0" 
@@ -113,7 +113,7 @@ require_once __DIR__ . '/../../includes/header.php';
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content cm-card border-0">
             <div class="modal-header border-bottom">
-                <h2 class="modal-title h5 mb-0 fw-semibold text-slate-800" id="modalTitle">Add Course</h2>
+                <h2 class="modal-title h5 mb-0 fw-semibold" id="modalTitle">Add Course</h2>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close dialog"></button>
             </div>
             <form id="courseForm" onsubmit="saveCourse(event)" novalidate>
@@ -171,7 +171,7 @@ require_once __DIR__ . '/../../includes/header.php';
                         <label class="form-label d-block">
                             Available Semesters <span class="text-muted fw-normal">(Select all that apply)</span>
                         </label>
-                        <div class="row g-2 p-3 border rounded bg-light">
+                        <div class="row g-2 p-3 border rounded" style="background-color: var(--cm-bg-subtle);">
                             <?php for ($i = 1; $i <= 8; $i++): ?>
                                 <div class="col-6 col-sm-3">
                                     <div class="form-check">
@@ -185,7 +185,7 @@ require_once __DIR__ . '/../../includes/header.php';
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer border-top bg-light px-4 py-3">
+                <div class="modal-footer px-4 py-3">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn btn-primary" id="btnSaveCourse">
                         <i class="bi bi-check2 me-1" aria-hidden="true"></i>Save Course
@@ -349,7 +349,7 @@ require_once __DIR__ . '/../../includes/header.php';
             
             let lecturerBadge = '<span class="badge cm-badge-warning"><i class="bi bi-exclamation-circle me-1" aria-hidden="true"></i>Unassigned</span>';
             if (c.lecturer_name) {
-                lecturerBadge = `<span class="fw-medium text-slate-800"><i class="bi bi-person me-1 text-muted" aria-hidden="true"></i>${escapeHtml(c.lecturer_name)}</span>`;
+                lecturerBadge = `<span class="fw-medium"><i class="bi bi-person me-1 text-muted" aria-hidden="true"></i>${escapeHtml(c.lecturer_name)}</span>`;
             }
 
             let semBadges = '<span class="text-muted small">—</span>';
@@ -365,13 +365,13 @@ require_once __DIR__ . '/../../includes/header.php';
                         </span>
                     </td>
                     <td>
-                        <div class="fw-semibold text-slate-900">${escapeHtml(c.name)}</div>
+                        <div class="fw-semibold">${escapeHtml(c.name)}</div>
                     </td>
                     <td class="text-center">
                         <span class="badge cm-badge-primary font-monospace">${escapeHtml(c.credit_hours)} Cr</span>
                     </td>
                     <td>
-                        <span class="text-slate-800">
+                        <span>
                             <i class="bi bi-building me-1 text-muted" aria-hidden="true"></i>${escapeHtml(c.department_name || 'N/A')}
                         </span>
                     </td>

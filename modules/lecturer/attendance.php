@@ -193,7 +193,7 @@ require_once __DIR__ . '/../../includes/header.php';
         <div class="cm-card-body py-2 px-3">
             <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 text-secondary small">
                 <div class="d-flex align-items-center gap-3 flex-wrap">
-                    <span class="fw-semibold text-dark">Attendance Tally:</span>
+                    <span class="fw-semibold">Attendance Tally:</span>
                     <span>Present: <span id="summaryPresent" class="badge cm-badge-success tabular-nums">0</span></span>
                     <span>Absent: <span id="summaryAbsent" class="badge cm-badge-danger tabular-nums">0</span></span>
                     <span>Late: <span id="summaryLate" class="badge cm-badge-warning tabular-nums">0</span></span>
@@ -224,7 +224,7 @@ require_once __DIR__ . '/../../includes/header.php';
             <form id="attendanceForm" onsubmit="saveAttendance(event)">
                 <div class="table-responsive">
                     <table class="table cm-table table-hover align-middle mb-0" id="studentTable">
-                        <thead class="table-light">
+                        <thead>
                             <tr>
                                 <th scope="col" style="width: 50px;" class="text-center">#</th>
                                 <th scope="col" style="width: 170px;" class="tabular-nums">Student ID</th>
@@ -248,7 +248,7 @@ require_once __DIR__ . '/../../includes/header.php';
                     </table>
                 </div>
 
-                <div id="formActionsRow" class="d-none cm-card-footer bg-white d-flex flex-wrap justify-content-between align-items-center gap-3 py-3 px-4">
+                <div id="formActionsRow" class="d-none cm-card-footer d-flex flex-wrap justify-content-between align-items-center gap-3 py-3 px-4">
                     <div class="text-muted small" id="completionStatus">
                         Use <kbd>Tab</kbd> to move between students and <kbd>&larr;</kbd> <kbd>&rarr;</kbd> arrows to toggle status.
                     </div>
@@ -379,10 +379,10 @@ require_once __DIR__ . '/../../includes/header.php';
                     const row = document.createElement('tr');
                     row.innerHTML = `
                         <td class="text-center text-muted tabular-nums small">${index + 1}</td>
-                        <td class="tabular-nums font-monospace fw-medium text-dark">
+                        <td class="tabular-nums font-monospace fw-medium">
                             ${escapeHtml(student.student_id_number)}
                         </td>
-                        <td class="fw-medium text-dark">
+                        <td class="fw-medium">
                             ${escapeHtml(student.name)}
                         </td>
                         <td>
@@ -485,7 +485,7 @@ require_once __DIR__ . '/../../includes/header.php';
             if (unmarked === 0) {
                 completionStatus.innerHTML = `<span class="text-success fw-medium"><i class="bi bi-check-circle-fill me-1"></i>All ${total} students marked. Ready to save.</span>`;
             } else {
-                completionStatus.innerHTML = `<span><span class="text-dark fw-medium">${marked}</span> of ${total} students marked (${unmarked} remaining).</span>`;
+                completionStatus.innerHTML = `<span><span class="fw-medium">${marked}</span> of ${total} students marked (${unmarked} remaining).</span>`;
             }
         }
     }
