@@ -53,112 +53,7 @@
 }
 
 /* ==========================================================================
-   2. LIGHT THEME PALETTE (:root default when light, or [data-theme="light"])
-   ========================================================================== */
-[data-theme="light"],
-[data-bs-theme="light"] {
-  /* Warm Neutral Ramp */
-  --color-neutral-50:  #f8f9fa; /* Soft paper background */
-  --color-neutral-100: #f1f3f5; /* Subtle raised surface */
-  --color-neutral-200: #e5e7eb; /* Gentle border lines */
-  --color-neutral-300: #d1d5db; /* Control borders */
-  --color-neutral-400: #9ca3af; /* Muted icons / placeholders */
-  --color-neutral-500: #6b7280; /* Muted secondary text (4.8:1) */
-  --color-neutral-600: #4b5563; /* Clear body secondary text (7.2:1) */
-  --color-neutral-700: #374151; /* Dark charcoal text (9.9:1) */
-  --color-neutral-800: #1f2937; /* Soft dark charcoal headings (13.8:1) */
-  --color-neutral-900: #111827; /* Rich deep charcoal */
-  --color-neutral-950: #0f172a;
-
-  /* Semantic UI Tokens */
-  --cm-bg-body:           var(--color-neutral-50);
-  --cm-bg-surface:        #ffffff;
-  --cm-bg-surface-raised: var(--color-neutral-100);
-  --cm-bg-subtle:         var(--color-neutral-50);
-
-  --cm-border-subtle:  rgba(0, 0, 0, 0.07);
-  --cm-border-default: var(--color-neutral-200);
-  --cm-border-input:   var(--color-neutral-300);
-  --cm-border-strong:  var(--color-neutral-500);
-
-  --cm-text-primary:   var(--color-neutral-800);
-  --cm-text-secondary: var(--color-neutral-600);
-  --cm-text-muted:     var(--color-neutral-500);
-  --cm-text-inverse:   #ffffff;
-
-  --cm-primary:        #2563eb;
-  --cm-primary-hover:  #1d4ed8;
-  --cm-primary-active: #1e40af;
-  --cm-primary-subtle: #eff6ff;
-
-  /* Semantic Status Tokens (Light Pastel Fills + Dark Text) */
-  --color-success-bg:     #dcfce7;
-  --color-success-border: #bbf7d0;
-  --color-success-text:   #166534;
-  --color-success-hover:  #15803d;
-
-  --color-warning-bg:     #fef3c7;
-  --color-warning-border: #fde68a;
-  --color-warning-text:   #92400e;
-  --color-warning-hover:  #b45309;
-
-  --color-danger-bg:      #fee2e2;
-  --color-danger-border:  #fecdd3;
-  --color-danger-text:    #991b1b;
-  --color-danger-hover:   #b91c1c;
-
-  --color-info-bg:        #e0f2fe;
-  --color-info-border:    #bae6fd;
-  --color-info-text:      #075985;
-  --color-info-hover:     #0369a1;
-
-  --color-neutral-badge-bg:     #f3f4f6;
-  --color-neutral-badge-border: #e5e7eb;
-  --color-neutral-badge-text:   #374151;
-
-  /* Input and Form Control */
-  --cm-input-bg:          #ffffff;
-  --cm-input-border:      var(--cm-border-input);
-  --cm-input-text:        var(--cm-text-primary);
-  --cm-input-placeholder: #9ca3af;
-
-  /* Table Header */
-  --cm-table-header-bg:   var(--color-neutral-100);
-  --cm-table-sticky-bg:   var(--color-neutral-100);
-  --cm-table-hover-bg:    rgba(0, 0, 0, 0.025);
-
-  /* Navbar & Footer */
-  --cm-navbar-bg:         #1e293b;
-  --cm-navbar-border:     rgba(255, 255, 255, 0.08);
-  --cm-footer-bg:         #ffffff;
-  --cm-footer-border:     rgba(0, 0, 0, 0.07);
-
-  /* Shadows (Light) */
-  --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.03);
-  --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.04), 0 1px 2px -1px rgba(0, 0, 0, 0.02);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.04), 0 2px 4px -2px rgba(0, 0, 0, 0.02);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -4px rgba(0, 0, 0, 0.02);
-
-  /* Bootstrap 5 Properties */
-  --bs-body-bg:                 var(--cm-bg-body);
-  --bs-body-color:              var(--cm-text-primary);
-  --bs-emphasis-color:          var(--cm-text-primary);
-  --bs-secondary-color:         var(--cm-text-secondary);
-  --bs-tertiary-color:          var(--cm-text-muted);
-  --bs-border-color:            var(--cm-border-default);
-  --bs-card-bg:                 var(--cm-bg-surface);
-  --bs-card-border-color:       var(--cm-border-subtle);
-  --bs-card-cap-bg:             var(--cm-bg-surface);
-  --bs-modal-bg:                var(--cm-bg-surface);
-  --bs-dropdown-bg:             var(--cm-bg-surface);
-  --bs-dropdown-color:          var(--cm-text-primary);
-  --bs-dropdown-link-color:     var(--cm-text-primary);
-  --bs-dropdown-link-hover-bg:  var(--cm-bg-surface-raised);
-  --bs-primary:                 var(--cm-primary);
-}
-
-/* ==========================================================================
-   3. DARK THEME PALETTE (Default on :root, [data-theme="dark"])
+   2. DARK THEME PALETTE (Default on :root, [data-theme="dark"])
    ========================================================================== */
 :root,
 [data-theme="dark"],
@@ -171,7 +66,7 @@
   --color-neutral-750: #222f44; /* Raised surface (--cm-bg-surface-raised, dropdowns) */
   --color-neutral-700: #2d3c54; /* Hairline subtle border (--cm-border-subtle) */
   --color-neutral-600: #334155; /* Default container border (--cm-border-default) */
-  --color-neutral-500: #3b4d68; /* Control input border (--cm-border-input) */
+  --color-neutral-500: #3b4d68; /* Control input border */
   --color-neutral-450: #475569; /* Strong border / divider */
   --color-neutral-400: #64748b; /* Muted icons & placeholders */
   --color-neutral-350: #94a3b8; /* Muted slate text (--cm-text-muted) */
@@ -256,10 +151,11 @@
   --cm-footer-border:     #1e293b;
 
   /* Shadows (Dark Ambient) */
-  --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.4);
-  --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.45), 0 1px 2px -1px rgba(0, 0, 0, 0.3);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.5), 0 2px 4px -2px rgba(0, 0, 0, 0.35);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.55), 0 4px 6px -4px rgba(0, 0, 0, 0.4);
+  --shadow-xs:    0 1px 2px 0 rgba(0, 0, 0, 0.4);
+  --shadow-sm:    0 1px 3px 0 rgba(0, 0, 0, 0.45), 0 1px 2px -1px rgba(0, 0, 0, 0.3);
+  --shadow-md:    0 4px 6px -1px rgba(0, 0, 0, 0.5), 0 2px 4px -2px rgba(0, 0, 0, 0.35);
+  --shadow-lg:    0 10px 15px -3px rgba(0, 0, 0, 0.55), 0 4px 6px -4px rgba(0, 0, 0, 0.4);
+  --shadow-modal: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.4);
 
   /* Bootstrap 5.3 Theme Overrides */
   --bs-body-bg:                 var(--cm-bg-body);
@@ -296,6 +192,143 @@
 }
 
 /* ==========================================================================
+   3. LIGHT THEME PALETTE (:root[data-theme="light"] / [data-theme="light"])
+   ========================================================================== */
+:root[data-theme="light"],
+:root[data-bs-theme="light"],
+[data-theme="light"],
+[data-bs-theme="light"] {
+  /* Warm Neutral Ramp */
+  --color-neutral-50:  #f8f9fa; /* Soft paper background */
+  --color-neutral-100: #f1f3f5; /* Subtle raised surface */
+  --color-neutral-200: #e5e7eb; /* Gentle border lines */
+  --color-neutral-300: #d1d5db; /* Control borders */
+  --color-neutral-400: #9ca3af; /* Muted icons */
+  --color-neutral-500: #6b7280; /* Muted secondary text (4.83:1 on #fff) */
+  --color-neutral-600: #4b5563; /* Clear body secondary text (7.56:1 on #fff) */
+  --color-neutral-700: #374151; /* Dark charcoal text */
+  --color-neutral-800: #1f2937; /* Soft dark charcoal headings (14.68:1 on #fff) */
+  --color-neutral-900: #111827; /* Rich deep charcoal */
+  --color-neutral-950: #0f172a;
+
+  /* Backwards-compatibility aliases for slate tokens */
+  --color-slate-950: var(--color-neutral-950);
+  --color-slate-900: var(--color-neutral-900);
+  --color-slate-800: var(--color-neutral-800);
+  --color-slate-700: var(--color-neutral-700);
+  --color-slate-600: var(--color-neutral-600);
+  --color-slate-500: var(--color-neutral-500);
+  --color-slate-400: var(--color-neutral-400);
+  --color-slate-300: var(--color-neutral-300);
+  --color-slate-200: var(--color-neutral-200);
+  --color-slate-100: var(--color-neutral-100);
+  --color-slate-50:  var(--color-neutral-50);
+
+  /* Semantic UI Tokens */
+  --cm-bg-body:           var(--color-neutral-50);  /* #f8f9fa */
+  --cm-bg-surface:        #ffffff;
+  --cm-bg-surface-raised: var(--color-neutral-100); /* #f1f3f5 */
+  --cm-bg-subtle:         var(--color-neutral-50);  /* #f8f9fa */
+
+  --cm-border-subtle:  rgba(0, 0, 0, 0.08);
+  --cm-border-default: var(--color-neutral-200);
+  --cm-border-input:   #858d98; /* 3.35:1 non-text contrast on #ffffff */
+  --cm-border-strong:  var(--color-neutral-500);
+
+  --cm-text-primary:   var(--color-neutral-800); /* #1f2937 */
+  --cm-text-secondary: var(--color-neutral-600); /* #4b5563 */
+  --cm-text-muted:     var(--color-neutral-500); /* #6b7280 */
+  --cm-text-inverse:   #ffffff;
+
+  --cm-primary:        #2563eb;
+  --cm-primary-hover:  #1d4ed8;
+  --cm-primary-active: #1e40af;
+  --cm-primary-subtle: #eff6ff;
+
+  /* Semantic Status Tokens (Light Pastel Fills + Dark Text) */
+  --color-success-bg:     #dcfce7;
+  --color-success-border: #bbf7d0;
+  --color-success-text:   #166534;
+  --color-success-hover:  #15803d;
+
+  --color-warning-bg:     #fef3c7;
+  --color-warning-border: #fde68a;
+  --color-warning-text:   #92400e;
+  --color-warning-hover:  #b45309;
+
+  --color-danger-bg:      #fee2e2;
+  --color-danger-border:  #fecdd3;
+  --color-danger-text:    #991b1b;
+  --color-danger-hover:   #b91c1c;
+
+  --color-info-bg:        #e0f2fe;
+  --color-info-border:    #bae6fd;
+  --color-info-text:      #075985;
+  --color-info-hover:     #0369a1;
+
+  --color-neutral-badge-bg:     #f3f4f6;
+  --color-neutral-badge-border: #e5e7eb;
+  --color-neutral-badge-text:   #374151;
+
+  /* Input and Form Control */
+  --cm-input-bg:          #ffffff;
+  --cm-input-border:      var(--cm-border-input);
+  --cm-input-text:        var(--cm-text-primary);
+  --cm-input-placeholder: #6b7280;
+
+  /* Table Header */
+  --cm-table-header-bg:   var(--color-neutral-100);
+  --cm-table-sticky-bg:   var(--color-neutral-100);
+  --cm-table-hover-bg:    rgba(0, 0, 0, 0.025);
+
+  /* Navbar & Footer */
+  --cm-navbar-bg:         #1e293b;
+  --cm-navbar-border:     rgba(255, 255, 255, 0.08);
+  --cm-footer-bg:         #ffffff;
+  --cm-footer-border:     rgba(0, 0, 0, 0.08);
+
+  /* Shadows (Light) */
+  --shadow-xs:    0 1px 2px 0 rgba(0, 0, 0, 0.04);
+  --shadow-sm:    0 1px 3px 0 rgba(0, 0, 0, 0.06), 0 1px 2px -1px rgba(0, 0, 0, 0.04);
+  --shadow-md:    0 4px 6px -1px rgba(0, 0, 0, 0.06), 0 2px 4px -2px rgba(0, 0, 0, 0.04);
+  --shadow-lg:    0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.04);
+  --shadow-modal: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.06);
+
+  /* Bootstrap 5.3 Theme Overrides */
+  --bs-body-bg:                   var(--cm-bg-body);
+  --bs-body-color:                var(--cm-text-primary);
+  --bs-emphasis-color:            var(--cm-text-primary);
+  --bs-secondary-color:           var(--cm-text-secondary);
+  --bs-tertiary-color:            var(--cm-text-muted);
+  --bs-border-color:              var(--cm-border-default);
+  --bs-border-color-translucent:  var(--cm-border-subtle);
+  --bs-card-bg:                   var(--cm-bg-surface);
+  --bs-card-border-color:         var(--cm-border-subtle);
+  --bs-card-cap-bg:               var(--cm-bg-surface);
+  --bs-modal-bg:                  var(--cm-bg-surface);
+  --bs-modal-border-color:        var(--cm-border-default);
+  --bs-modal-header-border-color: var(--cm-border-subtle);
+  --bs-modal-footer-border-color: var(--cm-border-subtle);
+  --bs-dropdown-bg:               var(--cm-bg-surface);
+  --bs-dropdown-color:            var(--cm-text-primary);
+  --bs-dropdown-link-color:       var(--cm-text-primary);
+  --bs-dropdown-link-hover-bg:    var(--cm-bg-surface-raised);
+  --bs-dropdown-link-hover-color: var(--cm-text-primary);
+  --bs-dropdown-border-color:     var(--cm-border-default);
+  --bs-dropdown-divider-bg:       var(--cm-border-subtle);
+  --bs-table-bg:                  var(--cm-bg-surface);
+  --bs-table-striped-bg:          var(--cm-bg-subtle);
+  --bs-table-hover-bg:            var(--cm-table-hover-bg);
+  --bs-table-border-color:        var(--cm-border-subtle);
+  --bs-tertiary-bg:               var(--cm-bg-subtle);
+  --bs-secondary-bg:              var(--cm-bg-surface-raised);
+  --bs-primary:                   var(--cm-primary);
+  --bs-primary-rgb:               37, 99, 235;
+  --bs-link-color:                var(--cm-primary);
+  --bs-link-hover-color:          var(--cm-primary-hover);
+}
+
+/* ==========================================================================
    4. BASE RESETS & GLOBAL STYLES
    ========================================================================== */
 *, *::before, *::after {
@@ -321,13 +354,17 @@ html {
   background-color: var(--cm-bg-body);
 }
 
-[data-theme="dark"] html,
-[data-bs-theme="dark"] html {
+html[data-theme="dark"],
+html[data-bs-theme="dark"],
+[data-theme="dark"],
+[data-bs-theme="dark"] {
   color-scheme: dark;
 }
 
-[data-theme="light"] html,
-[data-bs-theme="light"] html {
+html[data-theme="light"],
+html[data-bs-theme="light"],
+[data-theme="light"],
+[data-bs-theme="light"] {
   color-scheme: light;
 }
 
@@ -520,7 +557,27 @@ kbd {
 
 .btn-secondary:hover,
 .btn-secondary:focus {
-  background-color: var(--cm-border-input);
+  background-color: var(--cm-border-default);
+  border-color: var(--cm-border-strong);
+  color: var(--cm-text-primary);
+}
+
+/* Light Button (theme-aware neutral surface button) */
+.btn-light {
+  background-color: var(--cm-bg-surface-raised);
+  color: var(--cm-text-primary);
+  border-color: var(--cm-border-default);
+}
+
+.btn-light:hover,
+.btn-light:focus {
+  background-color: var(--cm-border-default);
+  border-color: var(--cm-border-strong);
+  color: var(--cm-text-primary);
+}
+
+.btn-light:active {
+  background-color: var(--cm-border-default);
   border-color: var(--cm-border-strong);
   color: var(--cm-text-primary);
 }
@@ -696,12 +753,17 @@ kbd {
   transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
 }
 
-[data-theme="dark"] .form-select,
-[data-bs-theme="dark"] .form-select {
-  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23cbd5e1' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+.form-select {
+  padding-right: 2.25rem;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23374151' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
   background-repeat: no-repeat;
   background-position: right 0.75rem center;
   background-size: 16px 12px;
+}
+
+[data-theme="dark"] .form-select,
+[data-bs-theme="dark"] .form-select {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23cbd5e1' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
 }
 
 @media (min-width: 768px) {
@@ -1164,7 +1226,7 @@ kbd {
   color: var(--cm-text-primary);
   border: 1px solid var(--cm-border-default);
   border-radius: var(--radius-xl);
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.4);
+  box-shadow: var(--shadow-modal);
 }
 
 .modal-header {
@@ -1178,6 +1240,16 @@ kbd {
   background-color: var(--cm-bg-subtle);
   border-top: 1px solid var(--cm-border-subtle);
   padding: 0.875rem 1.25rem;
+}
+
+.btn-close {
+  filter: none;
+  opacity: 0.65;
+  transition: opacity var(--transition-fast);
+}
+
+.btn-close:hover {
+  opacity: 1;
 }
 
 [data-theme="dark"] .btn-close,
@@ -1196,7 +1268,7 @@ kbd {
   color: var(--cm-text-primary);
   border: 1px solid var(--cm-border-default);
   border-radius: var(--radius-md);
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -4px rgba(0, 0, 0, 0.3);
+  box-shadow: var(--shadow-lg);
   padding: 0.375rem;
 }
 
@@ -1271,6 +1343,19 @@ kbd {
   color: #ffffff !important;
   background-color: rgba(255, 255, 255, 0.18) !important;
   font-weight: 600;
+}
+
+/* Logout / danger outline button inside dark-slate navbar */
+.cm-navbar .btn-outline-danger {
+  color: #fca5a5;
+  border-color: rgba(248, 113, 113, 0.4);
+}
+
+.cm-navbar .btn-outline-danger:hover,
+.cm-navbar .btn-outline-danger:focus {
+  background-color: rgba(244, 63, 94, 0.2);
+  border-color: #f87171;
+  color: #fecaca;
 }
 
 /* User pill in top navbar */
@@ -1361,6 +1446,63 @@ kbd {
 /* ==========================================================================
    14. BOOTSTRAP UTILITY OVERRIDES (Enforce Theme Cohesion)
    ========================================================================== */
+.progress {
+  background-color: var(--cm-bg-surface-raised);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.progress-bar {
+  background-color: var(--cm-primary);
+  color: #ffffff;
+  font-weight: 600;
+  font-size: var(--text-xs);
+}
+
+[data-theme="light"] .bg-white,
+[data-bs-theme="light"] .bg-white {
+  background-color: var(--cm-bg-surface) !important;
+  color: var(--cm-text-primary) !important;
+}
+
+[data-theme="light"] .bg-body,
+[data-bs-theme="light"] .bg-body {
+  background-color: var(--cm-bg-body) !important;
+  color: var(--cm-text-primary) !important;
+}
+
+[data-theme="light"] .bg-light,
+[data-bs-theme="light"] .bg-light {
+  background-color: var(--cm-bg-surface-raised) !important;
+  color: var(--cm-text-primary) !important;
+}
+
+[data-theme="light"] .text-dark,
+[data-bs-theme="light"] .text-dark {
+  color: var(--cm-text-primary) !important;
+}
+
+[data-theme="light"] .text-muted,
+[data-bs-theme="light"] .text-muted {
+  color: var(--cm-text-muted) !important;
+}
+
+[data-theme="light"] .text-secondary,
+[data-bs-theme="light"] .text-secondary {
+  color: var(--cm-text-secondary) !important;
+}
+
+[data-theme="light"] .table-light,
+[data-theme="light"] .table-light th,
+[data-theme="light"] .table-light td,
+[data-bs-theme="light"] .table-light,
+[data-bs-theme="light"] .table-light th,
+[data-bs-theme="light"] .table-light td {
+  background-color: var(--cm-table-header-bg) !important;
+  color: var(--cm-text-secondary) !important;
+  border-color: var(--cm-border-subtle) !important;
+}
+
 [data-theme="dark"] .bg-white,
 [data-theme="dark"] .bg-body,
 [data-bs-theme="dark"] .bg-white,
