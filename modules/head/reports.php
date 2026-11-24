@@ -45,7 +45,7 @@ while ($row = $result->fetch_assoc()) {
 }
 $courses_stmt->close();
 
-$pageTitle = 'Department Performance Reports';
+$pageTitle = 'Performance Reports';
 require_once __DIR__ . '/../../includes/header.php';
 ?>
 
@@ -65,14 +65,14 @@ require_once __DIR__ . '/../../includes/header.php';
             margin: 0 !important;
         }
         .card, .cm-card {
-            border: 1px solid #94a3b8 !important;
+            border: 1px solid #d1d5db !important;
             box-shadow: none !important;
             break-inside: avoid;
         }
         .cm-print-header {
             display: block !important;
             margin-bottom: 2rem;
-            border-bottom: 2px solid #000;
+            border-bottom: 2px solid #334155;
             padding-bottom: 1rem;
         }
     }
@@ -82,7 +82,7 @@ require_once __DIR__ . '/../../includes/header.php';
 </style>
 
 <div class="container-fluid px-3 px-lg-4 py-4">
-    <!-- Print-Only Official Header -->
+    <!-- Print-Only Header -->
     <div class="cm-print-header text-center">
         <h1 class="h3 fw-bold mb-1">CourseMonitor Academic Management System</h1>
         <h2 class="h5 mb-1">Department Performance &amp; Attendance Report</h2>
@@ -91,7 +91,7 @@ require_once __DIR__ . '/../../includes/header.php';
 
     <!-- Screen Page Header -->
     <div class="cm-page-header no-print">
-        <div>
+        <div class="cm-page-header-content">
             <div class="d-flex align-items-center gap-2 mb-1">
                 <a href="<?= htmlspecialchars(base_url('/modules/head/dashboard.php'), ENT_QUOTES, 'UTF-8') ?>" class="text-secondary text-decoration-none small">
                     <i class="bi bi-arrow-left me-1" aria-hidden="true"></i>Dashboard
@@ -99,21 +99,21 @@ require_once __DIR__ . '/../../includes/header.php';
                 <span class="text-secondary small">&bull;</span>
                 <span class="text-secondary small fw-medium"><?= htmlspecialchars($dept_name, ENT_QUOTES, 'UTF-8') ?></span>
             </div>
-            <h1 class="cm-page-title">Department Reports</h1>
-            <p class="cm-page-subtitle">Aggregate academic grade distributions, attendance compliance rates, and at-risk student tracking</p>
+            <h1 class="cm-page-title">Performance Reports</h1>
+            <p class="cm-page-subtitle">View grade distributions and attendance rates for your department.</p>
         </div>
-        <div class="d-flex flex-wrap align-items-center gap-2">
-            <button type="button" onclick="window.print()" class="btn btn-outline-secondary btn-sm" aria-label="Print or export PDF">
+        <div class="cm-page-actions flex-wrap">
+            <button type="button" onclick="exportCsvReport()" class="btn btn-primary btn-sm" id="csvExportBtn" aria-label="Download CSV report">
+                <i class="bi bi-download me-1" aria-hidden="true"></i>
+                <span>Download CSV</span>
+            </button>
+            <button type="button" onclick="window.print()" class="btn btn-outline-secondary btn-sm" aria-label="Print report">
                 <i class="bi bi-printer me-1" aria-hidden="true"></i>
                 <span>Print / Save PDF</span>
             </button>
-            <button type="button" onclick="exportCsvReport()" class="btn btn-outline-secondary btn-sm" id="csvExportBtn" aria-label="Export report to CSV">
-                <i class="bi bi-download me-1" aria-hidden="true"></i>
-                <span>Export CSV</span>
-            </button>
-            <a href="<?= htmlspecialchars(base_url('/modules/head/modify_records.php'), ENT_QUOTES, 'UTF-8') ?>" class="btn btn-primary btn-sm">
+            <a href="<?= htmlspecialchars(base_url('/modules/head/modify_records.php'), ENT_QUOTES, 'UTF-8') ?>" class="btn btn-outline-secondary btn-sm">
                 <i class="bi bi-pencil-square me-1" aria-hidden="true"></i>
-                <span>Modify Records</span>
+                <span>Fix a Record</span>
             </a>
         </div>
     </div>
@@ -122,15 +122,15 @@ require_once __DIR__ . '/../../includes/header.php';
     <div class="card cm-card mb-4 no-print">
         <div class="cm-card-header bg-light">
             <div class="d-flex align-items-center gap-2">
-                <i class="bi bi-sliders text-secondary" aria-hidden="true"></i>
-                <h2 class="cm-card-title h6 mb-0">Report Generation Parameters</h2>
+                <i class="bi bi-funnel text-secondary" aria-hidden="true"></i>
+                <h2 class="cm-card-title h6 mb-0 fw-bold">Report Filters</h2>
             </div>
         </div>
         <div class="cm-card-body p-4">
             <div class="row g-3 align-items-end">
                 <!-- Course Filter -->
                 <div class="col-md-4">
-                    <label for="courseFilter" class="form-label">Filter by Course</label>
+                    <label for="courseFilter" class="form-label fw-semibold">Course</label>
                     <select id="courseFilter" class="form-select" onchange="loadReports()">
                         <option value="">All Department Courses</option>
                         <?php foreach ($courses as $c): ?>
@@ -145,7 +145,7 @@ require_once __DIR__ . '/../../includes/header.php';
 
                 <!-- Semester Filter -->
                 <div class="col-md-3">
-                    <label for="semesterFilter" class="form-label">Semester Filter</label>
+                    <label for="semesterFilter" class="form-label fw-semibold">Semester</label>
                     <select id="semesterFilter" class="form-select" onchange="filterCourseOptions()">
                         <option value="">All Semesters (1 to 8)</option>
                         <?php for ($i = 1; $i <= 8; $i++): ?>
@@ -154,22 +154,22 @@ require_once __DIR__ . '/../../includes/header.php';
                     </select>
                 </div>
 
-                <!-- Lecturer Filter -->
+                <!-- Teacher Filter -->
                 <div class="col-md-3">
-                    <label for="lecturerFilter" class="form-label">Lecturer Filter</label>
+                    <label for="lecturerFilter" class="form-label fw-semibold">Teacher</label>
                     <select id="lecturerFilter" class="form-select" onchange="filterCourseOptions()">
-                        <option value="">All Lecturers</option>
+                        <option value="">All Teachers</option>
                         <?php foreach ($lecturers as $lid => $lname): ?>
                             <option value="<?= (int)$lid ?>"><?= htmlspecialchars($lname, ENT_QUOTES, 'UTF-8') ?></option>
                         <?php endforeach; ?>
                     </select>
                 </div>
 
-                <!-- Action Buttons -->
+                <!-- Action Button -->
                 <div class="col-md-2 d-flex gap-2">
-                    <button type="button" onclick="loadReports()" class="btn btn-primary btn-sm w-100 py-2">
+                    <button type="button" onclick="loadReports()" class="btn btn-outline-primary btn-sm w-100 py-2">
                         <i class="bi bi-arrow-repeat me-1" aria-hidden="true"></i>
-                        <span>Generate</span>
+                        <span>Update Report</span>
                     </button>
                 </div>
             </div>
@@ -179,9 +179,9 @@ require_once __DIR__ . '/../../includes/header.php';
     <!-- Loading Indicator -->
     <div id="reportLoading" class="text-center py-5 d-none no-print">
         <div class="spinner-border text-primary" role="status">
-            <span class="visually-hidden">Compiling academic report...</span>
+            <span class="visually-hidden">Loading report data...</span>
         </div>
-        <p class="text-secondary small mt-2">Aggregating departmental performance data...</p>
+        <p class="text-secondary small mt-2">Compiling performance report...</p>
     </div>
 
     <!-- Report Container -->
@@ -189,12 +189,16 @@ require_once __DIR__ . '/../../includes/header.php';
         <!-- Report Header Summary Banner -->
         <div class="card cm-card mb-4">
             <div class="cm-card-body p-4 text-center">
-                <span class="badge cm-badge-neutral text-uppercase tracking-wider mb-2 font-monospace">Official Department Analytics</span>
+                <span class="badge cm-badge-neutral text-uppercase tracking-wider mb-2">Performance Summary</span>
                 <h2 class="h4 fw-bold text-dark mb-1" id="reportTitle">Department Performance Report</h2>
-                <p class="text-secondary small mb-0">
+                <p class="text-secondary small mb-3">
                     Department: <strong class="text-dark"><?= htmlspecialchars($dept_name, ENT_QUOTES, 'UTF-8') ?></strong> &bull;
-                    Compiled at <span id="reportDate" class="tabular-nums font-monospace">--</span>
+                    Updated <span id="reportDate" class="tabular-nums">--</span>
                 </p>
+                <button type="button" onclick="exportCsvReport()" class="btn btn-outline-primary btn-sm">
+                    <i class="bi bi-file-earmark-spreadsheet me-1" aria-hidden="true"></i>
+                    <span>Download CSV for this report</span>
+                </button>
             </div>
         </div>
 
@@ -209,7 +213,7 @@ require_once __DIR__ . '/../../includes/header.php';
                     </div>
                     <div class="cm-stat-val tabular-nums text-primary" id="avgGrade">--</div>
                     <p class="cm-stat-meta">
-                        <span class="text-secondary">Across graded coursework components (Scale 0 &ndash; 100)</span>
+                        <span class="text-secondary">Across all coursework marks (Scale 0 &ndash; 100)</span>
                     </p>
                 </div>
             </div>
@@ -218,26 +222,26 @@ require_once __DIR__ . '/../../includes/header.php';
             <div class="col-md-6">
                 <div class="cm-stat-card border-success" id="attCard">
                     <div class="cm-stat-header">
-                        <span class="cm-stat-label">Department Attendance Rate</span>
+                        <span class="cm-stat-label">Attendance Rate</span>
                         <div class="cm-stat-icon success" aria-hidden="true"><i class="bi bi-calendar-check"></i></div>
                     </div>
                     <div class="cm-stat-val tabular-nums text-success" id="attPercent">--%</div>
                     <p class="cm-stat-meta">
-                        <span class="text-secondary">Percentage of recorded sessions marked Present</span>
+                        <span class="text-secondary">Overall student presence in class sessions</span>
                     </p>
                 </div>
             </div>
         </div>
 
-        <!-- Two Column Breakdown: Grade Distribution & At-Risk Students -->
+        <!-- Two Column Breakdown: Grade Distribution & Attendance Alerts -->
         <div class="row g-4 mb-4">
-            <!-- Grade Distribution Table -->
+            <!-- Simple Grade Distribution Bars (A, B, C, D, F) -->
             <div class="col-lg-6">
                 <div class="card cm-card h-100">
                     <div class="cm-card-header bg-light">
                         <div class="d-flex align-items-center gap-2">
                             <i class="bi bi-bar-chart text-secondary" aria-hidden="true"></i>
-                            <h3 class="cm-card-title h6 mb-0">Grade Distribution Breakdown</h3>
+                            <h3 class="cm-card-title h6 mb-0 fw-bold">Grade Distribution</h3>
                         </div>
                         <span class="badge cm-badge-neutral tabular-nums" id="totalGradesBadge">0 grades</span>
                     </div>
@@ -246,13 +250,13 @@ require_once __DIR__ . '/../../includes/header.php';
                             <table class="table cm-table table-hover align-middle mb-0" id="gradeTable">
                                 <thead>
                                     <tr>
-                                        <th scope="col" style="width: 35%;">Grade Range</th>
-                                        <th scope="col" class="text-center" style="width: 25%;">Student Count</th>
-                                        <th scope="col" style="width: 40%;">Proportion</th>
+                                        <th scope="col" style="width: 32%;">Grade</th>
+                                        <th scope="col" class="text-center" style="width: 24%;">Students</th>
+                                        <th scope="col" style="width: 44%;">Percentage</th>
                                     </tr>
                                 </thead>
                                 <tbody id="gradeDistBody">
-                                    <!-- Dynamic Rows -->
+                                    <!-- Dynamic Simple Grade Distribution Bars -->
                                 </tbody>
                             </table>
                         </div>
@@ -260,13 +264,13 @@ require_once __DIR__ . '/../../includes/header.php';
                 </div>
             </div>
 
-            <!-- At-Risk Students Table -->
+            <!-- Attendance Alerts (<75%) -->
             <div class="col-lg-6">
                 <div class="card cm-card h-100 border-danger-subtle">
                     <div class="cm-card-header bg-danger-subtle text-danger">
                         <div class="d-flex align-items-center gap-2">
                             <i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i>
-                            <h3 class="cm-card-title h6 mb-0 text-danger">At-Risk Students (Attendance &lt; 75%)</h3>
+                            <h3 class="cm-card-title h6 mb-0 text-danger fw-bold">Attendance Alerts (&lt;75%)</h3>
                         </div>
                         <span class="badge cm-badge-danger tabular-nums" id="riskCountBadge">0 flagged</span>
                     </div>
@@ -277,7 +281,7 @@ require_once __DIR__ . '/../../includes/header.php';
                                     <tr>
                                         <th scope="col">Student Name</th>
                                         <th scope="col" style="width: 110px;">Course</th>
-                                        <th scope="col" class="text-end" style="width: 120px;">Att. Rate</th>
+                                        <th scope="col" class="text-end" style="width: 120px;">Rate</th>
                                     </tr>
                                 </thead>
                                 <tbody id="riskBody">
@@ -323,7 +327,7 @@ require_once __DIR__ . '/../../includes/header.php';
             }
         });
 
-        // Trigger load
+        // Trigger reload
         loadReports();
     }
 
@@ -340,7 +344,7 @@ require_once __DIR__ . '/../../includes/header.php';
         if (courseId) {
             url += `?course_id=${encodeURIComponent(courseId)}`;
             const selectedText = courseSelect.options[courseSelect.selectedIndex].text;
-            document.getElementById('reportTitle').textContent = `Course Performance: ${selectedText}`;
+            document.getElementById('reportTitle').textContent = `Course Report: ${selectedText}`;
         } else {
             document.getElementById('reportTitle').textContent = 'Department Performance Report';
         }
@@ -381,16 +385,16 @@ require_once __DIR__ . '/../../includes/header.php';
             attEl.className = 'cm-stat-val tabular-nums text-success';
         }
 
-        // Grade Distribution
+        // Grade Distribution Bars (A, B, C, D, F)
         const distBody = document.getElementById('gradeDistBody');
         distBody.innerHTML = '';
 
         const gradeLabels = {
-            'A': { label: '90 – 100 (A)', badge: 'cm-badge-success', bg: 'bg-success' },
-            'B': { label: '80 – 89 (B)', badge: 'cm-badge-primary', bg: 'bg-primary' },
-            'C': { label: '70 – 79 (C)', badge: 'cm-badge-info', bg: 'bg-info' },
-            'D': { label: '60 – 69 (D)', badge: 'cm-badge-warning', bg: 'bg-warning' },
-            'F': { label: '0 – 59 (F)', badge: 'cm-badge-danger', bg: 'bg-danger' }
+            'A': { label: '90 – 100', badge: 'cm-badge-success', bg: 'bg-success' },
+            'B': { label: '80 – 89', badge: 'cm-badge-primary', bg: 'bg-primary' },
+            'C': { label: '70 – 79', badge: 'cm-badge-info', bg: 'bg-info' },
+            'D': { label: '60 – 69', badge: 'cm-badge-warning', bg: 'bg-warning' },
+            'F': { label: '0 – 59', badge: 'cm-badge-danger', bg: 'bg-danger' }
         };
 
         let totalGrades = 0;
@@ -414,10 +418,10 @@ require_once __DIR__ . '/../../includes/header.php';
                     </td>
                     <td>
                         <div class="d-flex align-items-center gap-2">
-                            <div class="progress flex-grow-1" style="height: 6px;" role="progressbar" aria-valuenow="${pct}" aria-valuemin="0" aria-valuemax="100">
-                                <div class="progress-bar ${meta.bg}" style="width: ${pct}%;"></div>
+                            <div class="progress flex-grow-1" style="height: 8px; border-radius: 4px;" role="progressbar" aria-valuenow="${pct}" aria-valuemin="0" aria-valuemax="100">
+                                <div class="progress-bar ${meta.bg}" style="width: ${pct}%; border-radius: 4px;"></div>
                             </div>
-                            <span class="text-muted small tabular-nums" style="min-width: 42px;">${pct}%</span>
+                            <span class="text-muted small tabular-nums" style="min-width: 44px;">${pct}%</span>
                         </div>
                     </td>
                 </tr>
@@ -434,7 +438,7 @@ require_once __DIR__ . '/../../includes/header.php';
             riskBody.innerHTML = `
                 <tr>
                     <td colspan="3" class="text-center py-4 text-success">
-                        <i class="bi bi-check-circle me-1"></i> Excellent! No students currently fall below the 75% attendance threshold.
+                        <i class="bi bi-check-circle me-1"></i> Excellent! All students meet or exceed the 75% attendance threshold.
                     </td>
                 </tr>
             `;
@@ -460,7 +464,7 @@ require_once __DIR__ . '/../../includes/header.php';
 
     function exportCsvReport() {
         if (!currentReportData) {
-            alert('Please wait for the report to finish generating before exporting.');
+            alert('Please wait for the report to load before downloading CSV.');
             return;
         }
 
@@ -477,7 +481,7 @@ require_once __DIR__ . '/../../includes/header.php';
             csvContent += `${g},${count}\n`;
         }
 
-        csvContent += '\nAt-Risk Students (Attendance < 75%)\n';
+        csvContent += '\nAttendance Alerts (<75%)\n';
         csvContent += 'Student Name,Course Code,Attendance Rate\n';
         (currentReportData.at_risk || []).forEach(r => {
             csvContent += `"${r.student_name}","${r.course_code}","${parseFloat(r.att_pct).toFixed(1)}%"\n`;

@@ -23,61 +23,88 @@ while ($row = $result->fetch_assoc()) {
 }
 $courses_stmt->close();
 
-$pageTitle = 'Review & Modify Records';
+$pageTitle = 'Fix a Record';
 require_once __DIR__ . '/../../includes/header.php';
 ?>
 
 <div class="container-fluid px-3 px-lg-4 py-4">
     <!-- Page Header -->
     <div class="cm-page-header">
-        <div>
+        <div class="cm-page-header-content">
             <div class="d-flex align-items-center gap-2 mb-1">
                 <a href="<?= htmlspecialchars(base_url('/modules/head/dashboard.php'), ENT_QUOTES, 'UTF-8') ?>" class="text-secondary text-decoration-none small">
                     <i class="bi bi-arrow-left me-1" aria-hidden="true"></i>Dashboard
                 </a>
                 <span class="text-secondary small">&bull;</span>
-                <span class="text-secondary small fw-medium">Department Head Moderation</span>
+                <span class="text-secondary small fw-medium">Record Moderation</span>
             </div>
-            <h1 class="cm-page-title">Review &amp; Modify Records</h1>
-            <p class="cm-page-subtitle">Inspect student grade assessments and attendance entries with verified audit logging</p>
+            <h1 class="cm-page-title">Fix a Record / Review &amp; Edit Grades</h1>
+            <p class="cm-page-subtitle">Need to adjust a student's grade or attendance? Choose the course and record below.</p>
         </div>
-        <div class="d-flex align-items-center gap-2">
+        <div class="cm-page-actions">
             <a href="<?= htmlspecialchars(base_url('/modules/head/audit_logs.php'), ENT_QUOTES, 'UTF-8') ?>" class="btn btn-outline-secondary btn-sm">
-                <i class="bi bi-clock-history" aria-hidden="true"></i>
-                <span>View Modification History</span>
+                <i class="bi bi-clock-history me-1" aria-hidden="true"></i>
+                <span>Change History</span>
             </a>
         </div>
     </div>
 
-    <!-- Governance Banner -->
-    <div class="alert cm-alert-info d-flex align-items-start gap-3 mb-4" role="region" aria-label="Governance notice">
+    <!-- Friendly Notice Callout -->
+    <div class="alert cm-alert-info d-flex align-items-start gap-3 mb-4" role="region" aria-label="Moderation notice">
         <i class="bi bi-shield-check fs-5 text-primary flex-shrink-0 mt-1" aria-hidden="true"></i>
         <div>
-            <div class="fw-semibold text-primary mb-1">Academic Governance &amp; Audit Trail Requirement</div>
+            <div class="fw-semibold text-primary mb-1">Audit Trail &amp; Reason Requirement</div>
             <p class="mb-0 text-secondary small">
-                All alterations to student assessment scores or attendance status are permanently preserved in the institutional audit log.
-                A clear, documented reason is required for every modification prior to approval.
+                Every grade or attendance modification is saved to the department's permanent Change History. 
+                Please enter a short explanation for why the record is being changed when saving.
             </p>
         </div>
     </div>
 
-    <!-- Filter Card -->
+    <!-- Intuitive 3-Step Workflow -->
+    <!-- Workflow Steps Progress Bar -->
+    <div class="card cm-card mb-4">
+        <div class="cm-card-body p-3">
+            <div class="row g-2 text-center">
+                <div class="col-4">
+                    <div class="p-2 rounded bg-primary-subtle text-primary border border-primary-subtle fw-semibold small">
+                        <span class="badge bg-primary text-white rounded-circle me-1">1</span>
+                        <span>Choose Course</span>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="p-2 rounded bg-light text-secondary border border-light-subtle fw-medium small">
+                        <span class="badge bg-secondary text-white rounded-circle me-1">2</span>
+                        <span>Select Category</span>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="p-2 rounded bg-light text-secondary border border-light-subtle fw-medium small">
+                        <span class="badge bg-secondary text-white rounded-circle me-1">3</span>
+                        <span>Edit Student Record</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Step 1 & Step 2 Selection Card -->
     <div class="card cm-card mb-4">
         <div class="cm-card-header bg-light">
             <div class="d-flex align-items-center gap-2">
-                <i class="bi bi-funnel text-secondary" aria-hidden="true"></i>
-                <h2 class="cm-card-title h6 mb-0">Record Selection &amp; Criteria</h2>
+                <i class="bi bi-sliders text-secondary" aria-hidden="true"></i>
+                <h2 class="cm-card-title h6 mb-0 fw-bold">Step 1 &amp; Step 2: Select Course &amp; Category</h2>
             </div>
         </div>
         <div class="cm-card-body p-4">
             <form id="filterForm" onsubmit="loadRecords(event)" class="row g-3 align-items-end">
-                <!-- Course Select -->
+                <!-- Step 1: Course Select -->
                 <div class="col-md-5">
-                    <label for="course_id" class="form-label">
-                        Department Course <span class="text-danger" aria-hidden="true">*</span>
+                    <label for="course_id" class="form-label fw-semibold">
+                        <span class="text-primary me-1">Step 1:</span> Choose Course <span class="text-danger" aria-hidden="true">*</span>
                     </label>
                     <select id="course_id" class="form-select" onchange="handleCourseChange()" required>
-                        <option value="">Select Course...</option>
+                        <option value="">Select a department course...</option>
                         <?php foreach ($courses as $c): ?>
                             <option value="<?= (int)$c['id'] ?>">
                                 <?= htmlspecialchars($c['code'] . ' &ndash; ' . $c['name'], ENT_QUOTES, 'UTF-8') ?>
@@ -86,10 +113,10 @@ require_once __DIR__ . '/../../includes/header.php';
                     </select>
                 </div>
 
-                <!-- Record Type Select -->
+                <!-- Step 2: Record Type Select -->
                 <div class="col-md-3">
-                    <label for="record_type" class="form-label">
-                        Record Category <span class="text-danger" aria-hidden="true">*</span>
+                    <label for="record_type" class="form-label fw-semibold">
+                        <span class="text-primary me-1">Step 2:</span> Category <span class="text-danger" aria-hidden="true">*</span>
                     </label>
                     <select id="record_type" class="form-select" onchange="handleTypeChange()" required>
                         <option value="attendance">Attendance Records</option>
@@ -99,7 +126,9 @@ require_once __DIR__ . '/../../includes/header.php';
 
                 <!-- Assessment Type (Conditional for Coursework) -->
                 <div class="col-md-4" id="assessmentFilterDiv" style="display: none;">
-                    <label for="assessment_filter" class="form-label">Assessment Component</label>
+                    <label for="assessment_filter" class="form-label fw-semibold">
+                        Assessment Component
+                    </label>
                     <select id="assessment_filter" class="form-select" onchange="loadRecords()">
                         <option value="">All Assessment Types</option>
                     </select>
@@ -108,24 +137,26 @@ require_once __DIR__ . '/../../includes/header.php';
         </div>
     </div>
 
-    <!-- Live Toast / Feedback -->
+    <!-- Live Toast / Feedback Banner -->
     <div id="actionFeedback" class="alert cm-alert-success d-none mb-4" role="alert">
-        <div class="d-flex align-items-center justify-content-between w-100">
+        <div class="d-flex align-items-center justify-content-between w-100 flex-wrap gap-2">
             <div class="d-flex align-items-center gap-2">
                 <i class="bi bi-check-circle-fill fs-5" aria-hidden="true"></i>
-                <span id="feedbackMessage">Record modified successfully.</span>
+                <span id="feedbackMessage">Record updated successfully.</span>
             </div>
             <a href="<?= htmlspecialchars(base_url('/modules/head/audit_logs.php'), ENT_QUOTES, 'UTF-8') ?>" class="btn btn-outline-success btn-sm">
-                View in Audit Log
+                View in Change History
             </a>
         </div>
     </div>
 
-    <!-- Records Table Card -->
+    <!-- Step 3: Records Table Card -->
     <div class="card cm-card">
         <div class="cm-card-header flex-column flex-md-row align-items-stretch align-items-md-center justify-content-between gap-3">
             <div class="d-flex align-items-center gap-2">
-                <h2 class="cm-card-title h5 mb-0" id="tableHeaderTitle">Course Records</h2>
+                <h2 class="cm-card-title h6 mb-0 fw-bold" id="tableHeaderTitle">
+                    <span class="text-primary me-1">Step 3:</span> Student Records
+                </h2>
                 <span class="badge cm-badge-neutral tabular-nums" id="recordsBadge">0 records</span>
             </div>
 
@@ -150,7 +181,7 @@ require_once __DIR__ . '/../../includes/header.php';
                             <th scope="col" style="width: 25%;">Student Name</th>
                             <th scope="col" style="width: 15%;">Student ID</th>
                             <th scope="col" style="width: 25%;" id="contextColHeader">Session Date</th>
-                            <th scope="col" style="width: 20%;" id="valueColHeader">Current Value</th>
+                            <th scope="col" style="width: 20%;" id="valueColHeader">Current Record</th>
                             <th scope="col" class="text-end" style="width: 15%;">Action</th>
                         </tr>
                     </thead>
@@ -161,8 +192,8 @@ require_once __DIR__ . '/../../includes/header.php';
                                     <div class="cm-empty-icon" aria-hidden="true">
                                         <i class="bi bi-search"></i>
                                     </div>
-                                    <h3 class="cm-empty-title h6">Select a Course to Inspect</h3>
-                                    <p class="cm-empty-desc mb-0">Choose a course and record category from the filters above to retrieve student records for review.</p>
+                                    <h3 class="cm-empty-title h6">Step 1: Choose a Course Above</h3>
+                                    <p class="cm-empty-desc mb-0">Select a course and category to load student records for review and adjustment.</p>
                                 </div>
                             </td>
                         </tr>
@@ -176,7 +207,7 @@ require_once __DIR__ . '/../../includes/header.php';
                     <i class="bi bi-inbox"></i>
                 </div>
                 <h3 class="cm-empty-title h6">No Records Found</h3>
-                <p class="cm-empty-desc mb-0">No entries match the selected course and category criteria. Check if records have been published or try a different filter.</p>
+                <p class="cm-empty-desc mb-0">No records match the selected course and category. Check if entries have been recorded or choose another course.</p>
             </div>
         </div>
     </div>
@@ -192,8 +223,8 @@ require_once __DIR__ . '/../../includes/header.php';
                         <i class="bi bi-pencil-square"></i>
                     </div>
                     <div>
-                        <h2 class="modal-title h5 mb-0" id="editModalTitle">Modify Academic Record</h2>
-                        <span class="text-secondary small" id="editModalSubtitle">Review original value and submit audited change</span>
+                        <h2 class="modal-title h5 mb-0" id="editModalTitle">Fix Student Record</h2>
+                        <span class="text-secondary small" id="editModalSubtitle">Review the current record and enter the updated value</span>
                     </div>
                 </div>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close dialog"></button>
@@ -218,7 +249,7 @@ require_once __DIR__ . '/../../includes/header.php';
                                 <span class="fw-bold text-dark" id="modalStudentName">&mdash;</span>
                             </div>
                             <div class="col-sm-6 text-sm-end">
-                                <span class="text-secondary small d-block">University ID</span>
+                                <span class="text-secondary small d-block">Student ID</span>
                                 <span class="font-monospace fw-semibold tabular-nums text-primary" id="modalStudentId">&mdash;</span>
                             </div>
                             <div class="col-12 mt-2 pt-2 border-top border-light-subtle d-flex justify-content-between align-items-center">
@@ -231,14 +262,14 @@ require_once __DIR__ . '/../../includes/header.php';
                     <!-- Side-by-Side Comparison Container -->
                     <div class="card mb-4 border border-light-subtle">
                         <div class="card-header bg-light-subtle py-2 px-3">
-                            <span class="small fw-bold text-secondary text-uppercase tracking-wider">Audit Comparison View</span>
+                            <span class="small fw-bold text-secondary text-uppercase tracking-wider">Comparison</span>
                         </div>
                         <div class="card-body p-3">
                             <div class="row g-3 align-items-center">
-                                <!-- Original (Before) -->
+                                <!-- Original (Current Record) -->
                                 <div class="col-md-5">
                                     <div class="p-3 rounded border bg-light text-center h-100">
-                                        <span class="text-secondary small d-block mb-1">Current Registered Value</span>
+                                        <span class="text-secondary small d-block mb-1 fw-medium">Current Record</span>
                                         <div class="fs-4 fw-bold text-danger text-decoration-line-through tabular-nums" id="originalValueDisplay">
                                             &mdash;
                                         </div>
@@ -252,10 +283,10 @@ require_once __DIR__ . '/../../includes/header.php';
                                     <i class="bi bi-arrow-down d-md-none"></i>
                                 </div>
 
-                                <!-- Proposed (After) Input -->
+                                <!-- Proposed (New Value) Input -->
                                 <div class="col-md-5">
                                     <div class="p-3 rounded border border-primary-subtle bg-primary-subtle text-center h-100">
-                                        <span class="text-primary small d-block mb-1 fw-semibold">Proposed New Value</span>
+                                        <span class="text-primary small d-block mb-1 fw-semibold">New Value</span>
                                         <div id="valueInputContainer">
                                             <!-- Dynamic inputs injected by JS -->
                                         </div>
@@ -267,15 +298,15 @@ require_once __DIR__ . '/../../includes/header.php';
 
                     <!-- Mandatory Audit Reason / Remarks -->
                     <div class="mb-3">
-                        <label for="editReason" class="form-label">
-                            Official Reason for Modification <span class="text-danger" aria-hidden="true">*</span>
+                        <label for="editReason" class="form-label fw-semibold">
+                            Why is this being changed? <span class="text-danger" aria-hidden="true">*</span>
                         </label>
                         <textarea id="editReason" class="form-control" rows="3" 
-                                  placeholder="Provide clear academic justification (e.g. 'Grade recalculated following regrade request approved by committee', 'Medical excuse verified for absence')..." 
+                                  placeholder="Provide a clear explanation (e.g. 'Grade recalculated following regrade review', 'Medical excuse verified for absence')..." 
                                   required minlength="5"></textarea>
                         <div class="form-text d-flex justify-content-between">
-                            <span>Required for institutional compliance. Preserved in audit records.</span>
-                            <span class="text-muted" id="reasonCharCounter">Minimum 5 characters</span>
+                            <span>Required for Change History. Minimum 5 characters.</span>
+                            <span class="text-muted" id="reasonCharCounter">5+ characters required</span>
                         </div>
                     </div>
                 </div>
@@ -283,8 +314,8 @@ require_once __DIR__ . '/../../includes/header.php';
                 <div class="modal-footer border-top py-3 px-4 bg-light">
                     <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn btn-primary btn-sm" id="submitModificationBtn">
-                        <i class="bi bi-check2-circle" aria-hidden="true"></i>
-                        <span>Confirm &amp; Record Modification</span>
+                        <i class="bi bi-check2-circle me-1" aria-hidden="true"></i>
+                        <span>Save Changes</span>
                     </button>
                 </div>
             </form>
@@ -325,11 +356,11 @@ require_once __DIR__ . '/../../includes/header.php';
         if (type === 'attendance') {
             assessDiv.style.display = 'none';
             contextHeader.textContent = 'Session Date';
-            valueHeader.textContent = 'Attendance Status';
+            valueHeader.textContent = 'Current Record';
         } else {
             assessDiv.style.display = 'block';
             contextHeader.textContent = 'Assessment Component';
-            valueHeader.textContent = 'Recorded Grade';
+            valueHeader.textContent = 'Current Record';
             loadAssessmentTypes();
         }
         
@@ -374,8 +405,8 @@ require_once __DIR__ . '/../../includes/header.php';
                     <td colspan="5" class="text-center py-5">
                         <div class="cm-empty-state py-3">
                             <div class="cm-empty-icon" aria-hidden="true"><i class="bi bi-search"></i></div>
-                            <h3 class="cm-empty-title h6">Select a Course to Inspect</h3>
-                            <p class="cm-empty-desc mb-0">Choose a course above to view student attendance entries or coursework assessments.</p>
+                            <h3 class="cm-empty-title h6">Step 1: Choose a Course Above</h3>
+                            <p class="cm-empty-desc mb-0">Select a course to view and edit student records.</p>
                         </div>
                     </td>
                 </tr>
@@ -502,13 +533,13 @@ require_once __DIR__ . '/../../includes/header.php';
                     <span class="font-monospace text-secondary small tabular-nums">${escapeHtml(row.student_id_number)}</span>
                 </td>
                 <td>
-                    <span class="badge cm-badge-neutral font-monospace">${escapeHtml(context)}</span>
+                    <span class="badge cm-badge-neutral">${escapeHtml(context)}</span>
                 </td>
                 <td>${valueHtml}</td>
                 <td class="text-end">
-                    <button type="button" class="btn btn-outline-primary btn-sm edit-record-btn" aria-label="Modify record for ${escapeHtml(row.student_name)}">
-                        <i class="bi bi-pencil" aria-hidden="true"></i>
-                        <span>Modify</span>
+                    <button type="button" class="btn btn-outline-primary btn-sm edit-record-btn" aria-label="Edit record for ${escapeHtml(row.student_name)}">
+                        <i class="bi bi-pencil-square me-1" aria-hidden="true"></i>
+                        <span>Edit</span>
                     </button>
                 </td>
             `;
@@ -542,11 +573,11 @@ require_once __DIR__ . '/../../includes/header.php';
         if (type === 'attendance') {
             container.innerHTML = `
                 <div class="mb-2 text-start">
-                    <label for="editDate" class="form-label small mb-1">Session Date</label>
+                    <label for="editDate" class="form-label small mb-1 fw-medium">Session Date</label>
                     <input type="date" id="editDate" class="form-control form-control-sm tabular-nums" value="${escapeHtml(row.date)}" required>
                 </div>
                 <div class="text-start">
-                    <label for="newValue" class="form-label small mb-1">New Attendance Status</label>
+                    <label for="newValue" class="form-label small mb-1 fw-medium">New Attendance Status</label>
                     <select id="newValue" class="form-select form-select-sm fw-bold">
                         <option value="Present">Present</option>
                         <option value="Absent">Absent</option>
@@ -559,7 +590,7 @@ require_once __DIR__ . '/../../includes/header.php';
         } else {
             container.innerHTML = `
                 <div class="text-start">
-                    <label for="newValue" class="form-label small mb-1">Adjusted Grade (0 - 100)</label>
+                    <label for="newValue" class="form-label small mb-1 fw-medium">Adjusted Grade (0 - 100)</label>
                     <input type="number" id="newValue" class="form-control form-control-lg text-center fw-bold tabular-nums" 
                            step="0.01" min="0" max="100" value="${escapeHtml(String(row.value))}" required>
                 </div>
@@ -590,7 +621,7 @@ require_once __DIR__ . '/../../includes/header.php';
         }
 
         if (!reason || reason.length < 5) {
-            errorMsg.textContent = 'Please enter a valid justification reason (at least 5 characters).';
+            errorMsg.textContent = 'Please enter a valid explanation for why this is being changed (at least 5 characters).';
             errorAlert.classList.remove('d-none');
             return;
         }
@@ -598,7 +629,7 @@ require_once __DIR__ . '/../../includes/header.php';
         if (type === 'coursework') {
             const g = parseFloat(newValue);
             if (isNaN(g) || g < 0 || g > 100) {
-                errorMsg.textContent = 'Please provide a valid grade score between 0.00 and 100.00.';
+                errorMsg.textContent = 'Please enter a valid score between 0.00 and 100.00.';
                 errorAlert.classList.remove('d-none');
                 return;
             }
@@ -631,14 +662,14 @@ require_once __DIR__ . '/../../includes/header.php';
                 // Show feedback alert
                 const feedback = document.getElementById('actionFeedback');
                 const feedbackMsg = document.getElementById('feedbackMessage');
-                feedbackMsg.textContent = `Record updated successfully: Changed to "${newValue}". Logged to audit trail.`;
+                feedbackMsg.textContent = `Record updated successfully: Changed to "${newValue}". Saved in Change History.`;
                 feedback.classList.remove('d-none');
                 feedback.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 
                 // Refresh records
                 loadRecords();
             } else {
-                errorMsg.textContent = resp.error || 'Failed to modify record. Please verify input data.';
+                errorMsg.textContent = resp.error || 'Failed to update record. Please verify input data.';
                 errorAlert.classList.remove('d-none');
             }
         })

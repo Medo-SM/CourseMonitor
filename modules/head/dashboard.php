@@ -28,7 +28,7 @@ if ($dept_id) {
     $c_stmt->close();
 }
 
-// Active Department Lecturers Count
+// Active Department Lecturers (Teachers) Count
 $lecturers_count = 0;
 if ($dept_id) {
     $l_stmt = $mysqli->prepare("SELECT COUNT(DISTINCT lecturer_id) FROM courses WHERE department_id = ? AND lecturer_id IS NOT NULL");
@@ -50,7 +50,7 @@ if ($dept_id) {
     $s_stmt->close();
 }
 
-// At-Risk Students Count (Overall Attendance < 75%)
+// Attendance Alerts Count (Overall Attendance < 75%)
 $at_risk_count = 0;
 if ($dept_id) {
     $risk_stmt = $mysqli->prepare("
@@ -142,51 +142,51 @@ if ($dept_id) {
     $audit_stmt->close();
 }
 
-$pageTitle = 'Department Dashboard';
+$pageTitle = 'Department Overview';
 require_once __DIR__ . '/../../includes/header.php';
 ?>
 
 <div class="container-fluid px-3 px-lg-4 py-4">
     <!-- Page Header -->
     <div class="cm-page-header">
-        <div>
+        <div class="cm-page-header-content">
             <div class="d-flex align-items-center gap-2 mb-1">
-                <span class="badge cm-badge-info">Head of Department</span>
+                <span class="badge cm-badge-info">Department Head</span>
                 <span class="text-secondary small">&bull;</span>
                 <span class="text-secondary small fw-medium"><?= htmlspecialchars($dept_name, ENT_QUOTES, 'UTF-8') ?></span>
             </div>
-            <h1 class="cm-page-title">Department Dashboard</h1>
-            <p class="cm-page-subtitle">Academic performance overview, attendance monitoring, and administrative controls</p>
+            <h1 class="cm-page-title">Department Overview</h1>
+            <p class="cm-page-subtitle">Monitor course performance, teacher assignments, and student attendance at a glance</p>
         </div>
-        <div class="d-flex flex-wrap align-items-center gap-2">
-            <a href="<?= htmlspecialchars(base_url('/modules/head/reports.php'), ENT_QUOTES, 'UTF-8') ?>" class="btn btn-outline-primary btn-sm">
-                <i class="bi bi-file-earmark-bar-graph" aria-hidden="true"></i>
-                <span>View Reports</span>
+        <div class="cm-page-actions">
+            <a href="<?= htmlspecialchars(base_url('/modules/head/reports.php'), ENT_QUOTES, 'UTF-8') ?>" class="btn btn-outline-secondary btn-sm">
+                <i class="bi bi-file-earmark-bar-graph me-1" aria-hidden="true"></i>
+                <span>Performance Reports</span>
             </a>
             <a href="<?= htmlspecialchars(base_url('/modules/head/modify_records.php'), ENT_QUOTES, 'UTF-8') ?>" class="btn btn-outline-primary btn-sm">
-                <i class="bi bi-pencil-square" aria-hidden="true"></i>
-                <span>Review &amp; Modify</span>
+                <i class="bi bi-pencil-square me-1" aria-hidden="true"></i>
+                <span>Fix a Record</span>
             </a>
             <a href="<?= htmlspecialchars(base_url('/modules/head/courses.php'), ENT_QUOTES, 'UTF-8') ?>" class="btn btn-primary btn-sm">
-                <i class="bi bi-book" aria-hidden="true"></i>
-                <span>Manage Courses</span>
+                <i class="bi bi-book me-1" aria-hidden="true"></i>
+                <span>Department Courses</span>
             </a>
         </div>
     </div>
 
     <?php if (!$dept_id): ?>
-        <div class="alert cm-alert-warning" role="alert">
+        <div class="alert cm-alert-warning mb-4" role="alert">
             <i class="bi bi-exclamation-triangle-fill fs-5" aria-hidden="true"></i>
             <div>
                 <strong>Department Not Assigned</strong>
-                <p class="mb-0 mt-1">Your user account is not currently assigned to lead a department. Please contact the system administrator to configure your departmental assignment.</p>
+                <p class="mb-0 mt-1">Your account is not currently assigned to head a department. Please contact an administrator to link your account.</p>
             </div>
         </div>
     <?php endif; ?>
 
     <!-- Summary Metrics -->
     <section aria-labelledby="summary-metrics-heading" class="mb-4">
-        <h2 id="summary-metrics-heading" class="visually-hidden">Key Department Metrics</h2>
+        <h2 id="summary-metrics-heading" class="visually-hidden">Department Key Numbers</h2>
         <div class="row g-3">
             <!-- Department Courses -->
             <div class="col-sm-6 col-xl-3">
@@ -204,45 +204,45 @@ require_once __DIR__ . '/../../includes/header.php';
                 </div>
             </div>
 
-            <!-- Active Lecturers -->
+            <!-- Teachers (Assigned Lecturers) -->
             <div class="col-sm-6 col-xl-3">
                 <div class="cm-stat-card">
                     <div class="cm-stat-header">
-                        <span class="cm-stat-label">Assigned Lecturers</span>
+                        <span class="cm-stat-label">Teachers</span>
                         <div class="cm-stat-icon success" aria-hidden="true">
                             <i class="bi bi-person-badge"></i>
                         </div>
                     </div>
                     <div class="cm-stat-val tabular-nums"><?= (int)$lecturers_count ?></div>
                     <p class="cm-stat-meta">
-                        <span class="text-secondary">Instructors actively teaching</span>
+                        <span class="text-secondary">Assigned instructors</span>
                     </p>
                 </div>
             </div>
 
-            <!-- Department Students -->
+            <!-- Students -->
             <div class="col-sm-6 col-xl-3">
                 <div class="cm-stat-card">
                     <div class="cm-stat-header">
-                        <span class="cm-stat-label">Enrolled Students</span>
+                        <span class="cm-stat-label">Students</span>
                         <div class="cm-stat-icon primary" aria-hidden="true">
                             <i class="bi bi-mortarboard"></i>
                         </div>
                     </div>
                     <div class="cm-stat-val tabular-nums"><?= (int)$students_count ?></div>
                     <p class="cm-stat-meta">
-                        <span class="text-secondary">In departmental cohorts</span>
+                        <span class="text-secondary">Enrolled in department</span>
                     </p>
                 </div>
             </div>
 
-            <!-- At-Risk Students -->
+            <!-- Attendance Alerts (<75%) -->
             <div class="col-sm-6 col-xl-3">
-                <div class="cm-stat-card <?= $at_risk_count > 0 ? 'border-danger' : '' ?>">
+                <div class="cm-stat-card <?= $at_risk_count > 0 ? 'border-danger-subtle' : '' ?>">
                     <div class="cm-stat-header">
-                        <span class="cm-stat-label">At-Risk Students</span>
-                        <div class="cm-stat-icon danger" aria-hidden="true">
-                            <i class="bi bi-exclamation-triangle"></i>
+                        <span class="cm-stat-label">Attendance Alerts (&lt;75%)</span>
+                        <div class="cm-stat-icon <?= $at_risk_count > 0 ? 'danger' : 'success' ?>" aria-hidden="true">
+                            <i class="bi <?= $at_risk_count > 0 ? 'bi-exclamation-triangle' : 'bi-check2-circle' ?>"></i>
                         </div>
                     </div>
                     <div class="cm-stat-val tabular-nums <?= $at_risk_count > 0 ? 'text-danger' : 'text-success' ?>">
@@ -250,7 +250,7 @@ require_once __DIR__ . '/../../includes/header.php';
                     </div>
                     <p class="cm-stat-meta">
                         <span class="badge <?= $at_risk_count > 0 ? 'cm-badge-danger' : 'cm-badge-success' ?>">
-                            <?= $at_risk_count > 0 ? 'Attendance < 75%' : 'Good standing' ?>
+                            <?= $at_risk_count > 0 ? 'Below 75% attendance' : 'All students on track' ?>
                         </span>
                     </p>
                 </div>
@@ -258,12 +258,12 @@ require_once __DIR__ . '/../../includes/header.php';
         </div>
     </section>
 
-    <!-- Academic Level Performance Breakdown (Years 1 to 4) -->
+    <!-- Student Progress by Year Level -->
     <section aria-labelledby="cohort-breakdown-heading" class="mb-4">
         <div class="d-flex align-items-center justify-content-between mb-3">
             <div>
-                <h2 id="cohort-breakdown-heading" class="h4 mb-0">Cohort Academic Performance</h2>
-                <p class="text-secondary small mb-0">Semester progression and attendance metrics aggregated by academic year level</p>
+                <h2 id="cohort-breakdown-heading" class="h5 mb-0 fw-bold">Student Progress by Year</h2>
+                <p class="text-secondary small mb-0">Average grades and attendance across each class year</p>
             </div>
         </div>
 
@@ -283,7 +283,7 @@ require_once __DIR__ . '/../../includes/header.php';
                     <div class="card cm-card h-100">
                         <div class="cm-card-header py-2 px-3 bg-light">
                             <div class="d-flex align-items-center justify-content-between w-100">
-                                <span class="fw-semibold text-primary"><?= htmlspecialchars($meta['title']) ?></span>
+                                <span class="fw-semibold text-dark"><?= htmlspecialchars($meta['title']) ?></span>
                                 <span class="badge <?= $meta['badge'] ?>"><?= htmlspecialchars($meta['semesters']) ?></span>
                             </div>
                         </div>
@@ -322,17 +322,17 @@ require_once __DIR__ . '/../../includes/header.php';
 
     <!-- Main Grid: Recent Activity & Management Shortcuts -->
     <div class="row g-4">
-        <!-- Recent Audit Modifications -->
+        <!-- Recent Activity (Change History) -->
         <div class="col-lg-8">
             <div class="card cm-card h-100">
                 <div class="cm-card-header">
                     <div>
-                        <h2 class="cm-card-title h5 mb-0">Recent Record Modifications</h2>
-                        <span class="text-secondary small">Latest administrative grade and attendance adjustments</span>
+                        <h2 class="cm-card-title h6 mb-0 fw-bold">Recent Changes</h2>
+                        <span class="text-secondary small">Latest grade and attendance updates in your department</span>
                     </div>
                     <a href="<?= htmlspecialchars(base_url('/modules/head/audit_logs.php'), ENT_QUOTES, 'UTF-8') ?>" class="btn btn-outline-secondary btn-sm">
-                        <span>Full Audit History</span>
-                        <i class="bi bi-arrow-right" aria-hidden="true"></i>
+                        <span>Change History</span>
+                        <i class="bi bi-arrow-right ms-1" aria-hidden="true"></i>
                     </a>
                 </div>
                 <div class="cm-card-body p-0">
@@ -341,19 +341,19 @@ require_once __DIR__ . '/../../includes/header.php';
                             <div class="cm-empty-icon" aria-hidden="true">
                                 <i class="bi bi-clock-history"></i>
                             </div>
-                            <h3 class="cm-empty-title h6">No Modification Records</h3>
-                            <p class="cm-empty-desc">No record alterations have been logged for this department yet. Any grade or attendance adjustments will be tracked here.</p>
+                            <h3 class="cm-empty-title h6">No Changes Logged Yet</h3>
+                            <p class="cm-empty-desc">When a grade or attendance record is adjusted, you will see a complete record of the change right here.</p>
                         </div>
                     <?php else: ?>
                         <div class="table-responsive border-0 rounded-0">
                             <table class="table cm-table table-hover align-middle mb-0">
                                 <thead>
                                     <tr>
-                                        <th scope="col">Timestamp</th>
-                                        <th scope="col">Entity</th>
+                                        <th scope="col">Time</th>
+                                        <th scope="col">Category</th>
                                         <th scope="col">Action</th>
                                         <th scope="col">Change (Old &rarr; New)</th>
-                                        <th scope="col">Attribution</th>
+                                        <th scope="col">Changed By</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -367,12 +367,13 @@ require_once __DIR__ . '/../../includes/header.php';
                                         } elseif (stripos($item['action'], 'DELETE') !== false) {
                                             $badgeClass = 'cm-badge-danger';
                                         }
+                                        $catName = ($item['table_name'] === 'attendance') ? 'Attendance' : 'Grade';
                                     ?>
                                         <tr>
                                             <td class="tabular-nums text-secondary small text-nowrap"><?= htmlspecialchars($timestamp, ENT_QUOTES, 'UTF-8') ?></td>
                                             <td>
-                                                <span class="badge cm-badge-neutral text-capitalize font-monospace">
-                                                    <?= htmlspecialchars($item['table_name'], ENT_QUOTES, 'UTF-8') ?>
+                                                <span class="badge cm-badge-neutral">
+                                                    <?= htmlspecialchars($catName, ENT_QUOTES, 'UTF-8') ?>
                                                 </span>
                                                 <span class="text-secondary small ms-1 tabular-nums">#<?= (int)$item['record_id'] ?></span>
                                             </td>
@@ -397,21 +398,21 @@ require_once __DIR__ . '/../../includes/header.php';
             </div>
         </div>
 
-        <!-- Department Management Shortcuts -->
+        <!-- Quick Shortcuts -->
         <div class="col-lg-4">
             <div class="card cm-card h-100">
                 <div class="cm-card-header">
-                    <h2 class="cm-card-title h5 mb-0">Management Shortcuts</h2>
+                    <h2 class="cm-card-title h6 mb-0 fw-bold">Quick Actions</h2>
                 </div>
                 <div class="cm-card-body">
                     <div class="d-flex flex-column gap-3">
                         <a href="<?= htmlspecialchars(base_url('/modules/head/courses.php'), ENT_QUOTES, 'UTF-8') ?>" class="text-decoration-none p-3 rounded border border-light-subtle bg-body-tertiary d-flex align-items-center gap-3 transition-base">
                             <div class="cm-stat-icon primary flex-shrink-0" aria-hidden="true">
-                                <i class="bi bi-journal-bookmark"></i>
+                                <i class="bi bi-book"></i>
                             </div>
                             <div class="flex-grow-1 min-w-0">
                                 <div class="fw-semibold text-primary">Department Courses</div>
-                                <div class="text-secondary small">Assign lecturers &amp; configure semesters</div>
+                                <div class="text-secondary small">Assign teachers and manage semester offerings</div>
                             </div>
                             <i class="bi bi-chevron-right text-muted" aria-hidden="true"></i>
                         </a>
@@ -421,8 +422,8 @@ require_once __DIR__ . '/../../includes/header.php';
                                 <i class="bi bi-pencil-square"></i>
                             </div>
                             <div class="flex-grow-1 min-w-0">
-                                <div class="fw-semibold text-primary">Review &amp; Modify Records</div>
-                                <div class="text-secondary small">Audit trail review for grades &amp; attendance</div>
+                                <div class="fw-semibold text-primary">Fix a Record</div>
+                                <div class="text-secondary small">Adjust student marks or attendance with note</div>
                             </div>
                             <i class="bi bi-chevron-right text-muted" aria-hidden="true"></i>
                         </a>
@@ -432,19 +433,19 @@ require_once __DIR__ . '/../../includes/header.php';
                                 <i class="bi bi-bar-chart-line"></i>
                             </div>
                             <div class="flex-grow-1 min-w-0">
-                                <div class="fw-semibold text-primary">Department Reports</div>
-                                <div class="text-secondary small">Course analytics &amp; attendance breakdown</div>
+                                <div class="fw-semibold text-primary">Performance Reports</div>
+                                <div class="text-secondary small">Grade distributions and attendance trends</div>
                             </div>
                             <i class="bi bi-chevron-right text-muted" aria-hidden="true"></i>
                         </a>
 
                         <a href="<?= htmlspecialchars(base_url('/modules/head/audit_logs.php'), ENT_QUOTES, 'UTF-8') ?>" class="text-decoration-none p-3 rounded border border-light-subtle bg-body-tertiary d-flex align-items-center gap-3 transition-base">
                             <div class="cm-stat-icon primary flex-shrink-0" aria-hidden="true">
-                                <i class="bi bi-shield-check"></i>
+                                <i class="bi bi-clock-history"></i>
                             </div>
                             <div class="flex-grow-1 min-w-0">
-                                <div class="fw-semibold text-primary">Audit Trail</div>
-                                <div class="text-secondary small">Historical log of all verified revisions</div>
+                                <div class="fw-semibold text-primary">Change History</div>
+                                <div class="text-secondary small">Complete log of all verified revisions</div>
                             </div>
                             <i class="bi bi-chevron-right text-muted" aria-hidden="true"></i>
                         </a>

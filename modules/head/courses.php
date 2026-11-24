@@ -17,14 +17,14 @@ $dept_stmt->close();
 $dept_id = $dept ? (int)$dept['id'] : 0;
 $dept_name = $dept ? $dept['name'] : 'Department';
 
-$pageTitle = 'Manage Department Courses';
+$pageTitle = 'Department Courses';
 require_once __DIR__ . '/../../includes/header.php';
 ?>
 
 <div class="container-fluid px-3 px-lg-4 py-4">
     <!-- Page Header -->
     <div class="cm-page-header">
-        <div>
+        <div class="cm-page-header-content">
             <div class="d-flex align-items-center gap-2 mb-1">
                 <a href="<?= htmlspecialchars(base_url('/modules/head/dashboard.php'), ENT_QUOTES, 'UTF-8') ?>" class="text-secondary text-decoration-none small">
                     <i class="bi bi-arrow-left me-1" aria-hidden="true"></i>Dashboard
@@ -33,12 +33,12 @@ require_once __DIR__ . '/../../includes/header.php';
                 <span class="text-secondary small fw-medium"><?= htmlspecialchars($dept_name, ENT_QUOTES, 'UTF-8') ?></span>
             </div>
             <h1 class="cm-page-title">Department Courses</h1>
-            <p class="cm-page-subtitle">Manage curriculum offerings, lecturer distribution, and semester allocations</p>
+            <p class="cm-page-subtitle">Manage curriculum courses, assign teachers, and set semester schedules</p>
         </div>
-        <div class="d-flex align-items-center gap-2">
+        <div class="cm-page-actions">
             <button type="button" onclick="openAddModal()" class="btn btn-primary btn-sm" aria-haspopup="dialog">
-                <i class="bi bi-plus-lg" aria-hidden="true"></i>
-                <span>Add New Course</span>
+                <i class="bi bi-plus-lg me-1" aria-hidden="true"></i>
+                <span>Add Course</span>
             </button>
         </div>
     </div>
@@ -58,31 +58,31 @@ require_once __DIR__ . '/../../includes/header.php';
         <div class="col-sm-6 col-md-3">
             <div class="cm-stat-card">
                 <div class="cm-stat-header">
-                    <span class="cm-stat-label">Assigned</span>
+                    <span class="cm-stat-label">Assigned Teachers</span>
                     <div class="cm-stat-icon success" aria-hidden="true"><i class="bi bi-person-check"></i></div>
                 </div>
                 <div class="cm-stat-val tabular-nums text-success" id="statAssignedCourses">-</div>
-                <p class="cm-stat-meta"><span class="text-secondary">Assigned to lecturers</span></p>
+                <p class="cm-stat-meta"><span class="text-secondary">With assigned instructor</span></p>
             </div>
         </div>
         <div class="col-sm-6 col-md-3">
             <div class="cm-stat-card">
                 <div class="cm-stat-header">
                     <span class="cm-stat-label">Unassigned</span>
-                    <div class="cm-stat-icon warning" aria-hidden="true"><i class="bi bi-person-x"></i></div>
+                    <div class="cm-stat-icon warning" aria-hidden="true"><i class="bi bi-person-exclamation"></i></div>
                 </div>
                 <div class="cm-stat-val tabular-nums text-warning" id="statUnassignedCourses">-</div>
-                <p class="cm-stat-meta"><span class="text-secondary">Need instructor allocation</span></p>
+                <p class="cm-stat-meta"><span class="text-secondary">Need a teacher</span></p>
             </div>
         </div>
         <div class="col-sm-6 col-md-3">
             <div class="cm-stat-card">
                 <div class="cm-stat-header">
-                    <span class="cm-stat-label">Semesters Active</span>
+                    <span class="cm-stat-label">Active Semesters</span>
                     <div class="cm-stat-icon info" aria-hidden="true"><i class="bi bi-calendar3"></i></div>
                 </div>
                 <div class="cm-stat-val tabular-nums" id="statActiveSemesters">-</div>
-                <p class="cm-stat-meta"><span class="text-secondary">Semesters covered (1-8)</span></p>
+                <p class="cm-stat-meta"><span class="text-secondary">Semesters 1 to 8</span></p>
             </div>
         </div>
     </div>
@@ -97,7 +97,7 @@ require_once __DIR__ . '/../../includes/header.php';
                         <i class="bi bi-search" aria-hidden="true"></i>
                     </span>
                     <input type="search" id="searchInput" class="form-control border-start-0" 
-                           placeholder="Search course code or name..." 
+                           placeholder="Search course code, title, or teacher..." 
                            aria-label="Search courses" 
                            aria-describedby="search-addon"
                            oninput="filterCourses()">
@@ -114,9 +114,9 @@ require_once __DIR__ . '/../../includes/header.php';
                 </div>
 
                 <div style="min-width: 170px;">
-                    <label for="lecturerFilter" class="visually-hidden">Filter by Lecturer</label>
+                    <label for="lecturerFilter" class="visually-hidden">Filter by Teacher</label>
                     <select id="lecturerFilter" class="form-select" onchange="filterCourses()">
-                        <option value="">All Lecturers</option>
+                        <option value="">All Teachers</option>
                         <option value="assigned">Assigned Only</option>
                         <option value="unassigned">Unassigned Only</option>
                     </select>
@@ -137,8 +137,8 @@ require_once __DIR__ . '/../../includes/header.php';
                             <th scope="col" style="width: 120px;">Code</th>
                             <th scope="col">Course Title</th>
                             <th scope="col" class="text-center" style="width: 110px;">Credits</th>
-                            <th scope="col">Assigned Lecturer</th>
-                            <th scope="col">Offered In</th>
+                            <th scope="col">Teacher</th>
+                            <th scope="col">Semesters</th>
                             <th scope="col" class="text-end" style="width: 120px;">Actions</th>
                         </tr>
                     </thead>
@@ -161,7 +161,7 @@ require_once __DIR__ . '/../../includes/header.php';
                     <i class="bi bi-book"></i>
                 </div>
                 <h2 class="cm-empty-title h5" id="emptyTitle">No Courses Found</h2>
-                <p class="cm-empty-desc" id="emptyDesc">No courses in this department match your active search or filter criteria.</p>
+                <p class="cm-empty-desc" id="emptyDesc">No courses match your current search or filter criteria.</p>
                 <button type="button" onclick="resetFilters()" class="btn btn-outline-secondary btn-sm" id="resetFiltersBtn">
                     Clear Filters
                 </button>
@@ -179,7 +179,10 @@ require_once __DIR__ . '/../../includes/header.php';
                     <div class="cm-stat-icon primary" style="width: 32px; height: 32px; font-size: 1rem;" aria-hidden="true">
                         <i class="bi bi-journal-code"></i>
                     </div>
-                    <h2 class="modal-title h5 mb-0" id="modalTitle">Add Course</h2>
+                    <div>
+                        <h2 class="modal-title h5 mb-0" id="modalTitle">Add Course</h2>
+                        <span class="text-secondary small" id="modalSubtitle">Configure course code, title, credits, and schedule</span>
+                    </div>
                 </div>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close dialog"></button>
             </div>
@@ -189,7 +192,7 @@ require_once __DIR__ . '/../../includes/header.php';
                     <input type="hidden" id="courseId">
 
                     <!-- Form Alert -->
-                    <div id="modalAlert" class="alert cm-alert-danger d-none" role="alert">
+                    <div id="modalAlert" class="alert cm-alert-danger d-none mb-3" role="alert">
                         <i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i>
                         <span id="modalAlertMsg"></span>
                     </div>
@@ -201,16 +204,16 @@ require_once __DIR__ . '/../../includes/header.php';
                             </label>
                             <input type="text" id="code" class="form-control text-uppercase tabular-nums font-monospace" 
                                    placeholder="e.g. CS201" required maxlength="20" autocomplete="off">
-                            <div class="form-text">Unique departmental code.</div>
+                            <div class="form-text">Unique code (e.g. CS101, IT204).</div>
                         </div>
 
                         <div class="col-md-8">
                             <label for="name" class="form-label">
-                                Course Name <span class="text-danger" aria-hidden="true">*</span>
+                                Course Title <span class="text-danger" aria-hidden="true">*</span>
                             </label>
                             <input type="text" id="name" class="form-control" 
                                    placeholder="e.g. Data Structures &amp; Algorithms" required maxlength="100">
-                            <div class="form-text">Full official academic course title.</div>
+                            <div class="form-text">Full official title of the course.</div>
                         </div>
 
                         <div class="col-md-4">
@@ -219,21 +222,21 @@ require_once __DIR__ . '/../../includes/header.php';
                             </label>
                             <input type="number" id="credit_hours" class="form-control tabular-nums" 
                                    min="1" max="12" value="3" required>
-                            <div class="form-text">Standard credits (1 to 12).</div>
+                            <div class="form-text">Credits (typically 1 to 6).</div>
                         </div>
 
                         <div class="col-md-8">
-                            <label for="lecturer_id" class="form-label">Assign Lecturer</label>
+                            <label for="lecturer_id" class="form-label">Assign Teacher</label>
                             <select id="lecturer_id" class="form-select">
-                                <option value="">Select Lecturer (Optional)</option>
+                                <option value="">Choose a teacher (Optional)</option>
                             </select>
-                            <div class="form-text">Responsible faculty instructor.</div>
+                            <div class="form-text">Assigned faculty instructor.</div>
                         </div>
 
-                        <div class="col-12 mt-4">
+                        <div class="col-12 mt-3">
                             <fieldset>
-                                <legend class="form-label mb-2 d-block">Recommended Semesters</legend>
-                                <p class="text-secondary small mb-2">Select the academic semesters where this course is scheduled to be taught:</p>
+                                <legend class="form-label mb-1 d-block fw-semibold">Semesters Offered</legend>
+                                <p class="text-secondary small mb-2">Check the semesters during which this course is taught:</p>
                                 <div class="p-3 border rounded bg-light-subtle">
                                     <div class="row g-2">
                                         <?php for ($i = 1; $i <= 8; $i++): ?>
@@ -256,7 +259,7 @@ require_once __DIR__ . '/../../includes/header.php';
                 <div class="modal-footer border-top py-3 px-4 bg-light">
                     <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn btn-primary btn-sm" id="saveBtn">
-                        <i class="bi bi-check-lg" aria-hidden="true"></i>
+                        <i class="bi bi-check-lg me-1" aria-hidden="true"></i>
                         <span id="saveBtnText">Save Course</span>
                     </button>
                 </div>
@@ -287,7 +290,7 @@ require_once __DIR__ . '/../../includes/header.php';
                 allLecturers = Array.isArray(lecturers) ? lecturers : [];
                 const select = document.getElementById('lecturer_id');
                 if (select) {
-                    select.innerHTML = '<option value="">Select Lecturer (Optional)</option>';
+                    select.innerHTML = '<option value="">Choose a teacher (Optional)</option>';
                     allLecturers.forEach(l => {
                         const opt = document.createElement('option');
                         opt.value = l.id;
@@ -296,7 +299,7 @@ require_once __DIR__ . '/../../includes/header.php';
                     });
                 }
             })
-            .catch(err => console.error('Failed to load lecturers:', err));
+            .catch(err => console.error('Failed to load teachers:', err));
     }
 
     function loadCourses() {
@@ -399,11 +402,11 @@ require_once __DIR__ . '/../../includes/header.php';
             let semsHtml = '<span class="text-muted small">&mdash;</span>';
             if (Array.isArray(c.semesters) && c.semesters.length > 0) {
                 semsHtml = c.semesters.map(s => 
-                    `<span class="badge cm-badge-neutral font-monospace me-1">Sem ${escapeHtml(String(s))}</span>`
+                    `<span class="badge cm-badge-neutral me-1">Sem ${escapeHtml(String(s))}</span>`
                 ).join('');
             }
 
-            // Lecturer display
+            // Teacher display
             let lecturerHtml = '';
             if (c.lecturer_name) {
                 lecturerHtml = `
@@ -434,7 +437,7 @@ require_once __DIR__ . '/../../includes/header.php';
                 <td>${semsHtml}</td>
                 <td class="text-end">
                     <button type="button" class="btn btn-outline-primary btn-sm edit-btn" aria-label="Edit course ${escapeHtml(c.code)}">
-                        <i class="bi bi-pencil-square" aria-hidden="true"></i>
+                        <i class="bi bi-pencil-square me-1" aria-hidden="true"></i>
                         <span>Edit</span>
                     </button>
                 </td>
@@ -456,7 +459,8 @@ require_once __DIR__ . '/../../includes/header.php';
         const form = document.getElementById('courseForm');
         form.reset();
         document.getElementById('courseId').value = '';
-        document.getElementById('modalTitle').textContent = 'Add Department Course';
+        document.getElementById('modalTitle').textContent = 'Add Course';
+        document.getElementById('modalSubtitle').textContent = 'Enter course details, credits, teacher assignment, and schedule';
         document.getElementById('saveBtnText').textContent = 'Create Course';
         document.getElementById('modalAlert').classList.add('d-none');
         document.querySelectorAll('.sem-check').forEach(chk => chk.checked = false);
@@ -469,6 +473,7 @@ require_once __DIR__ . '/../../includes/header.php';
     function openEditModal(course) {
         document.getElementById('courseForm').reset();
         document.getElementById('modalTitle').textContent = 'Edit Course: ' + course.code;
+        document.getElementById('modalSubtitle').textContent = 'Update course title, credits, teacher assignment, or semesters';
         document.getElementById('saveBtnText').textContent = 'Update Course';
         document.getElementById('modalAlert').classList.add('d-none');
 

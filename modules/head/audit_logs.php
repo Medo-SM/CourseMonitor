@@ -3,32 +3,32 @@
 require_once __DIR__ . '/../../includes/auth_functions.php';
 requireRole('head');
 
-$pageTitle = 'Department Audit Trail';
+$pageTitle = 'Change History';
 require_once __DIR__ . '/../../includes/header.php';
 ?>
 
 <div class="container-fluid px-3 px-lg-4 py-4">
     <!-- Page Header -->
     <div class="cm-page-header">
-        <div>
+        <div class="cm-page-header-content">
             <div class="d-flex align-items-center gap-2 mb-1">
                 <a href="<?= htmlspecialchars(base_url('/modules/head/dashboard.php'), ENT_QUOTES, 'UTF-8') ?>" class="text-secondary text-decoration-none small">
                     <i class="bi bi-arrow-left me-1" aria-hidden="true"></i>Dashboard
                 </a>
                 <span class="text-secondary small">&bull;</span>
-                <span class="text-secondary small fw-medium">Department Head Oversight</span>
+                <span class="text-secondary small fw-medium">Audit Trail</span>
             </div>
-            <h1 class="cm-page-title">Institutional Audit Trail</h1>
-            <p class="cm-page-subtitle">Chronological record of verified grade updates, attendance modifications, and administrative revisions</p>
+            <h1 class="cm-page-title">Change History</h1>
+            <p class="cm-page-subtitle">A complete log of every grade and attendance modification.</p>
         </div>
-        <div class="d-flex flex-wrap align-items-center gap-2">
-            <button type="button" onclick="loadLogs()" class="btn btn-outline-secondary btn-sm" aria-label="Refresh audit logs">
+        <div class="cm-page-actions">
+            <button type="button" onclick="loadLogs()" class="btn btn-outline-secondary btn-sm" aria-label="Refresh change history">
                 <i class="bi bi-arrow-clockwise me-1" aria-hidden="true"></i>
-                <span>Refresh Log</span>
+                <span>Refresh</span>
             </button>
             <a href="<?= htmlspecialchars(base_url('/modules/head/modify_records.php'), ENT_QUOTES, 'UTF-8') ?>" class="btn btn-primary btn-sm">
                 <i class="bi bi-pencil-square me-1" aria-hidden="true"></i>
-                <span>Modify Records</span>
+                <span>Fix a Record</span>
             </a>
         </div>
     </div>
@@ -38,37 +38,37 @@ require_once __DIR__ . '/../../includes/header.php';
         <div class="col-sm-6 col-md-3">
             <div class="cm-stat-card">
                 <div class="cm-stat-header">
-                    <span class="cm-stat-label">Total Logged Events</span>
+                    <span class="cm-stat-label">Total Modifications</span>
                     <div class="cm-stat-icon primary" aria-hidden="true"><i class="bi bi-journal-text"></i></div>
                 </div>
                 <div class="cm-stat-val tabular-nums" id="statTotalEvents">-</div>
-                <p class="cm-stat-meta"><span class="text-secondary">Tracked modifications</span></p>
+                <p class="cm-stat-meta"><span class="text-secondary">All tracked changes</span></p>
             </div>
         </div>
         <div class="col-sm-6 col-md-3">
             <div class="cm-stat-card">
                 <div class="cm-stat-header">
-                    <span class="cm-stat-label">Grade Revisions</span>
+                    <span class="cm-stat-label">Grade Adjustments</span>
                     <div class="cm-stat-icon success" aria-hidden="true"><i class="bi bi-award"></i></div>
                 </div>
                 <div class="cm-stat-val tabular-nums text-primary" id="statGradeEvents">-</div>
-                <p class="cm-stat-meta"><span class="text-secondary">Coursework adjustments</span></p>
+                <p class="cm-stat-meta"><span class="text-secondary">Coursework marks changed</span></p>
             </div>
         </div>
         <div class="col-sm-6 col-md-3">
             <div class="cm-stat-card">
                 <div class="cm-stat-header">
-                    <span class="cm-stat-label">Attendance Revisions</span>
+                    <span class="cm-stat-label">Attendance Adjustments</span>
                     <div class="cm-stat-icon info" aria-hidden="true"><i class="bi bi-calendar2-check"></i></div>
                 </div>
                 <div class="cm-stat-val tabular-nums text-info" id="statAttendanceEvents">-</div>
-                <p class="cm-stat-meta"><span class="text-secondary">Presence &amp; absence updates</span></p>
+                <p class="cm-stat-meta"><span class="text-secondary">Attendance records changed</span></p>
             </div>
         </div>
         <div class="col-sm-6 col-md-3">
             <div class="cm-stat-card">
                 <div class="cm-stat-header">
-                    <span class="cm-stat-label">Latest Activity</span>
+                    <span class="cm-stat-label">Latest Change</span>
                     <div class="cm-stat-icon warning" aria-hidden="true"><i class="bi bi-clock-history"></i></div>
                 </div>
                 <div class="fs-6 fw-bold tabular-nums text-dark mt-2 mb-1" id="statLatestTime">-</div>
@@ -82,19 +82,19 @@ require_once __DIR__ . '/../../includes/header.php';
         <div class="cm-card-header flex-column flex-md-row align-items-stretch align-items-md-center justify-content-between gap-3">
             <!-- Filters -->
             <div class="d-flex flex-grow-1 flex-wrap gap-2">
-                <div class="input-group" style="max-width: 320px;">
+                <div class="input-group" style="max-width: 340px;">
                     <span class="input-group-text bg-light border-end-0 text-muted" id="search-addon">
                         <i class="bi bi-search" aria-hidden="true"></i>
                     </span>
                     <input type="search" id="logSearch" class="form-control border-start-0" 
-                           placeholder="Search student, course, or reason..." 
-                           aria-label="Search audit log entries"
+                           placeholder="Search student, course, teacher, or reason..." 
+                           aria-label="Search change history entries"
                            aria-describedby="search-addon"
                            oninput="filterLogs()">
                 </div>
 
-                <div style="min-width: 170px;">
-                    <label for="tableFilter" class="visually-hidden">Filter by Entity Type</label>
+                <div style="min-width: 180px;">
+                    <label for="tableFilter" class="visually-hidden">Filter by Category</label>
                     <select id="tableFilter" class="form-select" onchange="filterLogs()">
                         <option value="">All Categories</option>
                         <option value="attendance">Attendance Records</option>
@@ -105,7 +105,7 @@ require_once __DIR__ . '/../../includes/header.php';
 
             <!-- Result Count -->
             <div class="d-flex align-items-center gap-2">
-                <span class="text-muted small" id="logCountLabel">Loading logs...</span>
+                <span class="text-muted small" id="logCountLabel">Loading changes...</span>
             </div>
         </div>
 
@@ -114,23 +114,23 @@ require_once __DIR__ . '/../../includes/header.php';
                 <table class="table cm-table table-hover align-middle mb-0" id="auditTable">
                     <thead>
                         <tr>
-                            <th scope="col" style="width: 70px;">ID</th>
+                            <th scope="col" style="width: 70px;">#</th>
                             <th scope="col" style="width: 160px;">Date &amp; Time</th>
-                            <th scope="col" style="width: 110px;">Entity</th>
+                            <th scope="col" style="width: 110px;">Category</th>
                             <th scope="col" style="width: 220px;">Subject Details</th>
                             <th scope="col" style="width: 90px;">Action</th>
-                            <th scope="col" style="width: 220px;">Value Transition</th>
-                            <th scope="col">Justification / Reason</th>
-                            <th scope="col" style="width: 120px;">Modified By</th>
+                            <th scope="col" style="width: 200px;">Change</th>
+                            <th scope="col">Why Changed (Reason)</th>
+                            <th scope="col" style="width: 120px;">Changed By</th>
                         </tr>
                     </thead>
                     <tbody id="logTableBody">
                         <tr>
                             <td colspan="8" class="text-center py-5">
                                 <div class="spinner-border text-primary spinner-border-sm me-2" role="status">
-                                    <span class="visually-hidden">Loading audit logs...</span>
+                                    <span class="visually-hidden">Loading changes...</span>
                                 </div>
-                                <span class="text-secondary small">Retrieving audit trail...</span>
+                                <span class="text-secondary small">Retrieving change history...</span>
                             </td>
                         </tr>
                     </tbody>
@@ -140,10 +140,10 @@ require_once __DIR__ . '/../../includes/header.php';
             <!-- Empty State -->
             <div id="emptyAuditState" class="cm-empty-state d-none py-5">
                 <div class="cm-empty-icon" aria-hidden="true">
-                    <i class="bi bi-shield-check"></i>
+                    <i class="bi bi-clock-history"></i>
                 </div>
-                <h2 class="cm-empty-title h6" id="emptyTitle">No Audit Records Found</h2>
-                <p class="cm-empty-desc mb-0" id="emptyDesc">No historical modifications match your current filter settings.</p>
+                <h2 class="cm-empty-title h6" id="emptyTitle">No Changes Found</h2>
+                <p class="cm-empty-desc mb-0" id="emptyDesc">No modifications match your current filter settings.</p>
             </div>
         </div>
     </div>
@@ -166,7 +166,7 @@ require_once __DIR__ . '/../../includes/header.php';
                     <div class="spinner-border text-primary spinner-border-sm me-2" role="status">
                         <span class="visually-hidden">Loading...</span>
                     </div>
-                    <span class="text-secondary small">Fetching audit entries...</span>
+                    <span class="text-secondary small">Fetching change history...</span>
                 </td>
             </tr>
         `;
@@ -184,7 +184,7 @@ require_once __DIR__ . '/../../includes/header.php';
                 tbody.innerHTML = `
                     <tr>
                         <td colspan="8" class="text-center py-4 text-danger">
-                            <i class="bi bi-exclamation-triangle me-1"></i> Failed to retrieve audit trail. Please refresh.
+                            <i class="bi bi-exclamation-triangle me-1"></i> Failed to retrieve change history. Please refresh.
                         </td>
                     </tr>
                 `;
@@ -263,7 +263,7 @@ require_once __DIR__ . '/../../includes/header.php';
             });
 
             // Extract Clean Reason
-            let reason = row.reason || row.action || 'No justification provided';
+            let reason = row.reason || row.action || 'No explanation provided';
             if (typeof reason === 'string' && reason.includes('(Reason:')) {
                 reason = reason.substring(reason.indexOf('(Reason:') + 9, reason.length - 1).trim();
             } else if (typeof reason === 'string' && reason.startsWith('UPDATE: ')) {
@@ -289,8 +289,8 @@ require_once __DIR__ . '/../../includes/header.php';
             // Entity badge
             const isAttendance = row.table_name === 'attendance';
             const entityBadge = isAttendance 
-                ? '<span class="badge cm-badge-info font-monospace">Attendance</span>' 
-                : '<span class="badge cm-badge-primary font-monospace">Coursework</span>';
+                ? '<span class="badge cm-badge-info">Attendance</span>' 
+                : '<span class="badge cm-badge-primary">Grade</span>';
 
             tr.innerHTML = `
                 <td>
