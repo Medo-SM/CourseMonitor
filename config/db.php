@@ -4,8 +4,8 @@
 
 $host     = getenv('DB_HOST') ?: '127.0.0.1';
 $username = getenv('DB_USER') ?: 'root';
-$password = getenv('DB_PASS') !== false ? getenv('DB_PASS') : '';
-$db_name  = getenv('DB_NAME') ?: 'course_monitor';
+$password = getenv('DB_PASS') !== false ? getenv('DB_PASS') : '123';
+$db_name  = getenv('DB_NAME') ?: 'CourseMonitor';
 $port     = (int)(getenv('DB_PORT') ?: 3306);
 
 mysqli_report(MYSQLI_REPORT_OFF);
