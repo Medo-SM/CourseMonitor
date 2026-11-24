@@ -1,0 +1,124 @@
+name: CI/CD Quality Pipeline
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint-and-syntax:
+    name: PHP Syntax & Lint Check (PHP ${{ matrix.php-version }})
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php-version: ['8.1', '8.2', '8.3']
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-version }}
+          extensions: mbstring, mysqli, pdo, pdo_mysql, json
+          coverage: none
+
+      - name: Lint all PHP files
+        run: |
+          echo "Checking PHP syntax across all files..."
+          ERRORS=0
+          while IFS= read -r file; do
+            if ! php -l "$file" > /dev/null 2>&1; then
+              echo "Syntax error in $file"
+              php -l "$file"
+              ERRORS=$((ERRORS + 1))
+            fi
+          done < <(find . -type f -name "*.php" ! -path "*/vendor/*")
+
+          if [ $ERRORS -ne 0 ]; then
+            echo "Found $ERRORS PHP syntax error(s)."
+            exit 1
+          fi
+          echo "All PHP files passed syntax checks on PHP ${{ matrix.php-version }}."
+
+  unit-tests:
+    name: Automated Unit & Security Tests (PHP ${{ matrix.php-version }})
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php-version: ['8.1', '8.2', '8.3']
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-version }}
+          extensions: mbstring, mysqli, json
+          coverage: none
+
+      - name: Run Test Suite
+        run: php tests/run_tests.php
+
+  database-schema-validation:
+    name: Database Schema & Migration Integrity
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: CourseMonitor
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Import Base Database Schema
+        run: |
+          mysql -h 127.0.0.1 -u root -proot CourseMonitor < CourseMonitor.sql
+          echo "Base schema CourseMonitor.sql imported successfully."
+
+      - name: Execute Migrations
+        run: |
+          for migration in $(ls -v migrations/*.sql 2>/dev/null); do
+            echo "Applying $migration..."
+            mysql -h 127.0.0.1 -u root -proot CourseMonitor < "$migration"
+          done
+          echo "All database migrations applied successfully."
+
+      - name: Verify Schema Constraints
+        run: |
+          mysql -h 127.0.0.1 -u root -proot CourseMonitor -e "
+            SHOW TABLES;
+            DESCRIBE coursework;
+            DESCRIBE audit_logs;
+          "
+
+  ui-and-assets:
+    name: UI Assets & Structure Verification
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Verify Key Partials & CSS
+        run: |
+          test -f public/css/app.css || { echo "Missing public/css/app.css"; exit 1; }
+          test -f includes/header.php || { echo "Missing includes/header.php"; exit 1; }
+          test -f includes/navbar.php || { echo "Missing includes/navbar.php"; exit 1; }
+          test -f includes/footer.php || { echo "Missing includes/footer.php"; exit 1; }
+          echo "All core UI partials and CSS design system files exist."
