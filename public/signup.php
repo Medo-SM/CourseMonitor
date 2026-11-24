@@ -51,9 +51,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 $insertStmt = $mysqli->prepare("INSERT INTO users (username, email, full_name, role, department_id, faculty_id, password, is_active) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
                 if ($insertStmt) {
-                    $insertStmt->bind_param("sssssiis", $username, $email, $fullName, $role, $department_id, $faculty_id, $hashedPwd, $isActive);
+                    $insertStmt->bind_param("sssssisi", $username, $email, $fullName, $role, $department_id, $faculty_id, $hashedPwd, $isActive);
                     if ($insertStmt->execute()) {
-                        $success = "Registration successful! You can now <a href='/CourseMonitor/public/login.php'>login</a>.";
+                        $newUserId = $insertStmt->insert_id;
+                        if ($role === 'head' && $department_id) {
+                            $updateDept = $mysqli->prepare("UPDATE departments SET head_id = ? WHERE id = ?");
+                            if ($updateDept) {
+                                $updateDept->bind_param("ii", $newUserId, $department_id);
+                                $updateDept->execute();
+                                $updateDept->close();
+                            }
+                        }
+                        $loginUrl = htmlspecialchars(base_url('/public/login.php'), ENT_QUOTES, 'UTF-8');
+                        $success = "Registration successful! You can now <a href='{$loginUrl}'>login</a>.";
                     } else {
                         $error = "Registration failed: " . $insertStmt->error;
                     }

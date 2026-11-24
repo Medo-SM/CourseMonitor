@@ -71,10 +71,19 @@ if ($id) {
     $sql = "INSERT INTO users (username, email, full_name, role, department_id, faculty_id, password, is_active) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
     $hashed_pwd = password_hash($password, PASSWORD_DEFAULT);
     $stmt = $mysqli->prepare($sql);
-    $stmt->bind_param("sssssiis", $username, $email, $full_name, $role, $department_id, $faculty_id, $hashed_pwd, $is_active);
+    $stmt->bind_param("sssssisi", $username, $email, $full_name, $role, $department_id, $faculty_id, $hashed_pwd, $is_active);
 }
 
 if ($stmt->execute()) {
+    $targetUserId = $id ?: $stmt->insert_id;
+    if ($role === 'head' && $department_id) {
+        $updateDept = $mysqli->prepare("UPDATE departments SET head_id = ? WHERE id = ?");
+        if ($updateDept) {
+            $updateDept->bind_param("ii", $targetUserId, $department_id);
+            $updateDept->execute();
+            $updateDept->close();
+        }
+    }
     echo json_encode(['success' => true]);
 } else {
     if ($mysqli->errno == 1062) {
