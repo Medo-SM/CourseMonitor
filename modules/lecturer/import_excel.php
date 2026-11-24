@@ -22,12 +22,13 @@ $stmt->close();
     <meta charset="UTF-8">
     <title>Import Grades - CourseMonitor</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="<?php echo base_url('/public/js/utils.js'); ?>"></script>
 </head>
 <body class="bg-light">
     <div class="container py-4">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2>Import Grades (CSV)</h2>
-            <a href="/CourseMonitor/modules/lecturer/dashboard.php" class="btn btn-secondary">Back to Dashboard</a>
+            <a href="<?php echo base_url('/modules/lecturer/dashboard.php'); ?>" class="btn btn-secondary">Back to Dashboard</a>
         </div>
         
         <div class="card shadow-sm">
@@ -102,7 +103,7 @@ $stmt->close();
                 return;
             }
 
-            window.location.href = `/CourseMonitor/api/download_grade_template.php?course_id=${courseId}`;
+            window.location.href = `<?php echo base_url('/api/download_grade_template.php'); ?>?course_id=${encodeURIComponent(courseId)}`;
         }
 
         function uploadFile(event) {
@@ -119,14 +120,14 @@ $stmt->close();
             resultMsg.innerHTML = '<div class="spinner-border text-primary"></div> Processing...';
             resultArea.style.display = 'block';
 
-            fetch('/CourseMonitor/api/import_grades.php', {
+            fetch('<?php echo base_url('/api/import_grades.php'); ?>', {
                 method: 'POST',
                 body: formData
             })
             .then(r => r.json())
             .then(resp => {
                 if (resp.success) {
-                    resultMsg.innerHTML = `<div class="alert alert-success">Successfully imported ${resp.count} records.</div>`;
+                    resultMsg.innerHTML = `<div class="alert alert-success">Successfully imported ${Number(resp.count)} records.</div>`;
                     if (resp.errors && resp.errors.length > 0) {
                         resp.errors.forEach(e => {
                             const li = document.createElement('li');
@@ -136,7 +137,7 @@ $stmt->close();
                         resultMsg.innerHTML += `<div class="alert alert-warning">Some records failed (see list below).</div>`;
                     }
                 } else {
-                    resultMsg.innerHTML = `<div class="alert alert-danger">${resp.error}</div>`;
+                    resultMsg.innerHTML = `<div class="alert alert-danger">${escapeHtml(resp.error)}</div>`;
                 }
             })
             .catch(err => {

@@ -29,6 +29,7 @@ $courses_stmt->close();
     <meta charset="UTF-8">
     <title>Department Reports - CourseMonitor</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="<?php echo base_url('/public/js/utils.js'); ?>"></script>
     <style>
         .stat-card { transition: transform 0.2s; }
         .stat-card:hover { transform: translateY(-5px); }
@@ -43,7 +44,7 @@ $courses_stmt->close();
     <div class="container py-4">
         <div class="d-flex justify-content-between align-items-center mb-4 no-print">
             <h2>Department Reports</h2>
-            <a href="/CourseMonitor/modules/head/dashboard.php" class="btn btn-secondary">Back to Dashboard</a>
+            <a href="<?php echo base_url('/modules/head/dashboard.php'); ?>" class="btn btn-secondary">Back to Dashboard</a>
         </div>
 
         <div class="card shadow-sm mb-4 no-print">
@@ -141,9 +142,9 @@ $courses_stmt->close();
             
             // Show loading or something if needed
             
-            let url = '/CourseMonitor/api/get_reports.php';
+            let url = '<?php echo base_url('/api/get_reports.php'); ?>';
             if (courseId) {
-                url += `?course_id=${courseId}`;
+                url += `?course_id=${encodeURIComponent(courseId)}`;
                 document.getElementById('reportTitle').innerText = 'Course Performance Report';
             } else {
                 document.getElementById('reportTitle').innerText = 'Department Performance Report';
@@ -174,8 +175,8 @@ $courses_stmt->close();
                     for (const [key, val] of Object.entries(data.grade_distribution)) {
                         distBody.innerHTML += `
                             <tr>
-                                <td>${labels[key] || key}</td>
-                                <td>${val}</td>
+                                <td>${escapeHtml(labels[key] || key)}</td>
+                                <td>${escapeHtml(val)}</td>
                             </tr>
                         `;
                     }
@@ -189,8 +190,8 @@ $courses_stmt->close();
                         data.at_risk.forEach(row => {
                             riskBody.innerHTML += `
                                 <tr>
-                                    <td>${row.student_name}</td>
-                                    <td>${row.course_code}</td>
+                                    <td>${escapeHtml(row.student_name)}</td>
+                                    <td>${escapeHtml(row.course_code)}</td>
                                     <td class="text-danger fw-bold">${parseFloat(row.att_pct).toFixed(1)}%</td>
                                 </tr>
                             `;

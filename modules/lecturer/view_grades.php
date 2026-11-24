@@ -20,6 +20,7 @@ $stmt->close();
     <meta charset="UTF-8">
     <title>View Grades - Gradebook</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="<?php echo base_url('/public/js/utils.js'); ?>"></script>
     <style>
         body { font-family: sans-serif; padding: 2rem; background-color: #f8f9fa; }
         .table-responsive { max-height: 70vh; }
@@ -30,7 +31,7 @@ $stmt->close();
     <div class="container-fluid">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2>Course Gradebook</h2>
-            <a href="/CourseMonitor/modules/lecturer/dashboard.php" class="btn btn-secondary">Back to Dashboard</a>
+            <a href="<?php echo base_url('/modules/lecturer/dashboard.php'); ?>" class="btn btn-secondary">Back to Dashboard</a>
         </div>
 
         <div class="card shadow-sm mb-4">
@@ -86,18 +87,18 @@ $stmt->close();
 
             tbody.innerHTML = '<tr><td colspan="100" class="text-center p-3"><div class="spinner-border text-primary"></div></td></tr>';
 
-            fetch(`/CourseMonitor/api/get_gradebook.php?course_id=${courseId}`)
+            fetch(`<?php echo base_url('/api/get_gradebook.php'); ?>?course_id=${encodeURIComponent(courseId)}`)
                 .then(r => r.json())
                 .then(data => {
                     if (data.error) {
-                        tbody.innerHTML = `<tr><td colspan="100" class="text-center p-3 text-danger">${data.error}</td></tr>`;
+                        tbody.innerHTML = `<tr><td colspan="100" class="text-center p-3 text-danger">${escapeHtml(data.error)}</td></tr>`;
                         return;
                     }
 
                     // 1. Build Headers
                     let headerHtml = '<tr><th>Student ID</th><th>Name</th>';
                     data.assessments.forEach(ass => {
-                        headerHtml += `<th>${ass}</th>`;
+                        headerHtml += `<th>${escapeHtml(ass)}</th>`;
                     });
                     headerHtml += '<th>Total</th></tr>';
                     thead.innerHTML = headerHtml;
@@ -111,8 +112,8 @@ $stmt->close();
 
                     data.students.forEach(student => {
                         let rowHtml = `<tr>
-                            <td>${student.student_id_number}</td>
-                            <td>${student.name}</td>`;
+                            <td>${escapeHtml(student.student_id_number)}</td>
+                            <td>${escapeHtml(student.name)}</td>`;
                         
                         let total = 0;
                         const studentGrades = data.grades[student.id] || {};
@@ -120,11 +121,11 @@ $stmt->close();
                         data.assessments.forEach(ass => {
                             const grade = studentGrades[ass];
                             const display = grade !== undefined ? parseFloat(grade).toFixed(1) : '-';
-                            rowHtml += `<td class="text-center">${display}</td>`;
+                            rowHtml += `<td class="text-center">${escapeHtml(display)}</td>`;
                             if (grade !== undefined) total += parseFloat(grade);
                         });
 
-                        // Simple Total (Sum of all columns) - Logic might need refinement based on weights, but Sum is standard for now
+                        // Simple Total (Sum of all columns)
                         rowHtml += `<td class="text-center fw-bold">${total.toFixed(1)}</td></tr>`;
                         tbody.innerHTML += rowHtml;
                     });

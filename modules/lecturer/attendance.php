@@ -25,6 +25,7 @@ $courses_stmt->close();
     <meta charset="UTF-8">
     <title>Record Attendance</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="<?php echo base_url('/public/js/utils.js'); ?>"></script>
     <style>
         body { font-family: sans-serif; padding: 2rem; background-color: #f8f9fa; }
     </style>
@@ -33,7 +34,7 @@ $courses_stmt->close();
     <div class="container">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2>Record Attendance</h2>
-            <a href="/CourseMonitor/modules/lecturer/dashboard.php" class="btn btn-secondary">Back to Dashboard</a>
+            <a href="<?php echo base_url('/modules/lecturer/dashboard.php'); ?>" class="btn btn-secondary">Back to Dashboard</a>
         </div>
         
         <div class="card shadow-sm mb-4">
@@ -106,13 +107,13 @@ $courses_stmt->close();
 
             tbody.innerHTML = '<tr><td colspan="3" class="text-center"><div class="spinner-border text-primary" role="status"></div></td></tr>';
 
-            fetch(`/CourseMonitor/api/get_students.php?course_id=${courseId}`)
+            fetch(`<?php echo base_url('/api/get_students.php'); ?>?course_id=${encodeURIComponent(courseId)}`)
                 .then(response => response.json())
                 .then(data => {
                     tbody.innerHTML = '';
                     
                     if (data.error) {
-                        tbody.innerHTML = `<tr><td colspan="3" class="text-center text-danger">${data.error}</td></tr>`;
+                        tbody.innerHTML = `<tr><td colspan="3" class="text-center text-danger">${escapeHtml(data.error)}</td></tr>`;
                         return;
                     }
                     
@@ -122,20 +123,21 @@ $courses_stmt->close();
                     }
 
                     data.forEach(student => {
+                        const sid = Number(student.id);
                         const row = `
                             <tr>
-                                <td>${student.student_id_number}</td>
-                                <td>${student.name}</td>
+                                <td>${escapeHtml(student.student_id_number)}</td>
+                                <td>${escapeHtml(student.name)}</td>
                                 <td>
                                     <div class="btn-group" role="group">
-                                        <input type="radio" class="btn-check" name="status[${student.id}]" id="present_${student.id}" value="Present" required>
-                                        <label class="btn btn-outline-success" for="present_${student.id}">Present</label>
+                                        <input type="radio" class="btn-check" name="status[${sid}]" id="present_${sid}" value="Present" required>
+                                        <label class="btn btn-outline-success" for="present_${sid}">Present</label>
 
-                                        <input type="radio" class="btn-check" name="status[${student.id}]" id="absent_${student.id}" value="Absent">
-                                        <label class="btn btn-outline-danger" for="absent_${student.id}">Absent</label>
+                                        <input type="radio" class="btn-check" name="status[${sid}]" id="absent_${sid}" value="Absent">
+                                        <label class="btn btn-outline-danger" for="absent_${sid}">Absent</label>
 
-                                        <input type="radio" class="btn-check" name="status[${student.id}]" id="late_${student.id}" value="Late">
-                                        <label class="btn btn-outline-warning" for="late_${student.id}">Late</label>
+                                        <input type="radio" class="btn-check" name="status[${sid}]" id="late_${sid}" value="Late">
+                                        <label class="btn btn-outline-warning" for="late_${sid}">Late</label>
                                     </div>
                                 </td>
                             </tr>
@@ -189,7 +191,7 @@ $courses_stmt->close();
                 return;
             }
 
-            fetch('/CourseMonitor/api/save_attendance.php', {
+            fetch('<?php echo base_url('/api/save_attendance.php'); ?>', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({

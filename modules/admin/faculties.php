@@ -9,12 +9,13 @@ requireRole('admin');
     <meta charset="UTF-8">
     <title>Faculty Management - CourseMonitor</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="<?php echo base_url('/public/js/utils.js'); ?>"></script>
 </head>
 <body class="bg-light">
     <div class="container py-4">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2>Faculty Management</h2>
-            <a href="/CourseMonitor/modules/admin/dashboard.php" class="btn btn-secondary">Back to Dashboard</a>
+            <a href="<?php echo base_url('/modules/admin/dashboard.php'); ?>" class="btn btn-secondary">Back to Dashboard</a>
         </div>
         
         <div class="card shadow-sm">
@@ -71,7 +72,7 @@ requireRole('admin');
         });
 
         function loadFaculties() {
-            fetch('/CourseMonitor/api/get_faculties.php')
+            fetch('<?php echo base_url('/api/get_faculties.php'); ?>')
                 .then(r => r.json())
                 .then(list => {
                     const tbody = document.getElementById('facultyTableBody');
@@ -79,10 +80,10 @@ requireRole('admin');
                     list.forEach(item => {
                         tbody.innerHTML += `
                             <tr>
-                                <td>${item.name}</td>
+                                <td>${escapeHtml(item.name)}</td>
                                 <td>
                                     <button onclick='editFaculty(${JSON.stringify(item)})' class="btn btn-sm btn-outline-primary">Edit</button>
-                                    <button onclick='deleteFaculty(${item.id})' class="btn btn-sm btn-outline-danger">Delete</button>
+                                    <button onclick='deleteFaculty(${Number(item.id)})' class="btn btn-sm btn-outline-danger">Delete</button>
                                 </td>
                             </tr>
                         `;
@@ -114,7 +115,7 @@ requireRole('admin');
                 csrf_token: '<?php echo generateCsrfToken(); ?>'
             };
 
-            fetch('/CourseMonitor/api/save_faculty.php', {
+            fetch('<?php echo base_url('/api/save_faculty.php'); ?>', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data)
@@ -133,7 +134,7 @@ requireRole('admin');
         function deleteFaculty(id) {
             if(!confirm('Are you sure? This may affect linked departments and users!')) return;
 
-            fetch('/CourseMonitor/api/delete_faculty.php', {
+            fetch('<?php echo base_url('/api/delete_faculty.php'); ?>', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ id: id, csrf_token: '<?php echo generateCsrfToken(); ?>' })

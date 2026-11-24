@@ -24,6 +24,7 @@ $courses_stmt->close();
     <meta charset="UTF-8">
     <title>Enter Coursework</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="<?php echo base_url('/public/js/utils.js'); ?>"></script>
     <style>
         body { font-family: sans-serif; padding: 2rem; background-color: #f8f9fa; }
         .grade-input { width: 100px; }
@@ -33,7 +34,7 @@ $courses_stmt->close();
     <div class="container">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2>Enter Coursework Grades</h2>
-            <a href="/CourseMonitor/modules/lecturer/dashboard.php" class="btn btn-secondary">Back to Dashboard</a>
+            <a href="<?php echo base_url('/modules/lecturer/dashboard.php'); ?>" class="btn btn-secondary">Back to Dashboard</a>
         </div>
         
         <div class="card shadow-sm mb-4">
@@ -112,7 +113,7 @@ $courses_stmt->close();
             tbody.innerHTML = '<tr><td colspan="3" class="text-center"><div class="spinner-border text-primary" role="status"></div></td></tr>';
 
             // Load Students with correct path
-            fetch(`/CourseMonitor/api/get_students.php?course_id=${courseId}`)
+            fetch(`<?php echo base_url('/api/get_students.php'); ?>?course_id=${encodeURIComponent(courseId)}`)
                 .then(r => r.json())
                 .then(students => {
                     if (students.error) { 
@@ -127,7 +128,7 @@ $courses_stmt->close();
 
                     // If assessment type selected, load existing grades
                     if (assessmentType) {
-                        fetch(`/CourseMonitor/api/get_coursework.php?course_id=${courseId}&assessment_type=${encodeURIComponent(assessmentType)}`)
+                        fetch(`<?php echo base_url('/api/get_coursework.php'); ?>?course_id=${encodeURIComponent(courseId)}&assessment_type=${encodeURIComponent(assessmentType)}`)
                             .then(r => r.json())
                             .then(grades => {
                                 renderTable(students, grades);
@@ -153,14 +154,15 @@ $courses_stmt->close();
             students.forEach(student => {
                 // existingGrades is an object {student_id: grade}
                 const grade = existingGrades[student.id] !== undefined ? existingGrades[student.id] : '';
+                const sid = Number(student.id);
                 const row = `
                     <tr>
-                        <td>${student.student_id_number}</td>
-                        <td>${student.name}</td>
+                        <td>${escapeHtml(student.student_id_number)}</td>
+                        <td>${escapeHtml(student.name)}</td>
                         <td>
-                            <input type="number" name="grade[${student.id}]" 
-                                   min="0" max="100" step="0.01" value="${grade}" 
-                                   class="form-control grade-input" data-student-id="${student.id}">
+                            <input type="number" name="grade[${sid}]" 
+                                   min="0" max="100" step="0.01" value="${escapeHtml(grade)}" 
+                                   class="form-control grade-input" data-student-id="${sid}">
                         </td>
                     </tr>
                 `;
@@ -201,7 +203,7 @@ $courses_stmt->close();
                 if (!confirm("Some students have missing grades. Continue saving only entered grades?")) return;
             }
 
-            fetch('/CourseMonitor/api/save_coursework.php', {
+            fetch('<?php echo base_url('/api/save_coursework.php'); ?>', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({

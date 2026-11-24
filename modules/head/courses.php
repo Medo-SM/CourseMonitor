@@ -9,6 +9,7 @@ requireRole('head');
     <meta charset="UTF-8">
     <title>Manage Courses - CourseMonitor</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="<?php echo base_url('/public/js/utils.js'); ?>"></script>
     <style>
         .semester-checkboxes { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
     </style>
@@ -17,7 +18,7 @@ requireRole('head');
     <div class="container py-4">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2>Manage Department Courses</h2>
-            <a href="/CourseMonitor/modules/head/dashboard.php" class="btn btn-secondary">Back to Dashboard</a>
+            <a href="<?php echo base_url('/modules/head/dashboard.php'); ?>" class="btn btn-secondary">Back to Dashboard</a>
         </div>
         
         <div class="card shadow-sm">
@@ -126,19 +127,20 @@ requireRole('head');
         }
 
         function loadCourses() {
-            fetch('/CourseMonitor/api/get_courses.php')
+            fetch('<?php echo base_url('/api/get_courses.php'); ?>')
                 .then(r => r.json())
                 .then(courses => {
                     const tbody = document.getElementById('courseTableBody');
                     tbody.innerHTML = '';
                     courses.forEach(c => {
+                        const semStr = Array.isArray(c.semesters) ? c.semesters.join(', ') : (c.semesters || '-');
                         tbody.innerHTML += `
                             <tr>
-                                <td>${c.code}</td>
-                                <td>${c.name}</td>
-                                <td>${c.credit_hours}</td>
-                                <td>${c.lecturer_name || '<span class="text-muted">Unassigned</span>'}</td>
-                                <td>${c.semesters.join(', ') || '-'}</td>
+                                <td>${escapeHtml(c.code)}</td>
+                                <td>${escapeHtml(c.name)}</td>
+                                <td>${escapeHtml(c.credit_hours)}</td>
+                                <td>${c.lecturer_name ? escapeHtml(c.lecturer_name) : '<span class="text-muted">Unassigned</span>'}</td>
+                                <td>${escapeHtml(semStr)}</td>
                                 <td>
                                     <button onclick='editCourse(${JSON.stringify(c)})' class="btn btn-sm btn-outline-primary">Edit</button>
                                 </td>
@@ -186,7 +188,7 @@ requireRole('head');
                 csrf_token: '<?php echo generateCsrfToken(); ?>'
             };
 
-            fetch('/CourseMonitor/api/save_course.php', {
+            fetch('<?php echo base_url('/api/save_course.php'); ?>', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data)

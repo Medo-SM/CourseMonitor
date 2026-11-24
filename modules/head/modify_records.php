@@ -29,12 +29,13 @@ $courses_stmt->close();
     <meta charset="UTF-8">
     <title>Modify Records - CourseMonitor</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="<?php echo base_url('/public/js/utils.js'); ?>"></script>
 </head>
 <body class="bg-light">
     <div class="container py-4">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2>Modify Records</h2>
-            <a href="/CourseMonitor/modules/head/dashboard.php" class="btn btn-secondary">Back to Dashboard</a>
+            <a href="<?php echo base_url('/modules/head/dashboard.php'); ?>" class="btn btn-secondary">Back to Dashboard</a>
         </div>
         
         <div class="card shadow-sm mb-4">
@@ -151,7 +152,7 @@ $courses_stmt->close();
             
             if (!courseId) return;
 
-            fetch(`/CourseMonitor/api/get_assessment_types.php?course_id=${courseId}`)
+            fetch(`<?php echo base_url('/api/get_assessment_types.php'); ?>?course_id=${encodeURIComponent(courseId)}`)
                 .then(r => r.json())
                 .then(types => {
                     types.forEach(t => {
@@ -177,7 +178,7 @@ $courses_stmt->close();
 
             if (!courseId) return;
 
-            let url = `/CourseMonitor/api/search_records.php?course_id=${courseId}&type=${type}`;
+            let url = `<?php echo base_url('/api/search_records.php'); ?>?course_id=${encodeURIComponent(courseId)}&type=${encodeURIComponent(type)}`;
             if (filterVal) url += `&filter_value=${encodeURIComponent(filterVal)}`;
 
             fetch(url)
@@ -201,10 +202,10 @@ $courses_stmt->close();
                         
                         tbody.innerHTML += `
                             <tr>
-                                <td>${row.student_name}</td>
-                                <td>${row.student_id_number}</td>
-                                <td>${context}</td>
-                                <td>${valDisplay}</td>
+                                <td>${escapeHtml(row.student_name)}</td>
+                                <td>${escapeHtml(row.student_id_number)}</td>
+                                <td>${escapeHtml(context)}</td>
+                                <td>${escapeHtml(valDisplay)}</td>
                                 <td>
                                     <button class="btn btn-sm btn-outline-primary" 
                                         onclick='openEdit(${JSON.stringify(row)})'>Edit</button>
@@ -265,7 +266,7 @@ $courses_stmt->close();
                 return;
             }
 
-            fetch('/CourseMonitor/api/update_record_audit.php', {
+            fetch('<?php echo base_url('/api/update_record_audit.php'); ?>', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
